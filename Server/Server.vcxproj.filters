@@ -50,9 +50,6 @@
     <ClInclude Include="Install.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
-    <ClInclude Include="ServiceMainProcess.h">
-      <Filter>BaseCode</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceStatus.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
@@ -63,6 +60,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleMainProcess.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceMainProcess.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
