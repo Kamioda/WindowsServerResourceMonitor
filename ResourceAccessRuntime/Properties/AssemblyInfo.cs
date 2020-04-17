@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 制御されます。アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("ResourceAccessRuntime")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Windows Server resource access runtime")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ResourceAccessRuntime")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCompany("Kamioda Games")]
+[assembly: AssemblyProduct("Windows Server Resource Monitor")]
+[assembly: AssemblyCopyright("Copyright ©  2020 Kamioda.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
