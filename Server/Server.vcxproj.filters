@@ -13,5 +13,57 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="BaseCode">
+      <UniqueIdentifier>{e93dc1c3-3bec-49c0-8ee6-81d5ce76a45e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CommandLineManager.cpp">
+      <Filter>BaseCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Install.cpp">
+      <Filter>BaseCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>BaseCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceMainProcess.cpp">
+      <Filter>BaseCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Uninstall.cpp">
+      <Filter>BaseCode</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleMainProcess.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CloseServiceHandles.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLineManager.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="GetErrorMessage.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="Install.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceMainProcess.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceStatus.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="Uninstall.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceInformation.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleMainProcess.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

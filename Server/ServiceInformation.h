@@ -1,0 +1,13 @@
+﻿#pragma once
+#include <Windows.h>
+#include <tchar.h>
+
+namespace ServiceInfo {
+	constexpr TCHAR* Name = _T("ResourceAcquisitionServer");
+	constexpr TCHAR* DisplayName = _T("Windows Resource Monitor Server");
+	constexpr TCHAR* Description = _T("Get computer resource with running Windows Server");
+	constexpr DWORD StartType = SERVICE_AUTO_START;
+	constexpr bool DelayedStart = true;
+	constexpr const TCHAR* ExecutionUser = TEXT("NT AUTHORITY\\LocalService"); // LocalSystemの時はNULL
+	constexpr bool RequireAdministrator = false;
+}
