@@ -24,7 +24,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 
 void ResourceAccessServer::Service_MainProcess() {
 	IniRead ini(BaseClass::ChangeFullPath(".\\server.ini"));
-	const DllFunctionCallManager dll(BaseClass::ChangeFullPath(".\\KgOSResDrv.dll"));
+	const DllFunctionCallManager dll(BaseClass::ChangeFullPath(ini.GetString("dll", "path", ".\\KgOSResDrv.dll")));
 	std::string ResourceInformation{};
 	this->server.Get(ini.GetString("url", "all", "/v1/").c_str(),
 		[](const httplib::Request& req, httplib::Response& res) {
