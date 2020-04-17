@@ -8,6 +8,9 @@ namespace ServiceInfo {
 	constexpr TCHAR* Description = _T("Get computer resource with running Windows Server");
 	constexpr DWORD StartType = SERVICE_AUTO_START;
 	constexpr bool DelayedStart = true;
-	constexpr const TCHAR* ExecutionUser = TEXT("NT AUTHORITY\\LocalService"); // LocalSystemの時はNULL
+	// LocalSystem    : NULL
+	// LocalService   : NT AUTHORITY\\LocalService
+	// NetworkService : NT AUTHORITY\\NetworkService
+	constexpr const TCHAR* ExecutionUser = TEXT("NT AUTHORITY\\LocalService");
 	constexpr bool RequireAdministrator = false;
 }

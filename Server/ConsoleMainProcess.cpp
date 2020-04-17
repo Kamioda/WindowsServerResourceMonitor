@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-void Main_Console(HINSTANCE hInstance, const CommandLineManager::CommandLineType& CommandLines, int nCmdShow) {
-	if (CommandLines.at(0) == CommandLineManager::AlignCmdLineStrType("install")) Install();
-	else if (CommandLines.at(0) == CommandLineManager::AlignCmdLineStrType("uninstall")) Uninstall();
+void Console_MainProcess(HINSTANCE hInstance, const Console_CommandLineManager::CommandLineType& CommandLines, int nCmdShow) {
+	if (CommandLines.at(0) == Console_CommandLineManager::AlignCmdLineStrType("install")) Install();
+	else if (CommandLines.at(0) == Console_CommandLineManager::AlignCmdLineStrType("uninstall")) Uninstall();
 	else {
 		// ここに他のコマンドライン引数が与えられた時の処理を書く
 

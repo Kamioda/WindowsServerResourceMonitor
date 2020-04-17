@@ -25,7 +25,7 @@ void Install() {
 		ServiceInfo::DisplayName,
 		SERVICE_CHANGE_CONFIG,
 		SERVICE_WIN32_OWN_PROCESS,
-		ServiceInfo::StartType,
+		ServiceInfo::DelayedStart ? SERVICE_AUTO_START : ServiceInfo::StartType,
 		SERVICE_ERROR_NORMAL,
 		ModulePath.c_str(),
 		NULL,

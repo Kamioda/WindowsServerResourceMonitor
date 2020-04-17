@@ -50,6 +50,24 @@ namespace CmdLineMgrStringConverter {
 	inline std::basic_string<OutCharType> Convert(const InCharType* str) {
 		return string::converter::stl::from_bytes(str);
 	}
+
+	template<typename OutCharType, typename InCharType, std::enable_if_t<!std::is_same_v<InCharType, OutCharType>, std::nullptr_t> = nullptr>
+	inline std::vector<std::basic_string<OutCharType>> Convert(const std::vector<std::basic_string<InCharType>>& arr, const std::function<std::basic_string<OutCharType>(const std::basic_string<InCharType>&)> ConvertFunc) {
+		std::vector<std::basic_string<OutCharType>> RetVal{};
+		for (const auto& i : arr) RetVal.emplace_back(ConvertFunc(i));
+		return RetVal;
+	}
+
+	template<typename OutCharType, typename InCharType, std::enable_if_t<InIsWCharAndOutIsChar<OutCharType, InCharType>, std::nullptr_t> = nullptr>
+	inline std::vector<std::basic_string<OutCharType>> Convert(const std::vector<std::basic_string<InCharType>>& arr) {
+		return Convert<OutCharType, InCharType>(arr, string::converter::stl::to_bytes);
+	}
+
+	template<typename OutCharType, typename InCharType, std::enable_if_t<InIsCharAndOutIsWChar<OutCharType, InCharType>, std::nullptr_t> = nullptr>
+	inline std::vector<std::basic_string<OutCharType>> Convert(const std::vector<std::basic_string<InCharType>>& arr) {
+		return Convert<OutCharType, InCharType>(arr, string::converter::stl::from_bytes);
+	}
+
 }
 
 namespace CommandLine {
@@ -67,13 +85,17 @@ namespace CommandLine {
 	namespace CharArg {
 		std::vector<std::string> GetCommandLineArg(const char* lpCmdLine) { return impl::GetCommandLineArg<char, char>(lpCmdLine); }
 		std::vector<std::string> GetCommandLineArg(const wchar_t* lpCmdLine) { return impl::GetCommandLineArg<char, wchar_t>(lpCmdLine); }
+		std::vector<std::string> GetCommandLineArg(const std::vector<std::string>& args) { return args; }
+		std::vector<std::string> GetCommandLineArg(const std::vector<std::wstring>& args) { return CmdLineMgrStringConverter::Convert<char, wchar_t>(args); }
 		std::string AlignCmdLineStrType(const std::string& str) { return str; }
 		std::string AlignCmdLineStrType(const std::wstring& str) { return string::converter::stl::to_bytes(str); }
 	}
 	namespace WCharArg {
 		std::vector<std::wstring> GetCommandLineArg(const char* lpCmdLine) { return impl::GetCommandLineArg<wchar_t, char>(lpCmdLine); }
 		std::vector<std::wstring> GetCommandLineArg(const wchar_t* lpCmdLine) { return impl::GetCommandLineArg<wchar_t, wchar_t>(lpCmdLine); }
-		std::wstring MatchCommandLineStringType(const std::string& str) { return string::converter::stl::from_bytes(str); }
-		std::wstring MatchCommandLineStringType(const std::wstring& str) { return str; }
+		std::vector<std::wstring> GetCommandLineArg(const std::vector<std::string>& args) { return CmdLineMgrStringConverter::Convert<wchar_t, char>(args); }
+		std::vector<std::wstring> GetCommandLineArg(const std::vector<std::wstring>& args) { return args; }
+		std::wstring AlignCmdLineStrType(const std::string& str) { return string::converter::stl::from_bytes(str); }
+		std::wstring AlignCmdLineStrType(const std::wstring& str) { return str; }
 	}
 }

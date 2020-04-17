@@ -1,17 +1,27 @@
 ﻿#pragma once
+#include "CommandLineManager.h"
 #include <Windows.h>
-#include <string>
-#include <vector>
+
+/*
+	Service_CommandLineManager
+	CommandLineManagerA
+		Command line argument type						：std::vector<std::string>
+		Return value of AlignCmdLineStrType function	: std::string
+	CommandLineManagerw
+		Command line argument type						：std::vector<std::wtring>
+		Return value of AlignCmdLineStrType function	: std::wtring
+
+*/
+
+namespace Service_CommandLineManager = CommandLineManagerA;
 
 class ServiceProcess {
 protected:
-	DWORD Argc;
-	std::vector<std::basic_string<TCHAR>> Argv;
+	Service_CommandLineManager::CommandLineType Argv;
 public:
 	virtual void Service_MainProcess() = 0;
 public:
-	ServiceProcess(DWORD argc, const std::vector<std::basic_string<TCHAR>>& args);
-	virtual ~ServiceProcess() = 0;
+	ServiceProcess(const Service_CommandLineManager::CommandLineType& args);
 };
 
-ServiceProcess* GetServiceProcessInstance(DWORD argc, const std::vector<std::basic_string<TCHAR>>& args);
+ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args);

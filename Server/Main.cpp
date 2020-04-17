@@ -40,7 +40,7 @@ void WINAPI ServiceMain(DWORD dwArgc, LPTSTR lpszArgv[]) {
 	try {
 		SvcStatusHandle = RegisterServiceCtrlHandlerEx(lpszArgv[0], HandlerEx, NULL);
 		memset(&SvcStatus, 0, sizeof(SvcStatus));
-		ServiceProcess* SvcProcess = GetServiceProcessInstance(dwArgc, GetServiceCommandLineArgs(dwArgc, lpszArgv));
+		ServiceProcess* SvcProcess = GetServiceProcessInstance(Service_CommandLineManager::GetCommandLineArg(GetServiceCommandLineArgs(dwArgc, lpszArgv)));
 		SvcProcess->Service_MainProcess();
 	}
 	catch (...) {}
@@ -49,7 +49,7 @@ void WINAPI ServiceMain(DWORD dwArgc, LPTSTR lpszArgv[]) {
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int CmdShow) {
-	std::strlen(lpCmdLine) == 0 ? Main_ServiceDispatcher() : Main_Console(hInstance, CommandLineManager::GetCommandLineArg(lpCmdLine), CmdShow);
+	std::strlen(lpCmdLine) == 0 ? Main_ServiceDispatcher() : Console_MainProcess(hInstance, Console_CommandLineManager::GetCommandLineArg(lpCmdLine), CmdShow);
 	return 0;
 }
 

@@ -1,8 +1,8 @@
 ﻿#include "ServiceStatus.h"
 #include "ServiceMainProcess.h"
 
-ServiceProcess::ServiceProcess(DWORD argc, const std::vector<std::basic_string<TCHAR>>& args) 
-	: Argc(argc), Argv(args) { 
+ServiceProcess::ServiceProcess(const Service_CommandLineManager::CommandLineType& args)
+	: Argv(args) { 
 	SvcStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
 	SvcStatus.dwCurrentState = SERVICE_START_PENDING;
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP;
