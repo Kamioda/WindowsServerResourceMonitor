@@ -42,7 +42,6 @@ namespace ResourceAccessRuntime
             [JsonProperty("network")]
             public NetworkInformation NetworkInfo;
         }
-        private static string memSize;
         private static Processor processor;
         private static DiskFreeSpace diskFree;
         private static DiskRead diskRead;
@@ -52,6 +51,7 @@ namespace ResourceAccessRuntime
         private static NetworkReceive netReceive;
         private static NetworkSend netSend;
         private static ResourceInformation resource;
+        [DllExport]
         public static string Init(string MonitorDrive, string NetworkDevice)
         {
             try
@@ -74,6 +74,7 @@ namespace ResourceAccessRuntime
                 return e.Message;
             }
         }
+        [DllExport]
         public static string GetAllResource()
         {
             resource.DiskInfo.Read = diskRead.Get();
