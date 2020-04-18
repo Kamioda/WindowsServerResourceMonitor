@@ -150,8 +150,10 @@ private:
 	DWORD ProcessNum;
 public:
 	Processor() : PDHCounter("Processor", "% Processor Time", "_Total"), ProcessNum() {}
-	double Get() const { return PDHCounter::GetDoubleValue(); }
-	int GetProcessNum() { return this->ProcessNum; }
+private:
+	double GetUsage() const { return PDHCounter::GetDoubleValue(); }
+	int GetProcessNum() const { return this->ProcessNum; }
+public:
 	void Update() {
 		PDHCounter::Update();
 		constexpr DWORD BufferSize = 1024;
