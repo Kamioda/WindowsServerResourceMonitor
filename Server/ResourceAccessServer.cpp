@@ -243,6 +243,15 @@ public:
 	}
 };
 
+inline std::string GetAllResourceData(const Processor& p, const MemoryManager& m, const Disk& d, const Network& n) {
+	jsonobject obj{};
+	obj.insert("cpu", p.Get());
+	obj.insert("memory", m.Get());
+	obj.insert("disk", d.Get());
+	obj.insert("network", n.Get());
+	return picojson::value(obj).to_str();
+}
+
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), server() {}
 
