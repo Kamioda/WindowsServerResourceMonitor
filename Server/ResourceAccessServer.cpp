@@ -44,23 +44,6 @@ namespace impl {
 	};
 }
 
-class jsonobject {
-private:
-	picojson::object obj;
-public:
-	jsonobject() = default;
-	void insert(const std::string& key, const std::string& value) {
-		this->obj.insert(std::make_pair(key, value));
-	}
-	void insert(const std::string& key, const double& value) {
-		this->obj.insert(std::make_pair(key, value));
-	}
-	void insert(const std::string& key, const picojson::object& InsertObject) {
-		this->obj.insert(std::make_pair(key, InsertObject));
-	}
-	operator const picojson::object& () const noexcept { return this->obj; }
-};
-
 class Processor : public PDHCounter {
 private:
 	typedef int (*GetProcessNumFunc)();
@@ -79,7 +62,7 @@ public:
 		this->ProcessNum /= sizeof(DWORD);
 	}
 	picojson::object Get() const {
-		jsonobject obj{};
+		JsonObject obj{};
 		obj.insert("usage", this->GetUsage());
 		obj.insert("process", this->GetProcessNum());
 	}
@@ -114,7 +97,7 @@ private:
 	double GetCommitUsage() const { return digit(ByteToMegaByte(this->GetCommitUsed())); }
 	double GetCommitUsagePer() const { return digit(ToPercent(this->GetCommitUsed(), GetDiviveNum(this->GetCommitTotal()))); }
 	picojson::object GetPhysical() const {
-		jsonobject physical{};
+		JsonObject physical{};
 		physical.insert("total", this->GetPhysicalMaxMemSize());
 		physical.insert("available", this->GetPhysicalAvailable());
 		physical.insert("used", this->GetPhysicalUsage());
@@ -122,7 +105,7 @@ private:
 		return physical;
 	}
 	picojson::object GetCommit() const {
-		jsonobject commit{};
+		JsonObject commit{};
 		commit.insert("total", this->GetCommitMaxMemSize());
 		commit.insert("available", this->GetCommitAvailable());
 		commit.insert("used", this->GetCommitUsage());
@@ -131,7 +114,7 @@ private:
 	}
 public:
 	picojson::object Get() const {
-		jsonobject obj{};
+		JsonObject obj{};
 		obj.insert("physical", this->GetPhysical());
 		obj.insert("commit", this->GetCommit());
 		return obj;
@@ -172,7 +155,7 @@ public:
 		this->netSend.Update();
 	}
 	picojson::object Get() const {
-		jsonobject obj{};
+		JsonObject obj{};
 		obj.insert("receive", this->netReceive.Get());
 		obj.insert("send", this->netSend.Get());
 		return obj;
