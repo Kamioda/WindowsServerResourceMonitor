@@ -13,24 +13,6 @@ ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::Comm
 }
 
 namespace impl {
-	class DiskUsage : public PDHCounter {
-	public:
-		DiskUsage(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "% Free Space", TargetDrive) {}
-		double Get() const { return digit(100.0 - PDHCounter::GetDoubleValue()); }
-	};
-
-	class DiskRead : public PDHCounter {
-	public:
-		DiskRead(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "Disk Reads/sec", TargetDrive) {}
-		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
-	};
-
-	class DiskWrite : public PDHCounter {
-	public:
-		DiskWrite(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "Disk Writes/sec", TargetDrive) {}
-		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
-	};
-
 	class NetworkReceive : public PDHCounter {
 	public:
 		NetworkReceive(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
@@ -117,28 +99,6 @@ public:
 		JsonObject obj{};
 		obj.insert("physical", this->GetPhysical());
 		obj.insert("commit", this->GetCommit());
-		return obj;
-	}
-};
-
-class Disk {
-private:
-	impl::DiskUsage diskUse;
-	impl::DiskRead diskRead;
-	impl::DiskWrite diskWrite;
-public:
-	Disk(const std::string& TargetDrive = "C:") 
-		: diskUse(TargetDrive), diskRead(TargetDrive), diskWrite(TargetDrive) {}
-	void Update() const {
-		this->diskUse.Update();
-		this->diskRead.Update();
-		this->diskWrite.Update();
-	}
-	picojson::object Get() const {
-		jsonobject obj{};
-		obj.insert("used", this->diskUse.Get());
-		obj.insert("read", this->diskRead.Get());
-		obj.insert("write", this->diskWrite.Get());
 		return obj;
 	}
 };
