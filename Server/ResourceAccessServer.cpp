@@ -254,7 +254,7 @@ public:
 		this->diskRead.Update();
 		this->diskWrite.Update();
 	}
-	picojson::object Get() {
+	picojson::object Get() const {
 		jsonobject obj{};
 		obj.insert("used", this->diskUse.Get());
 		obj.insert("read", this->diskRead.Get());
