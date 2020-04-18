@@ -12,39 +12,7 @@ ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::Comm
 	return new ResourceAccessServer(args);
 }
 
-namespace impl {
-	class NetworkReceive : public PDHCounter {
-	public:
-		NetworkReceive(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
-		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
-	};
-
-	class NetworkSend : public PDHCounter {
-	public:
-		NetworkSend(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Sent/sec", NetworkDeviceName) {}
-		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
-	};
-}
-
-class Network {
-private:
-	impl::NetworkReceive netReceive;
-	impl::NetworkSend netSend;
-public:
-	Network(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller")
-		: netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
-	void Update() const {
-		this->netReceive.Update();
-		this->netSend.Update();
 	}
-	picojson::object Get() const {
-		JsonObject obj{};
-		obj.insert("receive", this->netReceive.Get());
-		obj.insert("send", this->netSend.Get());
-		return obj;
-	}
-};
-
 inline std::string GetAllResourceData(const Processor& p, const MemoryManager& m, const Disk& d, const Network& n) {
 	jsonobject obj{};
 	obj.insert("cpu", p.Get());
