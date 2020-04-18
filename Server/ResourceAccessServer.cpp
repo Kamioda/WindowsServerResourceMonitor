@@ -27,8 +27,34 @@ void ResourceAccessServer::Service_MainProcess() {
 	const DllFunctionCallManager dll(BaseClass::ChangeFullPath(ini.GetString("dll", "path", ".\\KgOSResDrv.dll")));
 	std::string ResourceInformation{};
 	this->server.Get(ini.GetString("url", "all", "/v1/").c_str(),
-		[](const httplib::Request& req, httplib::Response& res) {
+		[&](const httplib::Request& req, httplib::Response& res) {
 
+		}
+	);
+	this->server.Get(ini.GetString("url", "cpu", "/v1/cpu").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "memory", "/v1/mem").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "storage", "/v1/disk/[A-Z]").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+			const std::string drive = req.matches[1].str() + ":";
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "network", "/v1/network").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	server.listen(ini.GetString("url", "domain", "localhost").c_str(), ini.GetNum("url", "port", 8080), 0, 
+		[&]() {
+			
 		}
 	);
 }
