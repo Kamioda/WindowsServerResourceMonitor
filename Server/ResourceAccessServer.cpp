@@ -144,6 +144,23 @@ namespace impl {
 	};
 }
 
+class jsonobject {
+private:
+	picojson::object obj;
+public:
+	jsonobject() = default;
+	void insert(const std::string& key, const std::string& value) {
+		this->obj.insert(std::make_pair(key, value));
+	}
+	void insert(const std::string& key, const double& value) {
+		this->obj.insert(std::make_pair(key, value));
+	}
+	void insert(const std::string& key, const picojson::object& obj) {
+		this->obj.insert(std::make_pair(key, obj));
+	}
+	operator const picojson::object& () const noexcept { return this->obj; }
+};
+
 class Processor : public PDHCounter {
 private:
 	typedef int (*GetProcessNumFunc)();
