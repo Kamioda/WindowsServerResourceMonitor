@@ -26,30 +26,6 @@ namespace impl {
 	};
 }
 
-class Processor : public PDHCounter {
-private:
-	typedef int (*GetProcessNumFunc)();
-	DWORD ProcessNum;
-public:
-	Processor() : PDHCounter("Processor", "% Processor Time", "_Total"), ProcessNum() {}
-private:
-	double GetUsage() const { return digit(PDHCounter::GetDoubleValue()); }
-	int GetProcessNum() const { return this->ProcessNum; }
-public:
-	void Update() {
-		PDHCounter::Update();
-		constexpr DWORD BufferSize = 1024;
-		DWORD Buffer[BufferSize];
-		EnumProcesses(Buffer, sizeof(Buffer), &this->ProcessNum);
-		this->ProcessNum /= sizeof(DWORD);
-	}
-	picojson::object Get() const {
-		JsonObject obj{};
-		obj.insert("usage", this->GetUsage());
-		obj.insert("process", this->GetProcessNum());
-	}
-};
-
 class MemoryManager {
 private:
 	PDHCounter counter;
