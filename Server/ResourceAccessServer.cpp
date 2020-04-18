@@ -119,31 +119,31 @@ namespace impl {
 	class DiskUsage : public PDHCounter {
 	public:
 		DiskUsage(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "% Free Space", TargetDrive) {}
-		double Get() const { return 100.0 - PDHCounter::GetDoubleValue(); }
+		double Get() const { return digit(100.0 - PDHCounter::GetDoubleValue()); }
 	};
 
 	class DiskRead : public PDHCounter {
 	public:
 		DiskRead(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "Disk Reads/sec", TargetDrive) {}
-		double Get() const { return PDHCounter::GetDoubleValue(); }
+		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
 	};
 
 	class DiskWrite : public PDHCounter {
 	public:
 		DiskWrite(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "Disk Writes/sec", TargetDrive) {}
-		double Get() const { return PDHCounter::GetDoubleValue(); }
+		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
 	};
 
 	class NetworkReceive : public PDHCounter {
 	public:
 		NetworkReceive(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
-		double Get() const { return PDHCounter::GetDoubleValue(); }
+		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
 	};
 
 	class NetworkSend : public PDHCounter {
 	public:
 		NetworkSend(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Sent/sec", NetworkDeviceName) {}
-		double Get() const { return PDHCounter::GetDoubleValue(); }
+		double Get() const { return digit(PDHCounter::GetDoubleValue()); }
 	};
 }
 
@@ -171,7 +171,7 @@ private:
 public:
 	Processor() : PDHCounter("Processor", "% Processor Time", "_Total"), ProcessNum() {}
 private:
-	double GetUsage() const { return PDHCounter::GetDoubleValue(); }
+	double GetUsage() const { return digit(PDHCounter::GetDoubleValue()); }
 	int GetProcessNum() const { return this->ProcessNum; }
 public:
 	void Update() {
