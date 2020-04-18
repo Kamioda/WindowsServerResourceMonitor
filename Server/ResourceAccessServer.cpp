@@ -179,6 +179,11 @@ public:
 		EnumProcesses(Buffer, sizeof(Buffer), &this->ProcessNum);
 		this->ProcessNum /= sizeof(DWORD);
 	}
+	picojson::object Get() const {
+		jsonobject obj{};
+		obj.insert("usage", this->GetUsage());
+		obj.insert("process", this->GetProcessNum());
+	}
 };
 
 class MemoryManager {
