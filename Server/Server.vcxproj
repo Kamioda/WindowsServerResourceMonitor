@@ -213,7 +213,6 @@
     <ClInclude Include="CloseServiceHandles.h" />
     <ClInclude Include="CommandLineManager.h" />
     <ClInclude Include="ConsoleMainProcess.h" />
-    <ClInclude Include="DllFunctionCallManager.hpp" />
     <ClInclude Include="GetErrorMessage.h" />
     <ClInclude Include="httplib.h" />
     <ClInclude Include="Install.h" />

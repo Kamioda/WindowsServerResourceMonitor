@@ -71,9 +71,6 @@
     <ClInclude Include="ResourceAccessServer.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="DllFunctionCallManager.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="httplib.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
