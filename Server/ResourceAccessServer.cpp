@@ -1,11 +1,7 @@
 ﻿#include "ResourceAccessServer.hpp"
 #include "ServiceStatus.h"
 #include "Split.hpp"
-#include <picojson.h>
-#include <Pdh.h>
-#include <Psapi.h>
-#include <filesystem>
-#include <unordered_map>
+#include "JsonObject.hpp"
 
 ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
 	return new ResourceAccessServer(args);
