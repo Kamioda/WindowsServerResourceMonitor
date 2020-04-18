@@ -114,10 +114,10 @@ public:
 };
 
 namespace impl {
-	class DiskFreeSpace : public PDHCounter {
+	class DiskUsage : public PDHCounter {
 	public:
-		DiskFreeSpace(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "% Free Space", TargetDrive) {}
-		double Get() const { return PDHCounter::GetDoubleValue(); }
+		DiskUsage(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "% Free Space", TargetDrive) {}
+		double Get() const { return 100.0 - PDHCounter::GetDoubleValue(); }
 	};
 
 	class DiskRead : public PDHCounter {
