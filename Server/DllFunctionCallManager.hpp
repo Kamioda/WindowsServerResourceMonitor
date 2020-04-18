@@ -22,16 +22,4 @@ public:
 	}
 };
 
-template<class T>
-inline std::string GetStringFromDllFunc(T func) {
-	std::string str;
-	str.resize(1024);
-	char Arr[1024];
-	func(Arr);
-	str = Arr;
-	str.resize(std::strlen(str.c_str()));
-	return str;
-}
-
 #endif
-
