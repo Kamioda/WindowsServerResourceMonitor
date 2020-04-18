@@ -4,8 +4,10 @@
 
 ## ライブラリ等
 本リポジトリ内に含まれている以下のものはライブラリ等は次の通りです。
+
 - [AinoMegumi/WindowsServiceCppTemplate](https://github.com/AinoMegumi/WindowsServiceCppTemplate) (MIT License)
 - [yhirose/cpp-httplib](https://github.com/yhirose/cpp-httplib) (MIT License)(サービス向けに改変)
+- [kazuho/picojson](https://github.com/kazuho/picojson) (BSD 2-Clause "Simplified" License)
 
 ## プロジェクトのライセンス
 
