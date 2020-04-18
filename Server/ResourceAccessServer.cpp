@@ -6,7 +6,6 @@
 #include <Psapi.h>
 #include <filesystem>
 #include <unordered_map>
-#pragma comment(lib, "pdh.lib")
 
 ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
 	return new ResourceAccessServer(args);

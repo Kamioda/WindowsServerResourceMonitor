@@ -1,6 +1,7 @@
 ﻿#include "PDHCounter.hpp"
 #include "PDHAssistFunctions.hpp"
 #include <stdexcept>
+#pragma comment(lib, "pdh.lib")
 
 PDHCounter::PDHCounter(const std::string& CategoryName, const std::string& CounterName, const std::string& instanceName)
 	: CategoryName(CategoryName), CounterName(CounterName), instanceName(instanceName) {
