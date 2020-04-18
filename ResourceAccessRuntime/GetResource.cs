@@ -41,6 +41,12 @@ namespace ResourceAccessRuntime
             public DiskInformation DiskInfo;
             [JsonProperty("network")]
             public NetworkInformation NetworkInfo;
+            public ResourceInformation()
+            {
+                MemoryInfo = new MemoryInformation();
+                DiskInfo = new DiskInformation();
+                NetworkInfo = new NetworkInformation();
+            }
         }
         private static Processor processor;
         private static DiskFreeSpace diskFree;
@@ -57,9 +63,11 @@ namespace ResourceAccessRuntime
             try
             {
                 resource = new ResourceInformation();
+                resource = new ResourceInformation();
                 ManagementClass mc = new ManagementClass("Win32_OperatingSystem");
                 ManagementObjectCollection moc = mc.GetInstances();
                 foreach (ManagementObject mo in moc) { resource.MemoryInfo.MaxMemorySize = (int.Parse(mo["TotalVisibleMemorySize"].ToString()) / 1024).ToString(); }
+                processor = new Processor();
                 diskFree = new DiskFreeSpace(MonitorDrive);
                 diskRead = new DiskRead(MonitorDrive);
                 diskWrite = new DiskWrite(MonitorDrive);
@@ -77,6 +85,7 @@ namespace ResourceAccessRuntime
         [DllExport]
         public static string GetAllResource()
         {
+            resource.ProcessorUsage = processor.Get();
             resource.DiskInfo.Read = diskRead.Get();
             resource.DiskInfo.Write = diskWrite.Get();
             resource.DiskInfo.Usage = diskFree.Get();
