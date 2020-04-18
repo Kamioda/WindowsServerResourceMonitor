@@ -21,4 +21,5 @@ picojson::object Processor::Get() const {
 	JsonObject obj{};
 	obj.insert("usage", this->GetUsage());
 	obj.insert("process", this->GetProcessNum());
+	return obj;
 }
