@@ -231,6 +231,10 @@ private:
 public:
 	Network(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller")
 		: netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
+	void Update() const {
+		this->netReceive.Update();
+		this->netSend.Update();
+	}
 	picojson::object Get() const {
 		jsonobject obj{};
 		obj.insert("receive", this->netReceive.Get());
