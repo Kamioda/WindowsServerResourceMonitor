@@ -2,6 +2,8 @@
 #include "ServiceStatus.h"
 #include "Split.hpp"
 #include "JsonObject.hpp"
+using Req = const httplib::Request&;
+using Res = httplib::Response&;
 
 ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
 	return new ResourceAccessServer(args);
@@ -18,94 +20,82 @@ inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const I
 			
 		}
 	}
+	return RetVal;
 }
 
+inline std::string ToJsonText(const picojson::object& obj) { return picojson::value(obj).to_str(); }
+
+inline void reqproc(Res res, const std::function<void()>& process) {
+	try { process(); }
+	catch (...) { res.status = 500; }
+};
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
-	: ServiceProcess(args), server() {
+	: ServiceProcess(args), 
+	ini(BaseClass::ChangeFullPath(".\\server.ini")), 
+	processor(), 
+	memory(), 
+	disk(GetDiskResourceInformations(this->ini)), 
+	network(GetConfStr("system", "netdevice", "Realtek PCIe GBE Family Controller")), 
+	server() {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
 	SetServiceStatusInfo();
+	this->server.Get(GetConfStr("url", "all", "/v1/"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "memory", "/v1/mem"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]"),
+		[&](Req req, Res res) {
+			reqproc(res,
+				[&] {
+					if (const std::string drive = req.matches[1].str() + ":"; this->disk.find(drive) == this->disk.end()) res.status = 404;
+					else res.set_content(ToJsonText(this->disk.at(drive).Get()), "text/json");
+				}
+			);
+		}
+	);
+	this->server.Get(GetConfStr("url", "network", "/v1/network"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(network.Get()), "text/json"); }); });
+}
+
+const char* ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default).c_str(); };
+
+int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->ini.GetNum(Section, Key, Default); };
+
+picojson::object ResourceAccessServer::AllResourceToObject() const {
+	JsonObject obj{};
+	JsonObject diskinfo{};
+	obj.insert("cpu", this->processor.Get());
+	obj.insert("memory", this->memory.Get());
+	for (const auto& i : this->disk) diskinfo.insert(i.first.substr(0, 1), i.second.Get());
+	obj.insert("disk", diskinfo);
+	obj.insert("network", this->network.Get());
+	return obj;
+}
+
+void ResourceAccessServer::UpdateResources() {
+	this->processor.Update();
+	this->memory.Update();
+	for (const auto& i : this->disk) i.second.Update();
+	this->network.Update();
 }
 
 void ResourceAccessServer::Service_MainProcess() {
-	// using
-
-	using Req = const httplib::Request&;
-	using Res = httplib::Response&;
-
-	// 変数とラムダ
-
-	IniRead ini(BaseClass::ChangeFullPath(".\\server.ini"));
-	auto GetConfStr = [&ini](const std::string& Section, const std::string& Key, const std::string& Default) { return ini.GetString(Section, Key, Default).c_str(); };
-	auto GetConfInt = [&ini](const std::string& Section, const std::string& Key, const int& Default) { return ini.GetNum(Section, Key, Default); };
-	Processor processor{};
-	Memory memory{};
-	std::unordered_map<std::string, Disk> disk = GetDiskResourceInformations(ini);
-	Network network(GetConfStr("system", "netdevice", "Realtek PCIe GBE Family Controller"));
-	auto reqproc = [](Res res, const std::function<void()>& process) {
-		try { process(); }
-		catch (...) { res.status = 500; }
-	};
 	auto ChangeSvcStatus = [](const DWORD NewStatus) {
 		SvcStatus.dwCurrentState = NewStatus;
 		SetServiceStatusInfo();
 	};
-	auto alljsonobj = [&]() {
-		JsonObject obj{};
-		JsonObject diskinfo{};
-		obj.insert("cpu", processor.Get());
-		obj.insert("memory", memory.Get());
-		for (const auto& i : disk) diskinfo.insert(i.first.substr(0, 1), i.second.Get());
-		obj.insert("disk", diskinfo);
-		obj.insert("network", network.Get());
-		return obj;
-	};
-	auto json = [](const picojson::object& obj) { return picojson::value(obj).to_str(); };
-
-	// メインプロセス
 	while (SvcStatus.dwCurrentState != SERVICE_STOP_PENDING) {
 		if (SvcStatus.dwCurrentState == SERVICE_PAUSED)	Sleep(1000);
 		else {
-			this->server.Get(GetConfStr("url", "all", "/v1/"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(json(alljsonobj()), "text/json"); }); });
-			this->server.Get(GetConfStr("url", "cpu", "/v1/cpu"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(json(processor.Get()), "text/json"); }); });
-			this->server.Get(GetConfStr("url", "memory", "/v1/mem"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(json(memory.Get()), "text/json"); }); });
-			this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]"),
-				[&](Req req, Res res) {
-					reqproc(res, 
-						[&] {
-							if (const std::string drive = req.matches[1].str() + ":"; disk.find(drive) == disk.end()) res.status = 404;
-							else res.set_content(json(disk.at(drive).Get()), "text/json");
-						}
-					);
-				}
-			);
-			this->server.Get(GetConfStr("url", "network", "/v1/network"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(json(network.Get()), "text/json"); }); });
 			this->server.listen(GetConfStr("url", "domain", "localhost"), GetConfInt("url", "port", 8080), 0,
 				[&]{
-					switch (SvcStatus.dwCurrentState) {
-						case SERVICE_START_PENDING:
-						case SERVICE_CONTINUE_PENDING:
-							processor.Update();
-							memory.Update();
-							for (const auto& i : disk) i.second.Update();
-							network.Update();
-							ChangeSvcStatus(SERVICE_RUNNING);
-							break;
-						case SERVICE_RUNNING:
-							processor.Update();
-							memory.Update();
-							for (const auto& i : disk) i.second.Update();
-							network.Update();
-							break;
-						case SERVICE_STOP_PENDING:
-						case SERVICE_PAUSE_PENDING:
-							this->server.stop();
-							break;
+					if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING || SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) this->server.stop();
+					else {
+						this->UpdateResources();
+						if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
 					}
 				}
 			);	
 			if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
 		}
 	}
-	SvcStatus.dwCurrentState = SERVICE_STOPPED;
-	SetServiceStatusInfo();
+	ChangeSvcStatus(SERVICE_STOPPED); // 停止はサーバーが完全に停止してから停止扱いにするためここで変更
 }
