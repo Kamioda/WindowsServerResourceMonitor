@@ -119,8 +119,8 @@ public:
 	void insert(const std::string& key, const double& value) {
 		this->obj.insert(std::make_pair(key, value));
 	}
-	void insert(const std::string& key, const picojson::object& obj) {
-		this->obj.insert(std::make_pair(key, obj));
+	void insert(const std::string& key, const picojson::object& InsertObject) {
+		this->obj.insert(std::make_pair(key, InsertObject));
 	}
 	operator const picojson::object& () const noexcept { return this->obj; }
 };
