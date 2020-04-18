@@ -215,6 +215,7 @@
     <ClCompile Include="JsonObject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Network.cpp" />
     <ClCompile Include="PDHCounter.cpp" />
     <ClCompile Include="Processor.cpp" />
     <ClCompile Include="ResourceAccessServer.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Install.h" />
     <ClInclude Include="JsonObject.hpp" />
     <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="Network.hpp" />
     <ClInclude Include="PDHAssistFunctions.hpp" />
     <ClInclude Include="PDHCounter.hpp" />
     <ClInclude Include="Processor.hpp" />
