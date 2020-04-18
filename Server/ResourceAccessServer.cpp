@@ -26,59 +26,6 @@ namespace impl {
 	};
 }
 
-class MemoryManager {
-private:
-	PDHCounter counter;
-	MEMORYSTATUSEX ms;
-	long long GetPhysicalTotal() const { return this->ms.ullTotalPhys; }
-	long long GetPhysicalAvail() const { return this->ms.ullAvailPhys; }
-	long long GetPhysicalUsed() const { return this->GetPhysicalTotal() - this->GetPhysicalAvail(); }
-
-	long long GetCommitTotal() const { return this->ms.ullTotalPageFile; }
-	long long GetCommitAvail() const { return this->ms.ullAvailPageFile; }
-	long long GetCommitUsed() const { return this->GetCommitTotal() - this->GetCommitAvail(); }
-
-	static constexpr long long GetDiviveNum(const long long v) { return v == 0 ? 1 : v; }
-public:
-	MemoryManager() : ms({ sizeof(MEMORYSTATUSEX) }), counter(PDHCounter("Memory", "Committed Bytes")) {}
-	void Update() {
-		GlobalMemoryStatusEx(&this->ms);
-		this->counter.Update();
-	}
-private:
-	double GetPhysicalMaxMemSize() const { return digit(ByteToMegaByte(this->GetPhysicalTotal())); }
-	double GetPhysicalAvailable() const { return digit(ByteToMegaByte(this->GetPhysicalAvail())); }
-	double GetPhysicalUsage() const { return digit(ByteToMegaByte(this->GetPhysicalUsed())); }
-	double GetPhysicalUsagePer() const { return digit(ToPercent(this->GetPhysicalUsed(), GetDiviveNum(this->GetPhysicalTotal()))); }
-	double GetCommitMaxMemSize() const { return digit(ByteToMegaByte(this->GetCommitTotal())); }
-	double GetCommitAvailable() const { return digit(ByteToMegaByte(this->GetCommitAvail())); }
-	double GetCommitUsage() const { return digit(ByteToMegaByte(this->GetCommitUsed())); }
-	double GetCommitUsagePer() const { return digit(ToPercent(this->GetCommitUsed(), GetDiviveNum(this->GetCommitTotal()))); }
-	picojson::object GetPhysical() const {
-		JsonObject physical{};
-		physical.insert("total", this->GetPhysicalMaxMemSize());
-		physical.insert("available", this->GetPhysicalAvailable());
-		physical.insert("used", this->GetPhysicalUsage());
-		physical.insert("usedper", this->GetPhysicalUsagePer());
-		return physical;
-	}
-	picojson::object GetCommit() const {
-		JsonObject commit{};
-		commit.insert("total", this->GetCommitMaxMemSize());
-		commit.insert("available", this->GetCommitAvailable());
-		commit.insert("used", this->GetCommitUsage());
-		commit.insert("usedper", this->GetCommitUsagePer());
-		return commit;
-	}
-public:
-	picojson::object Get() const {
-		JsonObject obj{};
-		obj.insert("physical", this->GetPhysical());
-		obj.insert("commit", this->GetCommit());
-		return obj;
-	}
-};
-
 class Network {
 private:
 	impl::NetworkReceive netReceive;
