@@ -190,35 +190,9 @@ public:
 	double GetCommitAvailable() const { return digit(ByteToMegaByte(this->GetCommitAvail())); }
 	double GetCommitUsage() const { return digit(ByteToMegaByte(this->GetCommitUsed())); }
 	double GetCommitUsagePer() const { return digit(ToPercent(this->GetCommitUsed(), GetDiviveNum(this->GetCommitTotal()))); }
+public:
 };
 
-class DiskFreeSpace : public PDHCounter {
 public:
-	DiskFreeSpace(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "% Free Space", TargetDrive) {}
-	double Get() const { return PDHCounter::GetDoubleValue(); }
-};
-
-class DiskRead : public PDHCounter {
-public:
-	DiskRead(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "Disk Reads/sec", TargetDrive) {}
-	double Get() const { return PDHCounter::GetDoubleValue(); }
-};
-
-class DiskWrite : public PDHCounter {
-public:
-	DiskWrite(const std::string& TargetDrive = "C:") : PDHCounter("LogicalDisk", "Disk Writes/sec", TargetDrive) {}
-	double Get() const { return PDHCounter::GetDoubleValue(); }
-};
-
-class NetworkReceive : public PDHCounter {
-public:
-	NetworkReceive(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
-	double Get() const { return PDHCounter::GetDoubleValue(); }
-};
-
-class NetworkSend : public PDHCounter {
-public:
-	NetworkSend(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller") : PDHCounter("Network Adapter", "Bytes Sent/sec", NetworkDeviceName) {}
-	double Get() const { return PDHCounter::GetDoubleValue(); }
 };
 
