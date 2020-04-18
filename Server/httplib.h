@@ -1492,8 +1492,8 @@ inline bool bind_ip_address(socket_t sock, const char *host) {
   return ret;
 }
 
-inline std::string if2ip(const std::string &ifn) {
 #ifndef _WIN32
+inline std::string if2ip(const std::string &ifn) {
   struct ifaddrs *ifap;
   getifaddrs(&ifap);
   for (auto ifa = ifap; ifa; ifa = ifa->ifa_next) {
@@ -1509,6 +1509,8 @@ inline std::string if2ip(const std::string &ifn) {
     }
   }
   freeifaddrs(ifap);
+#else
+inline std::string if2ip(const std::string&) {
 #endif
   return std::string();
 }
