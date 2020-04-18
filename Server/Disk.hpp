@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "PDHCounter.hpp"
+#include <picojson.h>
 
 namespace impl {
 	class DiskUsage : public PDHCounter {
