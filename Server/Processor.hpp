@@ -7,7 +7,7 @@ private:
 	typedef int (*GetProcessNumFunc)();
 	DWORD ProcessNum;
 public:
-	Processor() : PDHCounter("Processor", "% Processor Time", "_Total"), ProcessNum() {}
+	Processor();
 private:
 	double GetUsage() const;
 	int GetProcessNum() const;

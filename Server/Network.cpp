@@ -10,7 +10,7 @@ namespace impl {
 	double NetworkSend::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 }
 
-Network::Network(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller")
+Network::Network(const std::string& NetworkDeviceName)
 	: netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
 
 void Network::Update() const {
