@@ -263,3 +263,18 @@ public:
 	}
 };
 
+class Network {
+private:
+	impl::NetworkReceive netReceive;
+	impl::NetworkSend netSend;
+public:
+	Network(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller")
+		: netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
+	picojson::object Get() const {
+		jsonobject obj{};
+		obj.insert("receive", this->netReceive.Get());
+		obj.insert("send", this->netSend.Get());
+		return obj;
+	}
+};
+
