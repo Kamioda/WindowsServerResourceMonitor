@@ -205,6 +205,7 @@ public:
 		GlobalMemoryStatusEx(&this->ms);
 		this->counter.Update();
 	}
+private:
 	double GetPhysicalMaxMemSize() const { return digit(ByteToMegaByte(this->GetPhysicalTotal())); }
 	double GetPhysicalAvailable() const { return digit(ByteToMegaByte(this->GetPhysicalAvail())); }
 	double GetPhysicalUsage() const { return digit(ByteToMegaByte(this->GetPhysicalUsed())); }
@@ -213,7 +214,29 @@ public:
 	double GetCommitAvailable() const { return digit(ByteToMegaByte(this->GetCommitAvail())); }
 	double GetCommitUsage() const { return digit(ByteToMegaByte(this->GetCommitUsed())); }
 	double GetCommitUsagePer() const { return digit(ToPercent(this->GetCommitUsed(), GetDiviveNum(this->GetCommitTotal()))); }
+	picojson::object GetPhysical() const {
+		jsonobject physical{};
+		physical.insert("total", this->GetPhysicalMaxMemSize());
+		physical.insert("available", this->GetPhysicalAvailable());
+		physical.insert("used", this->GetPhysicalUsage());
+		physical.insert("usedper", this->GetPhysicalUsagePer());
+		return physical;
+	}
+	picojson::object GetCommit() const {
+		jsonobject commit{};
+		commit.insert("total", this->GetCommitMaxMemSize());
+		commit.insert("available", this->GetCommitAvailable());
+		commit.insert("used", this->GetCommitUsage());
+		commit.insert("usedper", this->GetCommitUsagePer());
+		return commit;
+	}
 public:
+	picojson::object Get() const {
+		jsonobject obj{};
+		obj.insert("physical", this->GetPhysical());
+		obj.insert("commit", this->GetCommit());
+		return obj;
+	}
 };
 
 public:
