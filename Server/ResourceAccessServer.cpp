@@ -276,7 +276,7 @@ void ResourceAccessServer::Service_MainProcess() {
 
 		}
 	);
-	server.listen(ini.GetString("url", "domain", "localhost").c_str(), ini.GetNum("url", "port", 8080), 0,
+	this->server.listen(ini.GetString("url", "domain", "localhost").c_str(), ini.GetNum("url", "port", 8080), 0,
 		[&]() {
 
 		}
