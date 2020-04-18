@@ -239,6 +239,25 @@ public:
 	}
 };
 
+class Disk {
+private:
+	impl::DiskUsage diskUse;
+	impl::DiskRead diskRead;
+	impl::DiskWrite diskWrite;
 public:
+	Disk(const std::string& TargetDrive = "C:") 
+		: diskUse(TargetDrive), diskRead(TargetDrive), diskWrite(TargetDrive) {}
+	void Update() const {
+		this->diskUse.Update();
+		this->diskRead.Update();
+		this->diskWrite.Update();
+	}
+	picojson::object Get() {
+		jsonobject obj{};
+		obj.insert("used", this->diskUse.Get());
+		obj.insert("read", this->diskRead.Get());
+		obj.insert("write", this->diskWrite.Get());
+		return obj;
+	}
 };
 
