@@ -289,7 +289,10 @@ void ResourceAccessServer::Service_MainProcess() {
 	);
 	this->server.listen(ini.GetString("url", "domain", "localhost").c_str(), ini.GetNum("url", "port", 8080), 0,
 		[&]() {
-
+			processor.Update();
+			memory.Update();
+			disk.Update();
+			network.Update();
 		}
 	);
 }
