@@ -12,22 +12,6 @@ ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::Comm
 	return new ResourceAccessServer(args);
 }
 
-class IniRead {
-private:
-	std::string IniFilePath;
-public:
-	IniRead() = default;
-	IniRead(const std::string& IniFilePath) : IniFilePath(IniFilePath) {}
-	int GetNum(const std::string& Section, const std::string& Key, const int DefaultValue) const {
-		return GetPrivateProfileIntA(Section.c_str(), Key.c_str(), DefaultValue, this->IniFilePath.c_str());
-	}
-	std::string GetString(const std::string& Section, const std::string& Key, const std::string& Default) const {
-		char Buffer[ArrayBufferSize];
-		GetPrivateProfileStringA(Section.c_str(), Key.c_str(), Default.c_str(), Buffer, ArrayBufferSize, this->IniFilePath.c_str());
-		return std::string(Buffer);
-	}
-};
-
 constexpr double ByteToKiloByte(const long long& ByteVal) { return static_cast<double>(ByteVal) / 1024.0; }
 constexpr double ByteToMegaByte(const long long& ByteVal) { return ByteToKiloByte(ByteVal) / 1024.0; }
 constexpr double ByteToGigaByte(const long long& ByteVal) { return ByteToMegaByte(ByteVal) / 1024.0; }
