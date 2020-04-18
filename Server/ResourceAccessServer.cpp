@@ -8,6 +8,10 @@
 constexpr size_t ArrayBufferSize = 1024;
 #pragma comment(lib, "pdh.lib")
 
+ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
+	return new ResourceAccessServer(args);
+}
+
 class IniRead {
 private:
 	std::string IniFilePath;
@@ -23,49 +27,6 @@ public:
 		return std::string(Buffer);
 	}
 };
-
-ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
-	: ServiceProcess(args), server() {}
-
-void ResourceAccessServer::Service_MainProcess() {
-	IniRead ini(BaseClass::ChangeFullPath(".\\server.ini"));
-	std::string ResourceInformation{};
-	this->server.Get(ini.GetString("url", "all", "/v1/").c_str(),
-		[&](const httplib::Request& req, httplib::Response& res) {
-
-		}
-	);
-	this->server.Get(ini.GetString("url", "cpu", "/v1/cpu").c_str(),
-		[&](const httplib::Request& req, httplib::Response& res) {
-
-		}
-	);
-	this->server.Get(ini.GetString("url", "memory", "/v1/mem").c_str(),
-		[&](const httplib::Request& req, httplib::Response& res) {
-
-		}
-	);
-	this->server.Get(ini.GetString("url", "storage", "/v1/disk/[A-Z]").c_str(),
-		[&](const httplib::Request& req, httplib::Response& res) {
-			const std::string drive = req.matches[1].str() + ":";
-
-		}
-	);
-	this->server.Get(ini.GetString("url", "network", "/v1/network").c_str(),
-		[&](const httplib::Request& req, httplib::Response& res) {
-
-		}
-	);
-	server.listen(ini.GetString("url", "domain", "localhost").c_str(), ini.GetNum("url", "port", 8080), 0, 
-		[&]() {
-			
-		}
-	);
-}
-
-ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
-	return new ResourceAccessServer(args);
-}
 
 constexpr double ByteToKiloByte(const long long& ByteVal) { return static_cast<double>(ByteVal) / 1024.0; }
 constexpr double ByteToMegaByte(const long long& ByteVal) { return ByteToKiloByte(ByteVal) / 1024.0; }
@@ -278,3 +239,46 @@ public:
 	}
 };
 
+ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
+	: ServiceProcess(args), server() {}
+
+void ResourceAccessServer::Service_MainProcess() {
+	IniRead ini(BaseClass::ChangeFullPath(".\\server.ini"));
+	Processor processor{};
+	MemoryManager memory{};
+	Disk disk(ini.GetString("resource", "drive", "C:"));
+	Network network(ini.GetString("resource", "network", "Realtek PCIe GBE Family Controller"));
+
+	std::string ResourceInformation{};
+	this->server.Get(ini.GetString("url", "all", "/v1/").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "cpu", "/v1/cpu").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "memory", "/v1/mem").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "storage", "/v1/disk/[A-Z]").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+			const std::string drive = req.matches[1].str() + ":";
+
+		}
+	);
+	this->server.Get(ini.GetString("url", "network", "/v1/network").c_str(),
+		[&](const httplib::Request& req, httplib::Response& res) {
+
+		}
+	);
+	server.listen(ini.GetString("url", "domain", "localhost").c_str(), ini.GetNum("url", "port", 8080), 0,
+		[&]() {
+
+		}
+	);
+}
