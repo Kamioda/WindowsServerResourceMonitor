@@ -261,8 +261,6 @@ void ResourceAccessServer::Service_MainProcess() {
 	MemoryManager memory{};
 	Disk disk(ini.GetString("resource", "drive", "C:"));
 	Network network(ini.GetString("resource", "network", "Realtek PCIe GBE Family Controller"));
-
-	std::string ResourceInformation{};
 	this->server.Get(ini.GetString("url", "all", "/v1/").c_str(),
 		[&](const httplib::Request& req, httplib::Response& res) {
 
