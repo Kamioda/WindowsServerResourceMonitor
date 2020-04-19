@@ -100,7 +100,7 @@ void ServiceControl::Uninstall() {
 
 void ServiceControl::Run(DWORD dwArgc, LPCTSTR lpszArgv[]) {
 	this->Open();
-	if (StartService(this->Service, dwArgc, lpszArgv)) {
+	if (FALSE == StartService(this->Service, dwArgc, lpszArgv)) {
 		throw std::runtime_error(
 			"Failed In StartService Function\n"
 			+ GetErrorMessageA()
@@ -124,6 +124,7 @@ void ServiceControl::Continue() {
 }
 
 DWORD ServiceControl::Show() {
+	this->Open();
 	SERVICE_STATUS SvcStatusInShow{};
 	if (FALSE == QueryServiceStatus(this->Service, &SvcStatusInShow)) {
 		throw std::runtime_error(
