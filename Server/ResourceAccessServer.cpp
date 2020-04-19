@@ -23,7 +23,11 @@ inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const I
 	return RetVal;
 }
 
-inline std::string ToJsonText(const picojson::object& obj) { return picojson::value(obj).to_str(); }
+inline std::string ToJsonText(const picojson::object& obj) { 
+	std::stringstream ss{};
+	ss << picojson::value(obj);
+	return ss.str();
+}
 
 inline void reqproc(Res res, const std::function<void()>& process) {
 	try { process(); }
