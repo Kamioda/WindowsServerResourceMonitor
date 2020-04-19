@@ -50,7 +50,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		[&](Req req, Res res) {
 			reqproc(res,
 				[&] {
-					if (const std::string drive = req.matches[1].str() + ":"; this->disk.find(drive) == this->disk.end()) res.status = 404;
+					if (const std::string matchstr = (req.matches[0].str() + ":"), drive = matchstr.substr(matchstr.size() - 2); this->disk.find(drive) == this->disk.end()) res.status = 404;
 					else res.set_content(ToJsonText(this->disk.at(drive).Get()), "text/json");
 				}
 			);
