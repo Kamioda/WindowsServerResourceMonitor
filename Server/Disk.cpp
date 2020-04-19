@@ -17,7 +17,7 @@ namespace impl {
 }
 
 Disk::Disk(const std::string& TargetDrive)
-	: diskUse(TargetDrive), diskRead(TargetDrive), diskWrite(TargetDrive) {}
+	: Drive(TargetDrive), diskUse(TargetDrive), diskRead(TargetDrive), diskWrite(TargetDrive) {}
 
 void Disk::Update() const {
 	this->diskUse.Update();
@@ -27,6 +27,7 @@ void Disk::Update() const {
 
 picojson::object Disk::Get() const {
 	JsonObject obj{};
+	obj.insert("drive", this->Drive);
 	obj.insert("used", this->diskUse.Get());
 	obj.insert("read", this->diskRead.Get());
 	obj.insert("write", this->diskWrite.Get());

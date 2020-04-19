@@ -24,6 +24,7 @@ namespace impl {
 
 class Disk {
 private:
+	std::string Drive;
 	impl::DiskUsage diskUse;
 	impl::DiskRead diskRead;
 	impl::DiskWrite diskWrite;
