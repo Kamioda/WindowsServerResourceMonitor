@@ -208,6 +208,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineManager.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="ConsoleMainProcess.cpp" />
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="IniRead.cpp" />
@@ -223,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleMainProcess.h" />
     <ClInclude Include="Disk.hpp" />
     <ClInclude Include="GetErrorMessage.h" />
