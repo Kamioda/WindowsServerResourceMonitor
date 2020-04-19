@@ -11,7 +11,7 @@ ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::Comm
 
 inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
 	std::unordered_map<std::string, Disk> RetVal{};
-	const std::vector<std::string> DriveList = SplitString(ini.GetString("resource", "drives", "C:"), ',');
+	const std::vector<std::string> DriveList = SplitString(ini.GetString("system", "drives", "C:"), ',');
 	for (const auto& i : DriveList) {
 		try {
 			RetVal.emplace(std::make_pair(i, Disk(i)));
