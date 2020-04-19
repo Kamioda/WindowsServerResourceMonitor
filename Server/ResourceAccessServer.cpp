@@ -2,6 +2,7 @@
 #include "ServiceStatus.h"
 #include "Split.hpp"
 #include "JsonObject.hpp"
+#include "JsonArray.hpp"
 using Req = const httplib::Request&;
 using Res = httplib::Response&;
 
@@ -61,6 +62,16 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "memory", "/v1/mem").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "allstorage", "/v1/disk").c_str(),
+		[&](Req, Res res) {
+			reqproc(res, 
+				[&] {
+
+				}
+			);
+		}
+	);
+	this->server.Get(GetConfStr("url", "allstorage", "/v1/disk/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllDiskResourceToObject()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]").c_str(),
 		[&](Req req, Res res) {
 			reqproc(res,
@@ -71,7 +82,8 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(GetConfStr("url", "network", "/v1/network/eth[0-9]{1,}").c_str(), [&](Req req, Res res) { 
+	this->server.Get(GetConfStr("url", "allnetwork", "/v1/network/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllNetworkResourceToObject()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "network", "/v1/network/eth[0-9]{1,}").c_str(), [&](Req req, Res res) {
 		reqproc(res, 
 			[&] { 
 				const std::string matchstr = (req.matches[0].str());
