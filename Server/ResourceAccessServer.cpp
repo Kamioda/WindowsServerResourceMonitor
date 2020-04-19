@@ -39,10 +39,10 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	server() {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
 	SetServiceStatusInfo();
-	this->server.Get(GetConfStr("url", "all", "/v1/"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
-	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "text/json"); }); });
-	this->server.Get(GetConfStr("url", "memory", "/v1/mem"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "text/json"); }); });
-	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]"),
+	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "memory", "/v1/mem").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]").c_str(),
 		[&](Req req, Res res) {
 			reqproc(res,
 				[&] {
@@ -52,10 +52,12 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(GetConfStr("url", "network", "/v1/network"), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(network.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "network", "/v1/network").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(network.Get()), "text/json"); }); });
+	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; });
+	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; });
 }
 
-const char* ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default).c_str(); };
+std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default); };
 
 int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->ini.GetNum(Section, Key, Default); };
 
@@ -85,7 +87,7 @@ void ResourceAccessServer::Service_MainProcess() {
 	while (SvcStatus.dwCurrentState != SERVICE_STOP_PENDING) {
 		if (SvcStatus.dwCurrentState == SERVICE_PAUSED)	Sleep(1000);
 		else {
-			this->server.listen(GetConfStr("url", "domain", "localhost"), GetConfInt("url", "port", 8080), 0,
+			this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
 				[&]{
 					if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING || SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) this->server.stop();
 					else {

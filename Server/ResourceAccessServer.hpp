@@ -17,7 +17,7 @@ private:
 	Network network;
 	httplib::Server server;
 	using BaseClass = ServiceProcess;
-	const char* GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const;
+	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const;
 	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const;
 	picojson::object AllResourceToObject() const;
 	void UpdateResources();
