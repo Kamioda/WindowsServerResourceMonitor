@@ -20,6 +20,8 @@ private:
 	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const;
 	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const;
 	picojson::object AllResourceToObject() const;
+	picojson::object AllDiskResourceToObject() const;
+	picojson::object AllNetworkResourceToObject() const;
 	void UpdateResources();
 public:
 	ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args);
