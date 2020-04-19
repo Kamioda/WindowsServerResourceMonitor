@@ -159,7 +159,7 @@ void ResourceAccessServer::Service_MainProcess() {
 			this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
 				[&] {
 					const std::chrono::milliseconds CountEnd = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-					if (const DWORD elapsed = static_cast<DWORD>((CountEnd - CountStart).count()); elapsed < this->looptime)Sleep(this->looptime - elapsed);
+					if (const DWORD elapsed = static_cast<DWORD>((CountEnd - CountStart).count()); elapsed < this->looptime) Sleep(this->looptime - elapsed);
 					if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) this->server.stop();
 					else if (SvcStatus.dwCurrentState != SERVICE_PAUSED) {
 						this->UpdateResources();
