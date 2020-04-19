@@ -118,9 +118,12 @@ picojson::object ResourceAccessServer::AllDiskResourceToObject() const {
 
 picojson::object ResourceAccessServer::AllNetworkResourceToObject() const {
 	JsonObject obj{};
-	JsonArray netinfo{};
-	for (const auto& i : this->network) netinfo.insert(i.Get());
-	obj.insert("network", netinfo);
+	if (this->network.size() == 1) obj.insert("network", this->network.front().Get());
+	else {
+		JsonArray netinfo{};
+		for (const auto& i : this->network) netinfo.insert(i.Get());
+		obj.insert("network", netinfo);
+	}
 	return obj;
 }
 
