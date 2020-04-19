@@ -107,9 +107,12 @@ picojson::object ResourceAccessServer::AllResourceToObject() const {
 
 picojson::object ResourceAccessServer::AllDiskResourceToObject() const {
 	JsonObject obj{};
-	JsonArray diskinfo{};
-	for (const auto& i : this->disk) diskinfo.insert(i.second.Get());
-	obj.insert("disk", diskinfo);
+	if (this->disk.size() == 1) obj.insert("disk", (*this->disk.begin()).second.Get());
+	else {
+		JsonArray diskinfo{};
+		for (const auto& i : this->disk) diskinfo.insert(i.second.Get());
+		obj.insert("disk", diskinfo);
+	}
 	return obj;
 }
 
