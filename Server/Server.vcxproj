@@ -221,6 +221,7 @@
     <ClCompile Include="Processor.cpp" />
     <ClCompile Include="ResourceAccessServer.cpp" />
     <ClCompile Include="ServiceControl.cpp" />
+    <ClCompile Include="ServiceController.cpp" />
     <ClCompile Include="ServiceMainProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +241,7 @@
     <ClInclude Include="Processor.hpp" />
     <ClInclude Include="ResourceAccessServer.hpp" />
     <ClInclude Include="ServiceControl.h" />
+    <ClInclude Include="ServiceController.h" />
     <ClInclude Include="ServiceInformation.h" />
     <ClInclude Include="ServiceMainProcess.h" />
     <ClInclude Include="ServiceStatus.h" />
