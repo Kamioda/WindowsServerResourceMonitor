@@ -3412,6 +3412,7 @@ inline bool Server::listen_internal(const std::function<void()>& MainProcess) {
     std::unique_ptr<TaskQueue> task_queue(new_task_queue());
 
     for (;;) {
+      MainProcess();
       if (svr_sock_ == INVALID_SOCKET) {
         // The server socket was closed by 'stop' method.
         break;
@@ -3446,7 +3447,6 @@ inline bool Server::listen_internal(const std::function<void()>& MainProcess) {
 #else
       task_queue->enqueue([=]() { process_and_close_socket(sock); });
 #endif
-      MainProcess();
     }
 
     task_queue->shutdown();
