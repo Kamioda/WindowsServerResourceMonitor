@@ -12,5 +12,5 @@ namespace ServiceInfo {
 	// LocalService   : NT AUTHORITY\\LocalService
 	// NetworkService : NT AUTHORITY\\NetworkService
 	constexpr const TCHAR* ExecutionUser = TEXT("NT AUTHORITY\\LocalService");
-	constexpr bool RequireAdministrator = false;
+	constexpr bool RequireAdministrator = true;
 }
