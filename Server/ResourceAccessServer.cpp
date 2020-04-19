@@ -62,15 +62,6 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "memory", "/v1/mem").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "text/json"); }); });
-	this->server.Get(GetConfStr("url", "allstorage", "/v1/disk").c_str(),
-		[&](Req, Res res) {
-			reqproc(res, 
-				[&] {
-
-				}
-			);
-		}
-	);
 	this->server.Get(GetConfStr("url", "allstorage", "/v1/disk/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllDiskResourceToObject()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]").c_str(),
 		[&](Req req, Res res) {
