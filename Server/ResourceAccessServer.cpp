@@ -91,13 +91,29 @@ int ResourceAccessServer::GetConfInt(const std::string& Section, const std::stri
 
 picojson::object ResourceAccessServer::AllResourceToObject() const {
 	JsonObject obj{};
-	JsonObject diskinfo{};
-	JsonObject netinfo{};
+	JsonArray diskinfo{};
+	JsonArray netinfo{};
 	obj.insert("cpu", this->processor.Get());
 	obj.insert("memory", this->memory.Get());
-	for (const auto& i : this->disk) diskinfo.insert(i.first.substr(0, 1), i.second.Get());
+	for (const auto& i : this->disk) diskinfo.insert(i.second.Get());
 	obj.insert("disk", diskinfo);
-	for (const auto& i : this->network) netinfo.insert("network", i.Get());
+	for (const auto& i : this->network) netinfo.insert(i.Get());
+	obj.insert("network", netinfo);
+	return obj;
+}
+
+picojson::object ResourceAccessServer::AllDiskResourceToObject() const {
+	JsonObject obj{};
+	JsonArray diskinfo{};
+	for (const auto& i : this->disk) diskinfo.insert(i.second.Get());
+	obj.insert("disk", diskinfo);
+	return obj;
+}
+
+picojson::object ResourceAccessServer::AllNetworkResourceToObject() const {
+	JsonObject obj{};
+	JsonArray netinfo{};
+	for (const auto& i : this->network) netinfo.insert(i.Get());
 	obj.insert("network", netinfo);
 	return obj;
 }
