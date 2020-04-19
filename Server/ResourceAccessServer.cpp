@@ -9,6 +9,20 @@ ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::Comm
 	return new ResourceAccessServer(args);
 }
 
+inline std::vector<Network> GetNetworkResourceInformations(const IniRead& ini) {
+	std::vector<Network> RetVal{};
+	const std::vector<std::string> DriveList = SplitString(ini.GetString("system", "netdevice", "Realtek PCIe GBE Family Controller"), ',');
+	for (const auto& i : DriveList) {
+		try {
+			RetVal.emplace_back(i);
+		}
+		catch (std::exception&) { // ないネットワークデバイスの時にエラー起こすのでここでcatch
+
+		}
+	}
+	return RetVal;
+}
+
 inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
 	std::unordered_map<std::string, Disk> RetVal{};
 	const std::vector<std::string> DriveList = SplitString(ini.GetString("system", "drives", "C:"), ',');
@@ -33,13 +47,14 @@ inline void reqproc(Res res, const std::function<void()>& process) {
 	try { process(); }
 	catch (...) { res.status = 500; }
 };
+
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), 
 	ini(BaseClass::ChangeFullPath(".\\server.ini")), 
 	processor(), 
 	memory(), 
 	disk(GetDiskResourceInformations(this->ini)), 
-	network(GetConfStr("system", "netdevice", "Realtek PCIe GBE Family Controller")), 
+	network(GetNetworkResourceInformations(this->ini)), 
 	server() {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
 	SetServiceStatusInfo();
@@ -56,7 +71,16 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(GetConfStr("url", "network", "/v1/network").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(network.Get()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "network", "/v1/network/eth[0-9]{1,}").c_str(), [&](Req req, Res res) { 
+		reqproc(res, 
+			[&] { 
+				const std::string matchstr = (req.matches[0].str());
+				if (const size_t pos = std::stoul(matchstr.substr(matchstr.find_last_of('/') + 4)); pos >= this->network.size()) res.status = 404;
+				else res.set_content(ToJsonText(this->network.at(pos).Get()), "text/json");
+			}
+		);
+		}
+	);
 	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; });
 	this->server.Post(GetConfStr("url", "pause", "/v1/pause").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; });
 }
@@ -68,11 +92,13 @@ int ResourceAccessServer::GetConfInt(const std::string& Section, const std::stri
 picojson::object ResourceAccessServer::AllResourceToObject() const {
 	JsonObject obj{};
 	JsonObject diskinfo{};
+	JsonObject netinfo{};
 	obj.insert("cpu", this->processor.Get());
 	obj.insert("memory", this->memory.Get());
 	for (const auto& i : this->disk) diskinfo.insert(i.first.substr(0, 1), i.second.Get());
 	obj.insert("disk", diskinfo);
-	obj.insert("network", this->network.Get());
+	for (const auto& i : this->network) netinfo.insert("network", i.Get());
+	obj.insert("network", netinfo);
 	return obj;
 }
 
@@ -80,7 +106,7 @@ void ResourceAccessServer::UpdateResources() {
 	this->processor.Update();
 	this->memory.Update();
 	for (const auto& i : this->disk) i.second.Update();
-	this->network.Update();
+	for (const auto& i : this->network) i.Update();
 }
 
 void ResourceAccessServer::Service_MainProcess() {

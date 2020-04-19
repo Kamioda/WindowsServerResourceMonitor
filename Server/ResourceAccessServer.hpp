@@ -14,7 +14,7 @@ private:
 	Processor processor;
 	Memory memory;
 	std::unordered_map<std::string, Disk> disk;
-	Network network;
+	std::vector<Network> network;
 	httplib::Server server;
 	using BaseClass = ServiceProcess;
 	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const;
