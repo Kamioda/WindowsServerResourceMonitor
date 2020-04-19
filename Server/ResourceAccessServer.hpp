@@ -1,6 +1,7 @@
 ﻿#pragma once
-#include "ServiceMainProcess.h"
 #include "httplib.h"
+#include "ServiceMainProcess.h"
+#include "ServiceMonitor.hpp"
 #include "Processor.hpp"
 #include "Memory.hpp"
 #include "Disk.hpp"
@@ -15,6 +16,7 @@ private:
 	Memory memory;
 	std::unordered_map<std::string, Disk> disk;
 	std::vector<Network> network;
+	std::unordered_map<std::string, ServiceMonitor> Services;
 	httplib::Server server;
 	DWORD looptime;
 	using BaseClass = ServiceProcess;

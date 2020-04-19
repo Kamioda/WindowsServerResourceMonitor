@@ -223,6 +223,7 @@
     <ClCompile Include="ServiceControl.cpp" />
     <ClCompile Include="ServiceController.cpp" />
     <ClCompile Include="ServiceMainProcess.cpp" />
+    <ClCompile Include="ServiceMonitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="ServiceController.h" />
     <ClInclude Include="ServiceInformation.h" />
     <ClInclude Include="ServiceMainProcess.h" />
+    <ClInclude Include="ServiceMonitor.hpp" />
     <ClInclude Include="ServiceStatus.h" />
     <ClInclude Include="Split.hpp" />
   </ItemGroup>
