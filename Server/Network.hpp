@@ -18,6 +18,7 @@ namespace impl {
 
 class Network {
 private:
+	std::string DeviceName;
 	impl::NetworkReceive netReceive;
 	impl::NetworkSend netSend;
 public:

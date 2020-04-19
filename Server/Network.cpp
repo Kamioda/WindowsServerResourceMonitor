@@ -11,7 +11,7 @@ namespace impl {
 }
 
 Network::Network(const std::string& NetworkDeviceName)
-	: netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
+	: NetworkDeviceName(NetworkDeviceName), netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
 
 void Network::Update() const {
 	this->netReceive.Update();
@@ -20,6 +20,7 @@ void Network::Update() const {
 
 picojson::object Network::Get() const {
 	JsonObject obj{};
+	obj.insert("device", this->NetworkDeviceName);
 	obj.insert("receive", this->netReceive.Get());
 	obj.insert("send", this->netSend.Get());
 	return obj;
