@@ -54,7 +54,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	);
 	this->server.Get(GetConfStr("url", "network", "/v1/network").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(network.Get()), "text/json"); }); });
 	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; });
-	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; });
+	this->server.Post(GetConfStr("url", "stop", "/v1/pause").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; });
 }
 
 std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default); };
