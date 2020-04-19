@@ -41,8 +41,9 @@ void Console_MainProcess(HINSTANCE hInstance, const Console_CommandLineManager::
 			else if (CommandLines.at(0) == Console_CommandLineManager::AlignCmdLineStrType("continue")) SvcCtrl.Pause();
 			else {
 				const DWORD dwServiceStatus = SvcCtrl.Show();
-				console.WriteLine(GetServiceStatusString(dwServiceStatus));
+				console.WriteLine(GetServiceStatusString(dwServiceStatus), true);
 			}
+			if (CommandLines.at(0) != Console_CommandLineManager::AlignCmdLineStrType("show")) console.WriteLine("Succeed!", true);
 		}
 		else {
 			// ここに他のコマンドライン引数が与えられた時の処理を書く
@@ -50,6 +51,6 @@ void Console_MainProcess(HINSTANCE hInstance, const Console_CommandLineManager::
 		}
 	}
 	catch (const std::exception& er) {
-		console.WriteLine(er.what());
+		console.WriteLine(er.what(), true);
 	}
 }
