@@ -3,6 +3,7 @@
 #include "Split.hpp"
 #include "JsonObject.hpp"
 #include "JsonArray.hpp"
+#include <chrono>
 using Req = const httplib::Request&;
 using Res = httplib::Response&;
 
@@ -62,7 +63,8 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	memory(), 
 	disk(GetDiskResourceInformations(this->ini)), 
 	network(GetNetworkResourceInformations(this->ini)), 
-	server() {
+	server(),
+	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
 	SetServiceStatusInfo();
 	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
@@ -152,16 +154,23 @@ void ResourceAccessServer::Service_MainProcess() {
 		SetServiceStatusInfo();
 	};
 	while (SvcStatus.dwCurrentState != SERVICE_STOP_PENDING) {
-		this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
-			[&]{
-				if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) this->server.stop();
-				else if (SvcStatus.dwCurrentState != SERVICE_PAUSED) {
-					this->UpdateResources();
-					if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
-					else if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
+		std::chrono::milliseconds CountStart{};
+		try {
+			this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
+				[&] {
+					const std::chrono::milliseconds CountEnd = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+					if (const DWORD elapsed = static_cast<DWORD>((CountEnd - CountStart).count()); elapsed < this->looptime)Sleep(this->looptime - elapsed);
+					if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) this->server.stop();
+					else if (SvcStatus.dwCurrentState != SERVICE_PAUSED) {
+						this->UpdateResources();
+						if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
+						else if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
+					}
+					CountStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 				}
-			}
-		);	
+			);
+		}
+		catch(...) {} // listen中に例外が発生した際は再起動させる
 	}
 	ChangeSvcStatus(SERVICE_STOPPED); // 停止はサーバーが完全に停止してから停止扱いにするためここで変更
 }

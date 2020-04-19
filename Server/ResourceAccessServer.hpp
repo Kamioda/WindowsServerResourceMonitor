@@ -16,6 +16,7 @@ private:
 	std::unordered_map<std::string, Disk> disk;
 	std::vector<Network> network;
 	httplib::Server server;
+	DWORD looptime;
 	using BaseClass = ServiceProcess;
 	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const;
 	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const;
