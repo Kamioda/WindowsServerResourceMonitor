@@ -45,8 +45,14 @@ inline std::string ToJsonText(const picojson::object& obj) {
 }
 
 inline void reqproc(Res res, const std::function<void()>& process) {
-	try { process(); }
-	catch (...) { res.status = 500; }
+	if (SvcStatus.dwCurrentState == SERVICE_PAUSED) {
+		res.status = 503;
+		res.set_content("service is paused", "text/plain");
+	}
+	else {
+		try { process(); }
+		catch (...) { res.status = 500; }
+	}
 };
 
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
@@ -84,8 +90,14 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		);
 		}
 	);
-	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; });
-	this->server.Post(GetConfStr("url", "pause", "/v1/pause").c_str(), [](Req, Res) { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; });
+	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; }); });
+	this->server.Post(GetConfStr("url", "pause", "/v1/pause").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; }); });
+	this->server.Post(GetConfStr("url", "continue", "/v1/continue").c_str(), 
+		[](Req, Res res) {
+			if (SvcStatus.dwCurrentState == SERVICE_PAUSED) SvcStatus.dwCurrentState = SERVICE_CONTINUE_PENDING;
+			else res.status = 400;
+		}
+	);
 }
 
 std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default); };
@@ -140,19 +152,16 @@ void ResourceAccessServer::Service_MainProcess() {
 		SetServiceStatusInfo();
 	};
 	while (SvcStatus.dwCurrentState != SERVICE_STOP_PENDING) {
-		if (SvcStatus.dwCurrentState == SERVICE_PAUSED)	Sleep(1000);
-		else {
-			this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
-				[&]{
-					if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING || SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) this->server.stop();
-					else {
-						this->UpdateResources();
-						if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
-					}
+		this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
+			[&]{
+				if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) this->server.stop();
+				else if (SvcStatus.dwCurrentState != SERVICE_PAUSED) {
+					this->UpdateResources();
+					if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
+					else if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
 				}
-			);	
-			if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
-		}
+			}
+		);	
 	}
 	ChangeSvcStatus(SERVICE_STOPPED); // 停止はサーバーが完全に停止してから停止扱いにするためここで変更
 }
