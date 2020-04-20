@@ -22,8 +22,8 @@ void ServiceMonitor::InitServiceTypeList(const IniRead& ini) {
 	for (int i = 0; i < 8; i++) StatusList.emplace(std::make_pair(ServiceTypeNumberList[i], ini.GetString("services", ServiceTypeLoadKeyList[i], ServiceTypeDefaultValue[i])));
 }
 
-ServiceMonitor::ServiceMonitor(const std::string& MonitorService) 
-	: ServiceController(MonitorService) {
+ServiceMonitor::ServiceMonitor(ServiceControlManager& SCManager, const std::string& MonitorService) 
+	: ServiceController(SCManager, MonitorService) {
 	ServiceController::Update();
 	this->ServiceStatus = this->ShowStatus();
 	this->ServiceType = this->ShowServiceType();
@@ -67,12 +67,12 @@ picojson::object ServiceMonitor::Get() const {
 
 std::string ServiceMonitor::GetTargetServiceDisplayName() {
 	DWORD Size{};
-	GetServiceDisplayNameA(ServiceController::SCM, this->ServiceName.c_str(), nullptr, &Size);
+	GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), nullptr, &Size);
 	size_t BufSize = Size;
 	if (Size > 0) {
 		char* Buffer = new char[BufSize + 1];
 		ZeroMemory(Buffer, BufSize + 1);
-		if (FALSE != GetServiceDisplayNameA(ServiceController::SCM, this->ServiceName.c_str(), Buffer, &Size)) {
+		if (FALSE != GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), Buffer, &Size)) {
 			std::string str{};
 			str.reserve(BufSize + 1);
 			str = Buffer;

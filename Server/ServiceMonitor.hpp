@@ -15,7 +15,7 @@ private:
 	std::string ShowServiceType();
 	std::string GetTargetServiceDisplayName();
 public:
-	ServiceMonitor(const std::string& MonitorService);
+	ServiceMonitor(ServiceControlManager& SCManager, const std::string& MonitorService);
 	static void InitStatusList(const IniRead& ini);
 	static void InitServiceTypeList(const IniRead& ini);
 	void Run();
