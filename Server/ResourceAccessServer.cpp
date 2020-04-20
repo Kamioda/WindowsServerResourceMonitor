@@ -79,11 +79,12 @@ inline void reqproc(Res res, const std::function<void()>& process) {
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), 
 	ini(BaseClass::ChangeFullPath(".\\server.ini")), 
+	SCM(),
 	processor(), 
 	memory(), 
 	disk(GetDiskResourceInformations(this->ini)), 
 	network(GetNetworkResourceInformations(this->ini)), 
-	services(GetServiceInformations(this->ini)),
+	services(GetServiceInformations(this->ini, this->SCM)),
 	server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
