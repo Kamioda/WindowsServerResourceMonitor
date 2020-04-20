@@ -59,6 +59,7 @@ void WINAPI ServiceMain(DWORD dwArgc, LPTSTR lpszArgv[]) {
 #ifdef UNICODE
 int wmain(int argc, wchar_t* argv[]) {
 	ServiceMain(static_cast<DWORD>(argc), argv);
+	return 0;
 }
 #else
 int main(int argc, wchar_t* argv[]) {
