@@ -49,7 +49,7 @@ std::string ServiceMonitor::ShowServiceType() {
 }
 
 void ServiceMonitor::Update() {
-	this->Update();
+	ServiceController::Update();
 	this->ServiceStatus = this->ShowStatus();
 	// サーバー動作中にAPIやsc.exeを使って変更されることも考慮して更新
 	this->ServiceType = this->ShowServiceType();
