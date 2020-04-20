@@ -139,17 +139,6 @@ picojson::object ResourceAccessServer::AllResourceToObject() const {
 	return obj;
 }
 
-picojson::object ResourceAccessServer::AllDiskResourceToObject() const {
-	JsonObject obj{};
-	if (this->disk.size() == 1) obj.insert("disk", (*this->disk.begin()).second.Get());
-	else {
-		JsonArray diskinfo{};
-		for (const auto& i : this->disk) diskinfo.insert(i.second.Get());
-		obj.insert("disk", diskinfo);
-	}
-	return obj;
-}
-
 picojson::object ResourceAccessServer::AllNetworkResourceToObject() const {
 	JsonObject obj{};
 	if (this->network.size() == 1) obj.insert("network", this->network.front().Get());
@@ -159,6 +148,27 @@ picojson::object ResourceAccessServer::AllNetworkResourceToObject() const {
 		obj.insert("network", netinfo);
 	}
 	return obj;
+}
+
+template<class ResourceClass>
+inline picojson::object AllResourceToObjectImpl(const std::unordered_map<std::string, ResourceClass>& Resource, const std::string& Key) {
+	JsonObject obj{};
+	if (Resource.size() == 1) obj.insert("disk", (*Resource.begin()).second.Get());
+	else {
+		JsonArray diskinfo{};
+		for (const auto& i : Resource) diskinfo.insert(i.second.Get());
+		obj.insert(Key, diskinfo);
+	}
+	return obj;
+}
+
+picojson::object ResourceAccessServer::AllDiskResourceToObject() const {
+	return AllResourceToObjectImpl(this->disk, "disk");
+}
+
+
+picojson::object ResourceAccessServer::AllServiceToObject() const {
+	return AllResourceToObjectImpl(this->services, "service");
 }
 
 void ResourceAccessServer::UpdateResources() {
