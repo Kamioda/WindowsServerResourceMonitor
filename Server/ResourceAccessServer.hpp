@@ -11,6 +11,7 @@
 
 class ResourceAccessServer : public ServiceProcess {
 private:
+	ServiceControlManager SCM;
 	IniRead ini;
 	Processor processor;
 	Memory memory;
