@@ -1,4 +1,5 @@
 ﻿#include "ServiceMonitor.hpp"
+#include "JsonObject.hpp"
 
 std::unordered_map<DWORD, std::string> ServiceMonitor::StatusList;
 
@@ -21,7 +22,12 @@ void ServiceMonitor::InitServiceTypeList(const IniRead& ini) {
 	for (int i = 0; i < 8; i++) StatusList.emplace(std::make_pair(ServiceTypeList[i], ini.GetString("services", ServiceTypeLoadKeyList[i], ServiceTypeDefaultValue[i])));
 }
 
-ServiceMonitor::ServiceMonitor(const std::string& MonitorService) : ServiceController(MonitorService) {}
+ServiceMonitor::ServiceMonitor(const std::string& MonitorService) 
+	: ServiceController(MonitorService) {
+	ServiceController::Update();
+	this->ServiceStatus = this->ShowStatus();
+	this->ServiceType = this->ShowServiceType();
+}
 
 void ServiceMonitor::Run() { ServiceController::Run(); }
 
@@ -31,11 +37,26 @@ void ServiceMonitor::Pause() { ServiceController::Pause(); }
 
 void ServiceMonitor::Continue() { ServiceController::Continue(); }
 
-std::string ServiceMonitor::Show() { 
-	const DWORD Code = StatusList.find(this->ServiceStatusCode) == StatusList.end() ? 0 : this->ServiceStatusCode;
+std::string ServiceMonitor::ShowStatus() { 
+	const DWORD Code = StatusList.find(ServiceController::Status.dwCurrentState) == StatusList.end() ? 0 : ServiceController::Status.dwCurrentState;
+	return StatusList.at(Code);
+}
+
+std::string ServiceMonitor::ShowServiceType() {
+	const DWORD Code = StatusList.find(ServiceController::Status.dwServiceType) == StatusList.end() ? 0 : ServiceController::Status.dwServiceType;
 	return StatusList.at(Code);
 }
 
 void ServiceMonitor::Update() {
-	this->ServiceStatusCode = ServiceController::Show();
+	this->Update();
+	this->ServiceStatus = this->ShowStatus();
+	this->ServiceType = this->ShowServiceType();
+}
+
+picojson::object ServiceMonitor::Get() const {
+	JsonObject obj{};
+	obj.insert("name", ServiceController::ServiceName);
+	obj.insert("type", this->ServiceType);
+	obj.insert("status", this->ServiceStatus);
+	return obj;
 }

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ServiceController.h"
 #include "IniRead.hpp"
+#include <picojson.h>
 #include <unordered_map>
 
 class ServiceMonitor : private ServiceController {
@@ -9,7 +10,8 @@ private:
 	static std::unordered_map<DWORD, std::string> ServiceTypeList;
 	std::string ServiceType;
 	std::string ServiceStatus;
-	std::string Show();
+	std::string ShowStatus();
+	std::string ShowServiceType();
 public:
 	ServiceMonitor(const std::string& MonitorService);
 	static void InitStatusList(const IniRead& ini);
@@ -19,4 +21,5 @@ public:
 	void Pause();
 	void Continue();
 	void Update();
+	picojson::object Get() const;
 };
