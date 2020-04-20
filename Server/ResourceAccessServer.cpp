@@ -9,7 +9,9 @@ using Req = const httplib::Request&;
 using Res = httplib::Response&;
 
 ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
+#if defined(_DEBUG) && !defined(CONSOLE)
 	Sleep(10000);
+#endif
 	return new ResourceAccessServer(args);
 }
 
