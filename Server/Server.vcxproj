@@ -222,6 +222,7 @@
     <ClCompile Include="ResourceAccessServer.cpp" />
     <ClCompile Include="ServiceControl.cpp" />
     <ClCompile Include="ServiceController.cpp" />
+    <ClCompile Include="ServiceControlManager.cpp" />
     <ClCompile Include="ServiceMainProcess.cpp" />
     <ClCompile Include="ServiceMonitor.cpp" />
   </ItemGroup>
@@ -243,6 +244,7 @@
     <ClInclude Include="ResourceAccessServer.hpp" />
     <ClInclude Include="ServiceControl.h" />
     <ClInclude Include="ServiceController.h" />
+    <ClInclude Include="ServiceControlManager.h" />
     <ClInclude Include="ServiceInformation.h" />
     <ClInclude Include="ServiceMainProcess.h" />
     <ClInclude Include="ServiceMonitor.hpp" />
