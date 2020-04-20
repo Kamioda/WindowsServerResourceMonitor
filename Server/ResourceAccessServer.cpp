@@ -25,18 +25,29 @@ inline std::vector<Network> GetNetworkResourceInformations(const IniRead& ini) {
 	return RetVal;
 }
 
-inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
-	std::unordered_map<std::string, Disk> RetVal{};
-	const std::vector<std::string> DriveList = SplitString(ini.GetString("system", "drives", "C:"), ',');
+template<class ResourceClass>
+inline std::unordered_map<std::string, ResourceClass> GetResourceInformations(const std::string& LoadTargets) {
+	if (LoadTargets.empty()) return std::unordered_map<std::string, ResourceClass>();
+	std::unordered_map<std::string, ResourceClass> RetVal{};
+	const std::vector<std::string> DriveList = SplitString(LoadTargets, ',');
 	for (const auto& i : DriveList) {
 		try {
-			RetVal.emplace(std::make_pair(i, Disk(i)));
+			RetVal.emplace(std::make_pair(i, ResourceClass(i)));
 		}
-		catch(std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
-			
+		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
+
 		}
 	}
 	return RetVal;
+
+}
+
+inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
+	return GetResourceInformations<Disk>(ini.GetString("system", "drives", "C:"));
+}
+
+inline std::unordered_map<std::string, ServiceMonitor> GetServiceInformations(const IniRead& ini) {
+	return GetResourceInformations<ServiceMonitor>(ini.GetString("services", "target", ""));
 }
 
 inline std::string ToJsonText(const picojson::object& obj) { 
@@ -63,6 +74,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	memory(), 
 	disk(GetDiskResourceInformations(this->ini)), 
 	network(GetNetworkResourceInformations(this->ini)), 
+	Services(GetServiceInformations(this->ini)),
 	server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
@@ -106,16 +118,24 @@ std::string ResourceAccessServer::GetConfStr(const std::string& Section, const s
 
 int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->ini.GetNum(Section, Key, Default); };
 
+template<class ResourceClass>
+inline void InsertArray(const std::unordered_map<std::string, ResourceClass>& list, JsonObject& obj, const std::string& key) {
+	JsonArray arr{};
+	for (const auto& i : list) arr.insert(i.second.Get());
+	obj.insert(key, arr);
+}
+
 picojson::object ResourceAccessServer::AllResourceToObject() const {
 	JsonObject obj{};
 	JsonArray diskinfo{};
 	JsonArray netinfo{};
+	JsonArray serviceinfo{};
 	obj.insert("cpu", this->processor.Get());
 	obj.insert("memory", this->memory.Get());
-	for (const auto& i : this->disk) diskinfo.insert(i.second.Get());
-	obj.insert("disk", diskinfo);
+	InsertArray(this->disk, obj, "disk");
 	for (const auto& i : this->network) netinfo.insert(i.Get());
 	obj.insert("network", netinfo);
+	InsertArray(this->Services, obj, "service");
 	return obj;
 }
 
