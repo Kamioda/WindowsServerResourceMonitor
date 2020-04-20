@@ -16,7 +16,7 @@ private:
 	Memory memory;
 	std::unordered_map<std::string, Disk> disk;
 	std::vector<Network> network;
-	std::unordered_map<std::string, ServiceMonitor> Services;
+	std::unordered_map<std::string, ServiceMonitor> services;
 	httplib::Server server;
 	DWORD looptime;
 	using BaseClass = ServiceProcess;
