@@ -135,6 +135,15 @@ void ResourceAccessServer::UpdateResources() {
 	for (auto& i : this->services) i.Update();
 }
 
+inline void ReplaceString(std::string& String1, const std::string& Old , const std::string& New) {
+	std::string::size_type  Pos(String1.find(Old));
+
+	while (Pos != std::string::npos) {
+		String1.replace(Pos, Old.length(), New);
+		Pos = String1.find(Old, Pos + New.length());
+	}
+}
+
 template<typename T>
 inline auto find(const std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
 
@@ -180,8 +189,9 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		[&](Req req, Res res) {
 			reqproc(res,
 				[&] {
-					const std::string matchstr = (req.matches[0].str()),
-						service = matchstr.substr(matchstr.find_last_of('/') + 1);
+					const std::string matchstr = (req.matches[0].str());
+					std::string service = matchstr.substr(matchstr.find_last_of('/') + 1);
+					ReplaceString(service, "%20", " ");
 					if (auto it = find(this->services, service); it == this->services.end()) res.status = 404;
 					else res.set_content(ToJsonText(it->Get()), "application/json");
 				}
