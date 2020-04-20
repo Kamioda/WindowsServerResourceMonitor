@@ -31,4 +31,5 @@ private:
 public:
 	Disk(PDHQuery& query, const std::string& TargetDrive = "C:");
 	picojson::object Get() const;
+	std::string GetKey() const noexcept;
 };

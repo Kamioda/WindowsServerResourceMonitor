@@ -3,6 +3,7 @@
 #include "Split.hpp"
 #include "JsonObject.hpp"
 #include "JsonArray.hpp"
+#include <algorithm>
 #include <chrono>
 using Req = const httplib::Request&;
 using Res = httplib::Response&;
@@ -29,6 +30,9 @@ inline void reqproc(Res res, const std::function<void()>& process) {
 	}
 };
 
+template<typename T>
+inline auto find(const std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
+
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), 
 	ini(BaseClass::ChangeFullPath(".\\server.ini")), 
@@ -47,8 +51,10 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		[&](Req req, Res res) {
 			reqproc(res,
 				[&] {
-					if (const std::string matchstr = (req.matches[0].str() + ":"), drive = matchstr.substr(matchstr.size() - 2); this->disk.find(drive) == this->disk.end()) res.status = 404;
-					else res.set_content(ToJsonText(this->disk.at(drive).Get()), "text/json");
+					const std::string matchstr = (req.matches[0].str() + ":"), 
+						drive = matchstr.substr(matchstr.size() - 2);
+					if (auto it = find(this->disk, drive); it == this->disk.end()) res.status = 404;
+					else res.set_content(ToJsonText(it->Get()), "text/json");
 				}
 			);
 		}
@@ -69,8 +75,10 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		[&](Req req, Res res) {
 			reqproc(res,
 				[&] {
-					if (const std::string matchstr = (req.matches[0].str()), service = matchstr.substr(matchstr.find_last_of('/') + 1); this->services.find(service) == this->services.end()) res.status = 404;
-					else res.set_content(ToJsonText(this->services.at(service).Get()), "text/json");
+					const std::string matchstr = (req.matches[0].str()), 
+						service = matchstr.substr(matchstr.find_last_of('/') + 1);
+					if (auto it = find(this->services, service); it == this->services.end()) res.status = 404;
+					else res.set_content(ToJsonText(it->Get()), "text/json");
 				}
 			);
 		}
@@ -87,10 +95,10 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 
 
 void ResourceAccessServer::GetDiskResourceInformations() {
-	const std::vector<std::string> NameList = SplitString(this->ini.GetString("system", "drives", "C:"), ',');
-	for (const auto& i : NameList) {
+	std::vector<std::string> NameList = SplitString(this->ini.GetString("system", "drives", "C:"), ',');
+	for (auto& i : NameList) {
 		try {
-			this->disk.emplace(i, Disk(this->query, i));
+			this->disk.emplace_back(this->query, i);
 		}
 		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
 
@@ -118,7 +126,7 @@ void ResourceAccessServer::GetServiceInformations() {
 	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
 	for (const auto& i : NameList) {
 		try {
-			this->services.emplace(i, std::move(ServiceMonitor(this->SCM, i)));
+			this->services.emplace_back(this->SCM, i);
 		}
 		catch (std::exception&) { // ないサービスの時にエラー起こすのでここでcatch
 
@@ -132,9 +140,9 @@ std::string ResourceAccessServer::GetConfStr(const std::string& Section, const s
 int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->ini.GetNum(Section, Key, Default); };
 
 template<class ResourceClass>
-inline void InsertArray(const std::unordered_map<std::string, ResourceClass>& list, JsonObject& obj, const std::string& key) {
+inline void InsertArray(const std::vector<ResourceClass>& list, JsonObject& obj, const std::string& key) {
 	JsonArray arr{};
-	for (const auto& i : list) arr.insert(i.second.Get());
+	for (const auto& i : list) arr.insert(i.Get());
 	obj.insert(key, arr);
 }
 
@@ -146,8 +154,7 @@ picojson::object ResourceAccessServer::AllResourceToObject() const {
 	obj.insert("cpu", this->processor.Get());
 	obj.insert("memory", this->memory.Get());
 	InsertArray(this->disk, obj, "disk");
-	for (const auto& i : this->network) netinfo.insert(i.Get());
-	obj.insert("network", netinfo);
+	InsertArray(this->network, obj, "network");
 	InsertArray(this->services, obj, "service");
 	return obj;
 }
@@ -164,12 +171,12 @@ picojson::object ResourceAccessServer::AllNetworkResourceToObject() const {
 }
 
 template<class ResourceClass>
-inline picojson::object AllResourceToObjectImpl(const std::unordered_map<std::string, ResourceClass>& Resource, const std::string& Key) {
+inline picojson::object AllResourceToObjectImpl(const std::vector<ResourceClass>& Resource, const std::string& Key) {
 	JsonObject obj{};
-	if (Resource.size() == 1) obj.insert("disk", (*Resource.begin()).second.Get());
+	if (Resource.size() == 1) obj.insert("disk", Resource.front().Get());
 	else {
 		JsonArray diskinfo{};
-		for (const auto& i : Resource) diskinfo.insert(i.second.Get());
+		for (const auto& i : Resource) diskinfo.insert(i.Get());
 		obj.insert(Key, diskinfo);
 	}
 	return obj;
@@ -187,7 +194,7 @@ picojson::object ResourceAccessServer::AllServiceToObject() const {
 void ResourceAccessServer::UpdateResources() {
 	this->query.Update();
 	this->memory.Update();
-	for (auto& i : this->services) i.second.Update();
+	for (auto& i : this->services) i.Update();
 }
 
 void ResourceAccessServer::Service_MainProcess() {

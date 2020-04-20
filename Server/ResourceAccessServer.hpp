@@ -7,7 +7,6 @@
 #include "Disk.hpp"
 #include "Network.hpp"
 #include "IniRead.hpp"
-#include <unordered_map>
 
 class ResourceAccessServer : public ServiceProcess {
 private:
@@ -16,9 +15,9 @@ private:
 	PDHQuery query;
 	Processor processor;
 	Memory memory;
-	std::unordered_map<std::string, Disk> disk;
+	std::vector<Disk> disk;
 	std::vector<Network> network;
-	std::unordered_map<std::string, ServiceMonitor> services;
+	std::vector<ServiceMonitor> services;
 	httplib::Server server;
 	DWORD looptime;
 	using BaseClass = ServiceProcess;

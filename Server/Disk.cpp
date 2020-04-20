@@ -27,3 +27,5 @@ picojson::object Disk::Get() const {
 	obj.insert("write", this->diskWrite.Get());
 	return obj;
 }
+
+std::string Disk::GetKey() const noexcept { return this->Drive; }

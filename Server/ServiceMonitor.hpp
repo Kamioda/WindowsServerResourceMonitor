@@ -24,4 +24,5 @@ public:
 	void Continue();
 	void Update();
 	picojson::object Get() const;
+	std::string GetKey() const noexcept;
 };

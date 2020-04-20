@@ -81,3 +81,5 @@ std::string ServiceMonitor::GetTargetServiceDisplayName() {
 	}
 	return std::string();
 }
+
+std::string ServiceMonitor::GetKey() const noexcept { return ServiceController::ServiceName; }
