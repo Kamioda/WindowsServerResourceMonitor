@@ -25,6 +25,7 @@ private:
 	picojson::object AllResourceToObject() const;
 	picojson::object AllDiskResourceToObject() const;
 	picojson::object AllNetworkResourceToObject() const;
+	picojson::object AllServiceToObject() const;
 	void UpdateResources();
 public:
 	ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args);
