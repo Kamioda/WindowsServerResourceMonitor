@@ -74,7 +74,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 	memory(), 
 	disk(GetDiskResourceInformations(this->ini)), 
 	network(GetNetworkResourceInformations(this->ini)), 
-	Services(GetServiceInformations(this->ini)),
+	services(GetServiceInformations(this->ini)),
 	server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
@@ -135,7 +135,7 @@ picojson::object ResourceAccessServer::AllResourceToObject() const {
 	InsertArray(this->disk, obj, "disk");
 	for (const auto& i : this->network) netinfo.insert(i.Get());
 	obj.insert("network", netinfo);
-	InsertArray(this->Services, obj, "service");
+	InsertArray(this->services, obj, "service");
 	return obj;
 }
 
@@ -176,6 +176,7 @@ void ResourceAccessServer::UpdateResources() {
 	this->memory.Update();
 	for (const auto& i : this->disk) i.second.Update();
 	for (const auto& i : this->network) i.Update();
+	for (auto& i : this->services) i.second.Update();
 }
 
 void ResourceAccessServer::Service_MainProcess() {
