@@ -32,70 +32,6 @@ inline void reqproc(Res res, const std::function<void()>& process) {
 	}
 };
 
-template<typename T>
-inline auto find(const std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
-
-ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
-	: ServiceProcess(args), 
-	ini(BaseClass::ChangeFullPath(".\\server.ini")), 
-	SCM(), query(),	processor(this->query), memory(), disk(), network(), services(), server(),
-	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
-	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
-	SetServiceStatusInfo();
-	this->GetDiskResourceInformations();
-	this->GetNetworkResourceInformations();
-	this->GetServiceInformations();
-	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "memory", "/v1/mem").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "allstorage", "/v1/disk/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllDiskResourceToObject()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]").c_str(),
-		[&](Req req, Res res) {
-			reqproc(res,
-				[&] {
-					const std::string matchstr = (req.matches[0].str() + ":"), 
-						drive = matchstr.substr(matchstr.size() - 2);
-					if (auto it = find(this->disk, drive); it == this->disk.end()) res.status = 404;
-					else res.set_content(ToJsonText(it->Get()), "application/json");
-				}
-			);
-		}
-	);
-	this->server.Get(GetConfStr("url", "allnetwork", "/v1/network/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllNetworkResourceToObject()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "network", "/v1/network/eth[0-9]{1,}").c_str(), [&](Req req, Res res) {
-		reqproc(res, 
-			[&] { 
-				const std::string matchstr = (req.matches[0].str());
-				if (const size_t pos = std::stoul(matchstr.substr(matchstr.find_last_of('/') + 4)); pos >= this->network.size()) res.status = 404;
-				else res.set_content(ToJsonText(this->network.at(pos).Get()), "application/json");
-			}
-		);
-		}
-	);
-	this->server.Get(GetConfStr("url", "allservice", "/v1/service/").c_str(), [&](Req, Res res) { reqproc(res, [&] {res.set_content(ToJsonText(this->AllServiceToObject()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "service", "/v1/service/[0-9a-zA-Z\\-_.re%]{1,}").c_str(), 
-		[&](Req req, Res res) {
-			reqproc(res,
-				[&] {
-					const std::string matchstr = (req.matches[0].str()), 
-						service = matchstr.substr(matchstr.find_last_of('/') + 1);
-					if (auto it = find(this->services, service); it == this->services.end()) res.status = 404;
-					else res.set_content(ToJsonText(it->Get()), "application/json");
-				}
-			);
-		}
-	);
-	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; }); });
-	this->server.Post(GetConfStr("url", "pause", "/v1/pause").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; }); });
-	this->server.Post(GetConfStr("url", "continue", "/v1/continue").c_str(), 
-		[](Req, Res res) {
-			if (SvcStatus.dwCurrentState == SERVICE_PAUSED) SvcStatus.dwCurrentState = SERVICE_CONTINUE_PENDING;
-			else res.status = 400;
-		}
-	);
-}
-
-
 void ResourceAccessServer::GetDiskResourceInformations() {
 	std::vector<std::string> NameList = SplitString(this->ini.GetString("system", "drives", "C:"), ',');
 	for (auto& i : NameList) {
@@ -197,6 +133,69 @@ void ResourceAccessServer::UpdateResources() {
 	this->query.Update();
 	this->memory.Update();
 	for (auto& i : this->services) i.Update();
+}
+
+template<typename T>
+inline auto find(const std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
+
+ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
+	: ServiceProcess(args),
+	ini(BaseClass::ChangeFullPath(".\\server.ini")),
+	SCM(), query(), processor(this->query), memory(), disk(), network(), services(), server(),
+	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
+	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
+	SetServiceStatusInfo();
+	this->GetDiskResourceInformations();
+	this->GetNetworkResourceInformations();
+	this->GetServiceInformations();
+	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "application/json"); }); });
+	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "application/json"); }); });
+	this->server.Get(GetConfStr("url", "memory", "/v1/mem").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "application/json"); }); });
+	this->server.Get(GetConfStr("url", "allstorage", "/v1/disk/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllDiskResourceToObject()), "application/json"); }); });
+	this->server.Get(GetConfStr("url", "storage", "/v1/disk/[A-Z]").c_str(),
+		[&](Req req, Res res) {
+			reqproc(res,
+				[&] {
+					const std::string matchstr = (req.matches[0].str() + ":"),
+						drive = matchstr.substr(matchstr.size() - 2);
+					if (auto it = find(this->disk, drive); it == this->disk.end()) res.status = 404;
+					else res.set_content(ToJsonText(it->Get()), "application/json");
+				}
+			);
+		}
+	);
+	this->server.Get(GetConfStr("url", "allnetwork", "/v1/network/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllNetworkResourceToObject()), "application/json"); }); });
+	this->server.Get(GetConfStr("url", "network", "/v1/network/eth[0-9]{1,}").c_str(), [&](Req req, Res res) {
+		reqproc(res,
+			[&] {
+				const std::string matchstr = (req.matches[0].str());
+				if (const size_t pos = std::stoul(matchstr.substr(matchstr.find_last_of('/') + 4)); pos >= this->network.size()) res.status = 404;
+				else res.set_content(ToJsonText(this->network.at(pos).Get()), "application/json");
+			}
+		);
+		}
+	);
+	this->server.Get(GetConfStr("url", "allservice", "/v1/service/").c_str(), [&](Req, Res res) { reqproc(res, [&] {res.set_content(ToJsonText(this->AllServiceToObject()), "application/json"); }); });
+	this->server.Get(GetConfStr("url", "service", "/v1/service/[0-9a-zA-Z\\-_.re%]{1,}").c_str(),
+		[&](Req req, Res res) {
+			reqproc(res,
+				[&] {
+					const std::string matchstr = (req.matches[0].str()),
+						service = matchstr.substr(matchstr.find_last_of('/') + 1);
+					if (auto it = find(this->services, service); it == this->services.end()) res.status = 404;
+					else res.set_content(ToJsonText(it->Get()), "application/json");
+				}
+			);
+		}
+	);
+	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; }); });
+	this->server.Post(GetConfStr("url", "pause", "/v1/pause").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; }); });
+	this->server.Post(GetConfStr("url", "continue", "/v1/continue").c_str(),
+		[](Req, Res res) {
+			if (SvcStatus.dwCurrentState == SERVICE_PAUSED) SvcStatus.dwCurrentState = SERVICE_CONTINUE_PENDING;
+			else res.status = 400;
+		}
+	);
 }
 
 void ResourceAccessServer::Service_MainProcess() {
