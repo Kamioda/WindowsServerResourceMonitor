@@ -13,13 +13,13 @@ void ServiceMonitor::InitStatusList(const IniRead& ini) {
 }
 
 void ServiceMonitor::InitServiceTypeList(const IniRead& ini) {
-	const DWORD ServiceTypeList[8] = {
+	const DWORD ServiceTypeNumberList[8] = {
 		SERVICE_WIN32_OWN_PROCESS, 	SERVICE_WIN32_SHARE_PROCESS, SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER,
 		SERVICE_ADAPTER, SERVICE_USER_OWN_PROCESS, SERVICE_USER_SHARE_PROCESS, 0
 	};
 	const std::string ServiceTypeLoadKeyList[8] = { "type-own", "type-share", "type-kernel", "type-filesys", "type-adapt", "type-userown", "type-usershare", "type-unsupported" };
 	const std::string ServiceTypeDefaultValue[8] = { "Win32 Own Process", "Win32 Share Process", "Kernel Driver", "File System", "Adapter", "User Own Process",	"User Share Process", "Unsupported type on resource monitor server" };
-	for (int i = 0; i < 8; i++) StatusList.emplace(std::make_pair(ServiceTypeList[i], ini.GetString("services", ServiceTypeLoadKeyList[i], ServiceTypeDefaultValue[i])));
+	for (int i = 0; i < 8; i++) StatusList.emplace(std::make_pair(ServiceTypeNumberList[i], ini.GetString("services", ServiceTypeLoadKeyList[i], ServiceTypeDefaultValue[i])));
 }
 
 ServiceMonitor::ServiceMonitor(const std::string& MonitorService) 
