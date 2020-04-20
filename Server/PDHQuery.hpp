@@ -4,7 +4,7 @@
 
 class PDHQuery {
 private:
-	HandleManager<PDH_HQUERY> hQuery;
+	windows::impl::HandleManager<PDH_HQUERY> hQuery;
 public:
 	PDHQuery();
 	void Update();
