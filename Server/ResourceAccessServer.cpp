@@ -186,7 +186,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		}
 	);
 	this->server.Get(GetConfStr("url", "allservice", "/v1/service/").c_str(), [&](Req, Res res) { reqproc(res, [&] {res.set_content(ToJsonText(this->AllServiceToObject()), "application/json"); }); });
-	this->server.Get(GetConfStr("url", "service", "/v1/service/[0-9a-zA-Z\\-_.re%]{1,}").c_str(),
+	this->server.Get(GetConfStr("url", "service", "/v1/service/[0-9a-zA-Z\\-_.%]{1,}").c_str(),
 		[&](Req req, Res res) {
 			reqproc(res,
 				[&] {
