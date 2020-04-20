@@ -29,8 +29,8 @@ template<class ResourceClass>
 inline std::unordered_map<std::string, ResourceClass> GetResourceInformations(const std::string& LoadTargets) {
 	if (LoadTargets.empty()) return std::unordered_map<std::string, ResourceClass>();
 	std::unordered_map<std::string, ResourceClass> RetVal{};
-	const std::vector<std::string> DriveList = SplitString(LoadTargets, ',');
-	for (const auto& i : DriveList) {
+	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
+	for (const auto& i : NameList) {
 		try {
 			RetVal.emplace(std::make_pair(i, ResourceClass(i)));
 		}
