@@ -25,23 +25,6 @@ inline std::vector<Network> GetNetworkResourceInformations(const IniRead& ini) {
 	return RetVal;
 }
 
-
-inline std::unordered_map<std::string, Disk> GetResourceInformations(const std::string& LoadTargets) {
-	if (LoadTargets.empty()) return std::unordered_map<std::string, Disk>();
-	std::unordered_map<std::string, Disk> RetVal{};
-	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
-	for (const auto& i : NameList) {
-		try {
-			RetVal.emplace(std::make_pair(i, Disk(i)));
-		}
-		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
-
-		}
-	}
-	return RetVal;
-
-}
-
 inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
 	std::unordered_map<std::string, Disk> RetVal{};
 	const std::vector<std::string> NameList = SplitString(ini.GetString("system", "drives", "C:"), ',');
