@@ -1,20 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="BaseCode">
       <UniqueIdentifier>{e93dc1c3-3bec-49c0-8ee6-81d5ce76a45e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ConsoleSession">
+      <UniqueIdentifier>{0f221930-cadb-484d-bfa6-1d9184884d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession">
+      <UniqueIdentifier>{4f6092b8-5fa1-45e1-b035-61fa322c88d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\ResourceManager">
+      <UniqueIdentifier>{5d746e27-7f26-4eaf-974a-12b1d105810a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Json">
+      <UniqueIdentifier>{27bbcf21-463f-4e23-8461-0739d83f68a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Core">
+      <UniqueIdentifier>{684f7ca9-3b3f-4cfc-bb76-2beb2e41c5db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Base">
+      <UniqueIdentifier>{4b476aa3-35ca-404c-801d-6974e0d311ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Others">
+      <UniqueIdentifier>{9eb4b86e-775a-4cb7-8d16-452e59f4907b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,44 +40,11 @@
     <ClCompile Include="ServiceMainProcess.cpp">
       <Filter>BaseCode</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleMainProcess.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceAccessServer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="IniRead.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PDHCounter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Disk.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Processor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Network.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ServiceControl.cpp">
       <Filter>BaseCode</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
       <Filter>BaseCode</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonArray.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ServiceMonitor.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ServiceController.cpp">
       <Filter>BaseCode</Filter>
@@ -72,8 +52,41 @@
     <ClCompile Include="ServiceControlManager.cpp">
       <Filter>BaseCode</Filter>
     </ClCompile>
+    <ClCompile Include="Disk.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="IniRead.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PDHCounter.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
     <ClCompile Include="PDHQuery.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Processor.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceMonitor.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleMainProcess.cpp">
+      <Filter>ConsoleSession</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonArray.cpp">
+      <Filter>ServiceSession\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonObject.cpp">
+      <Filter>ServiceSession\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceAccessServer.cpp">
+      <Filter>ServiceSession\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,59 +99,11 @@
     <ClInclude Include="ServiceStatus.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
-    <ClInclude Include="ServiceInformation.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleMainProcess.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ServiceMainProcess.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceAccessServer.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="httplib.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Split.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="IniRead.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="PDHCounter.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="PDHAssistFunctions.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Disk.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonObject.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Processor.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Network.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceControl.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
-    <ClInclude Include="JsonArray.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Console.h">
       <Filter>BaseCode</Filter>
-    </ClInclude>
-    <ClInclude Include="ServiceMonitor.hpp">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="ServiceController.h">
       <Filter>BaseCode</Filter>
@@ -146,11 +111,59 @@
     <ClInclude Include="ServiceControlManager.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
-    <ClInclude Include="PDHQuery.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="HandleManager.h">
       <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="Disk.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="IniRead.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PDHAssistFunctions.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PDHCounter.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PDHQuery.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Processor.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceMonitor.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleMainProcess.h">
+      <Filter>ConsoleSession</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonArray.hpp">
+      <Filter>ServiceSession\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonObject.hpp">
+      <Filter>ServiceSession\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceAccessServer.hpp">
+      <Filter>ServiceSession\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceInformation.h">
+      <Filter>ServiceSession\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceMainProcess.h">
+      <Filter>ServiceSession\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Split.hpp">
+      <Filter>ServiceSession\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="httplib.h">
+      <Filter>ServiceSession\Others</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
