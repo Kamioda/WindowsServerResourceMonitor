@@ -25,14 +25,14 @@ inline std::vector<Network> GetNetworkResourceInformations(const IniRead& ini) {
 	return RetVal;
 }
 
-template<class ResourceClass>
-inline std::unordered_map<std::string, ResourceClass> GetResourceInformations(const std::string& LoadTargets) {
-	if (LoadTargets.empty()) return std::unordered_map<std::string, ResourceClass>();
-	std::unordered_map<std::string, ResourceClass> RetVal{};
+
+inline std::unordered_map<std::string, Disk> GetResourceInformations(const std::string& LoadTargets) {
+	if (LoadTargets.empty()) return std::unordered_map<std::string, Disk>();
+	std::unordered_map<std::string, Disk> RetVal{};
 	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
 	for (const auto& i : NameList) {
 		try {
-			RetVal.emplace(std::make_pair(i, ResourceClass(i)));
+			RetVal.emplace(std::make_pair(i, Disk(i)));
 		}
 		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
 
@@ -43,11 +43,37 @@ inline std::unordered_map<std::string, ResourceClass> GetResourceInformations(co
 }
 
 inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
-	return GetResourceInformations<Disk>(ini.GetString("system", "drives", "C:"));
+	std::unordered_map<std::string, Disk> RetVal{};
+	const std::vector<std::string> NameList = SplitString(ini.GetString("system", "drives", "C:"), ',');
+	for (const auto& i : NameList) {
+		try {
+			RetVal.emplace(std::make_pair(i, Disk(i)));
+		}
+		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
+
+		}
+	}
+	return RetVal;
 }
 
-inline std::unordered_map<std::string, ServiceMonitor> GetServiceInformations(const IniRead& ini) {
-	return GetResourceInformations<ServiceMonitor>(ini.GetString("services", "target", ""));
+inline std::unordered_map<std::string, ServiceMonitor> GetServiceInformations(const IniRead& ini, ServiceControlManager& SCM) {
+	const std::string LoadTargets = ini.GetString("services", "target", "");
+	if (LoadTargets.empty()) return std::unordered_map<std::string, ServiceMonitor>();
+	ServiceMonitor::InitStatusList(ini);
+	ServiceMonitor::InitServiceTypeList(ini);
+	std::unordered_map<std::string, ServiceMonitor> RetVal{};
+	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
+	for (const auto& i : NameList) {
+		try {
+			std::string s = i;
+			std::pair<std::string, ServiceMonitor> pair(std::move(s), std::move(ServiceMonitor(SCM, i)));
+;			RetVal.emplace(std::move(pair));
+		}
+		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
+
+		}
+	}
+	return RetVal;
 }
 
 inline std::string ToJsonText(const picojson::object& obj) { 
