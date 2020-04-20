@@ -104,6 +104,17 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		);
 		}
 	);
+	this->server.Get(GetConfStr("url", "allservice", "/v1/service/").c_str(), [&](Req, Res res) { reqproc(res, [&] {res.set_content(ToJsonText(this->AllServiceToObject()), "text/json"); }); });
+	this->server.Get(GetConfStr("url", "service", "/v1/service/[0-9a-zA-Z\\-_.re%]{1,}").c_str(), 
+		[&](Req req, Res res) {
+			reqproc(res,
+				[&] {
+					if (const std::string matchstr = (req.matches[0].str()), service = matchstr.substr(matchstr.find_last_of('/') + 1); this->services.find(service) == this->services.end()) res.status = 404;
+					else res.set_content(ToJsonText(this->services.at(service).Get()), "text/json");
+				}
+			);
+		}
+	);
 	this->server.Post(GetConfStr("url", "stop", "/v1/stop").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_STOP_PENDING; }); });
 	this->server.Post(GetConfStr("url", "pause", "/v1/pause").c_str(), [](Req, Res res) { reqproc(res, [] { SvcStatus.dwCurrentState = SERVICE_PAUSE_PENDING; }); });
 	this->server.Post(GetConfStr("url", "continue", "/v1/continue").c_str(), 
