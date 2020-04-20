@@ -232,6 +232,7 @@
     <ClCompile Include="ServiceControlManager.cpp" />
     <ClCompile Include="ServiceMainProcess.cpp" />
     <ClCompile Include="ServiceMonitor.cpp" />
+    <ClCompile Include="StringEncode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h" />
@@ -259,6 +260,7 @@
     <ClInclude Include="ServiceMonitor.hpp" />
     <ClInclude Include="ServiceStatus.h" />
     <ClInclude Include="Split.hpp" />
+    <ClInclude Include="StringEncode.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="server.ini" />

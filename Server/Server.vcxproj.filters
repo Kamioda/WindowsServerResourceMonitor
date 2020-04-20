@@ -29,6 +29,9 @@
     <Filter Include="ServiceSession\Others">
       <UniqueIdentifier>{9eb4b86e-775a-4cb7-8d16-452e59f4907b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServiceSession\StringEncoding">
+      <UniqueIdentifier>{4c971e61-a0ef-486e-8de7-485537669321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineManager.cpp">
@@ -87,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="ResourceAccessServer.cpp">
       <Filter>ServiceSession\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="StringEncode.cpp">
+      <Filter>ServiceSession\StringEncoding</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="httplib.h">
       <Filter>ServiceSession\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="StringEncode.hpp">
+      <Filter>ServiceSession\StringEncoding</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
