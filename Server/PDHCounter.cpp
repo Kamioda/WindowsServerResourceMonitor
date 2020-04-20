@@ -3,20 +3,18 @@
 #include <stdexcept>
 #pragma comment(lib, "pdh.lib")
 
-PDHCounter::PDHCounter(const std::string& CategoryName, const std::string& CounterName, const std::string& instanceName)
-	: CategoryName(CategoryName), CounterName(CounterName), instanceName(instanceName) {
-	if (PdhOpenQuery(NULL, NULL, &this->hQuery) != ERROR_SUCCESS) throw std::runtime_error("Failed to open PDH Query");
-	PdhAddCounterA(this->hQuery, ("\\" + CategoryName + "(" + instanceName + ")\\" + CounterName).c_str(), NULL, &this->hCounter);
+PDHCounter::PDHCounter(PDHQuery& query, const std::string& CategoryName, const std::string& CounterName, const std::string& instanceName)
+	: hQuery(query), CategoryName(CategoryName), CounterName(CounterName), instanceName(instanceName), hCounter(nullptr, [](PDH_HCOUNTER& counter) { PdhRemoveCounter(counter); }) {
+	if (const PDH_STATUS ErrorCode = PdhAddCounterA(this->hQuery.get(), ("\\" + CategoryName + "(" + instanceName + ")\\" + CounterName).c_str(), NULL, &this->hCounter);
+		ERROR_SUCCESS != ErrorCode)
+		throw std::runtime_error("Failed to add PDH counter\nErrorCode : " + std::to_string(ErrorCode));
 }
 
-PDHCounter::PDHCounter(const std::string& CategoryName, const std::string& CounterName)
-	: CategoryName(CategoryName), CounterName(CounterName), instanceName() {
-	if (PdhOpenQuery(NULL, NULL, &this->hQuery) != ERROR_SUCCESS) throw std::runtime_error("Failed to open PDH Query");
-	PdhAddCounterA(this->hQuery, ("\\" + CategoryName + "\\" + CounterName).c_str(), NULL, &this->hCounter);
-}
-
-void PDHCounter::Update() const {
-	PdhCollectQueryData(this->hQuery);
+PDHCounter::PDHCounter(PDHQuery& query, const std::string& CategoryName, const std::string& CounterName)
+	: hQuery(query), CategoryName(CategoryName), CounterName(CounterName), instanceName(), hCounter(nullptr, [](PDH_HCOUNTER& counter) { PdhRemoveCounter(counter); }) {
+	if (const PDH_STATUS ErrorCode = PdhAddCounterA(this->hQuery.get(), ("\\" + CategoryName + "\\" + CounterName).c_str(), NULL, &this->hCounter);
+		ERROR_SUCCESS != ErrorCode)
+		throw std::runtime_error("Failed to add PDH counter\nErrorCode : " + std::to_string(ErrorCode));
 }
 
 double PDHCounter::GetDoubleValue() const {

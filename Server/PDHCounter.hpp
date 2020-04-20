@@ -1,6 +1,7 @@
 ﻿#pragma once
-#include <Pdh.h>
+#include "PDHQuery.hpp"
 #include <string>
+#include <functional>
 
 class PDHCounter {
 public:
@@ -8,12 +9,13 @@ public:
 	std::string CounterName;
 	std::string instanceName;
 private:
-	PDH_HQUERY hQuery;
-	PDH_HCOUNTER hCounter;
+	std::reference_wrapper<PDHQuery> hQuery;
+	HandleManager<PDH_HCOUNTER> hCounter;
 public:
-	PDHCounter(const std::string& CategoryName, const std::string& CounterName, const std::string& instanceName);
-	PDHCounter(const std::string& CategoryName, const std::string& CounterName);
-	void Update() const;
+	PDHCounter(PDHQuery& query, const std::string& CategoryName, const std::string& CounterName, const std::string& instanceName);
+	PDHCounter(PDHQuery& query, const std::string& CategoryName, const std::string& CounterName);
+	PDHCounter(const PDHCounter&) = delete;
+	PDHCounter& operator = (const PDHCounter&) = delete;
 	double GetDoubleValue() const;
 	LONGLONG GetInt64Value() const;
 	long GetLongValue() const;

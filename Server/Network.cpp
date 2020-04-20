@@ -3,20 +3,15 @@
 #include "JsonObject.hpp"
 
 namespace impl {
-	NetworkReceive::NetworkReceive(const std::string& NetworkDeviceName) : PDHCounter("Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
+	NetworkReceive::NetworkReceive(PDHQuery& query, const std::string& NetworkDeviceName) : PDHCounter(query, "Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
 	double NetworkReceive::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 
-	NetworkSend::NetworkSend(const std::string& NetworkDeviceName) : PDHCounter("Network Adapter", "Bytes Sent/sec", NetworkDeviceName) {}
+	NetworkSend::NetworkSend(PDHQuery& query, const std::string& NetworkDeviceName) : PDHCounter(query, "Network Adapter", "Bytes Sent/sec", NetworkDeviceName) {}
 	double NetworkSend::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 }
 
-Network::Network(const std::string& NetworkDeviceName)
-	: DeviceName(NetworkDeviceName), netReceive(NetworkDeviceName), netSend(NetworkDeviceName) {}
-
-void Network::Update() const {
-	this->netReceive.Update();
-	this->netSend.Update();
-}
+Network::Network(PDHQuery& query, const std::string& NetworkDeviceName)
+	: DeviceName(NetworkDeviceName), netReceive(query, NetworkDeviceName), netSend(query, NetworkDeviceName) {}
 
 picojson::object Network::Get() const {
 	JsonObject obj{};

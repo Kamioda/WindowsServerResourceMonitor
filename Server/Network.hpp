@@ -5,13 +5,13 @@
 namespace impl {
 	class NetworkReceive : public PDHCounter {
 	public:
-		NetworkReceive(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
+		NetworkReceive(PDHQuery& query, const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
 		double Get() const;
 	};
 
 	class NetworkSend : public PDHCounter {
 	public:
-		NetworkSend(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
+		NetworkSend(PDHQuery& query, const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
 		double Get() const;
 	};
 }
@@ -22,7 +22,6 @@ private:
 	impl::NetworkReceive netReceive;
 	impl::NetworkSend netSend;
 public:
-	Network(const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
-	void Update() const;
+	Network(PDHQuery& query, const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
 	picojson::object Get() const;
 };

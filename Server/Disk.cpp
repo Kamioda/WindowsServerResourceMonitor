@@ -3,27 +3,21 @@
 #include "PDHAssistFunctions.hpp"
 
 namespace impl {
-	DiskUsage::DiskUsage(const std::string& TargetDrive) : PDHCounter("LogicalDisk", "% Free Space", TargetDrive) {}
+	DiskUsage::DiskUsage(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "% Free Space", TargetDrive) {}
 
 	double DiskUsage::Get() const { return digit(100.0 - PDHCounter::GetDoubleValue()); }
 
-	DiskRead::DiskRead(const std::string& TargetDrive) : PDHCounter("LogicalDisk", "Disk Reads/sec", TargetDrive) {}
+	DiskRead::DiskRead(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "Disk Reads/sec", TargetDrive) {}
 
 	double DiskRead::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 
-	DiskWrite::DiskWrite(const std::string& TargetDrive) : PDHCounter("LogicalDisk", "Disk Writes/sec", TargetDrive) {}
+	DiskWrite::DiskWrite(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "Disk Writes/sec", TargetDrive) {}
 
 	double DiskWrite::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 }
 
-Disk::Disk(const std::string& TargetDrive)
-	: Drive(TargetDrive), diskUse(TargetDrive), diskRead(TargetDrive), diskWrite(TargetDrive) {}
-
-void Disk::Update() const {
-	this->diskUse.Update();
-	this->diskRead.Update();
-	this->diskWrite.Update();
-}
+Disk::Disk(PDHQuery& query, const std::string& TargetDrive)
+	: Drive(TargetDrive), diskUse(query, TargetDrive), diskRead(query, TargetDrive), diskWrite(query, TargetDrive) {}
 
 picojson::object Disk::Get() const {
 	JsonObject obj{};

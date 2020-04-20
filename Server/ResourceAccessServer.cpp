@@ -8,55 +8,8 @@ using Req = const httplib::Request&;
 using Res = httplib::Response&;
 
 ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
+	Sleep(10000);
 	return new ResourceAccessServer(args);
-}
-
-inline std::vector<Network> GetNetworkResourceInformations(const IniRead& ini) {
-	std::vector<Network> RetVal{};
-	const std::vector<std::string> DriveList = SplitString(ini.GetString("system", "netdevice", "Realtek PCIe GBE Family Controller"), ',');
-	for (const auto& i : DriveList) {
-		try {
-			RetVal.emplace_back(i);
-		}
-		catch (std::exception&) { // ないネットワークデバイスの時にエラー起こすのでここでcatch
-
-		}
-	}
-	return RetVal;
-}
-
-inline std::unordered_map<std::string, Disk> GetDiskResourceInformations(const IniRead& ini) {
-	std::unordered_map<std::string, Disk> RetVal{};
-	const std::vector<std::string> NameList = SplitString(ini.GetString("system", "drives", "C:"), ',');
-	for (const auto& i : NameList) {
-		try {
-			RetVal.emplace(std::make_pair(i, Disk(i)));
-		}
-		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
-
-		}
-	}
-	return RetVal;
-}
-
-inline std::unordered_map<std::string, ServiceMonitor> GetServiceInformations(const IniRead& ini, ServiceControlManager& SCM) {
-	const std::string LoadTargets = ini.GetString("services", "target", "");
-	if (LoadTargets.empty()) return std::unordered_map<std::string, ServiceMonitor>();
-	ServiceMonitor::InitStatusList(ini);
-	ServiceMonitor::InitServiceTypeList(ini);
-	std::unordered_map<std::string, ServiceMonitor> RetVal{};
-	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
-	for (const auto& i : NameList) {
-		try {
-			std::string s = i;
-			std::pair<std::string, ServiceMonitor> pair(std::move(s), std::move(ServiceMonitor(SCM, i)));
-;			RetVal.emplace(std::move(pair));
-		}
-		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
-
-		}
-	}
-	return RetVal;
 }
 
 inline std::string ToJsonText(const picojson::object& obj) { 
@@ -79,16 +32,13 @@ inline void reqproc(Res res, const std::function<void()>& process) {
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), 
 	ini(BaseClass::ChangeFullPath(".\\server.ini")), 
-	SCM(),
-	processor(), 
-	memory(), 
-	disk(GetDiskResourceInformations(this->ini)), 
-	network(GetNetworkResourceInformations(this->ini)), 
-	services(GetServiceInformations(this->ini, this->SCM)),
-	server(),
+	SCM(), query(),	processor(this->query), memory(), disk(), network(), services(), server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
 	SetServiceStatusInfo();
+	this->GetDiskResourceInformations();
+	this->GetNetworkResourceInformations();
+	this->GetServiceInformations();
 	this->server.Get(GetConfStr("url", "all", "/v1/").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->AllResourceToObject()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "cpu", "/v1/cpu").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->processor.Get()), "text/json"); }); });
 	this->server.Get(GetConfStr("url", "memory", "/v1/mem").c_str(), [&](Req, Res res) { reqproc(res, [&] { res.set_content(ToJsonText(this->memory.Get()), "text/json"); }); });
@@ -134,6 +84,48 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		}
 	);
 }
+
+
+void ResourceAccessServer::GetDiskResourceInformations() {
+	const std::vector<std::string> NameList = SplitString(this->ini.GetString("system", "drives", "C:"), ',');
+	for (const auto& i : NameList) {
+		try {
+			this->disk.emplace(i, Disk(this->query, i));
+		}
+		catch (std::exception&) { // ないドライブの時にエラー起こすのでここでcatch
+
+		}
+	}
+}
+
+void ResourceAccessServer::GetNetworkResourceInformations() {
+	const std::vector<std::string> DriveList = SplitString(this->ini.GetString("system", "netdevice", "Realtek PCIe GBE Family Controller"), ',');
+	for (const auto& i : DriveList) {
+		try {
+			this->network.emplace_back(this->query, i);
+		}
+		catch (std::exception&) { // ないネットワークデバイスの時にエラー起こすのでここでcatch
+
+		}
+	}
+}
+
+void ResourceAccessServer::GetServiceInformations() {
+	const std::string LoadTargets = this->ini.GetString("services", "target", "");
+	if (LoadTargets.empty()) return;
+	ServiceMonitor::InitStatusList(this->ini);
+	ServiceMonitor::InitServiceTypeList(this->ini);
+	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
+	for (const auto& i : NameList) {
+		try {
+			this->services.emplace(i, std::move(ServiceMonitor(this->SCM, i)));
+		}
+		catch (std::exception&) { // ないサービスの時にエラー起こすのでここでcatch
+
+		}
+	}
+}
+
 
 std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default); };
 
@@ -193,10 +185,8 @@ picojson::object ResourceAccessServer::AllServiceToObject() const {
 }
 
 void ResourceAccessServer::UpdateResources() {
-	this->processor.Update();
+	this->query.Update();
 	this->memory.Update();
-	for (const auto& i : this->disk) i.second.Update();
-	for (const auto& i : this->network) i.Update();
 	for (auto& i : this->services) i.second.Update();
 }
 
@@ -210,13 +200,20 @@ void ResourceAccessServer::Service_MainProcess() {
 		try {
 			this->server.listen(GetConfStr("url", "domain", "localhost").c_str(), GetConfInt("url", "port", 8080), 0,
 				[&] {
-					const std::chrono::milliseconds CountEnd = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-					if (const DWORD elapsed = static_cast<DWORD>((CountEnd - CountStart).count()); elapsed < this->looptime) Sleep(this->looptime - elapsed);
-					if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) this->server.stop();
-					else if (SvcStatus.dwCurrentState != SERVICE_PAUSED) {
-						this->UpdateResources();
-						if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
-						else if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
+
+					try {
+						const std::chrono::milliseconds CountEnd = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+						if (const DWORD elapsed = static_cast<DWORD>((CountEnd - CountStart).count()); elapsed < this->looptime) Sleep(this->looptime - elapsed);
+						if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) this->server.stop();
+						else if (SvcStatus.dwCurrentState != SERVICE_PAUSED) {
+							if (SvcStatus.dwCurrentState == SERVICE_START_PENDING || SvcStatus.dwCurrentState == SERVICE_CONTINUE_PENDING) ChangeSvcStatus(SERVICE_RUNNING);
+							else if (SvcStatus.dwCurrentState == SERVICE_PAUSE_PENDING) ChangeSvcStatus(SERVICE_PAUSED);
+							this->UpdateResources();
+						}
+					}
+					catch (const std::exception& er) {
+						std::ofstream ofs(BaseClass::ChangeFullPath("log4.txt"));
+						ofs << er.what() << std::endl;
 					}
 					CountStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 				}

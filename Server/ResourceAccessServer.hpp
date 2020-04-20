@@ -11,8 +11,9 @@
 
 class ResourceAccessServer : public ServiceProcess {
 private:
-	ServiceControlManager SCM;
 	IniRead ini;
+	ServiceControlManager SCM;
+	PDHQuery query;
 	Processor processor;
 	Memory memory;
 	std::unordered_map<std::string, Disk> disk;
@@ -28,6 +29,9 @@ private:
 	picojson::object AllNetworkResourceToObject() const;
 	picojson::object AllServiceToObject() const;
 	void UpdateResources();
+	void GetDiskResourceInformations();
+	void GetNetworkResourceInformations();
+	void GetServiceInformations();
 public:
 	ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args);
 	void Service_MainProcess() override;

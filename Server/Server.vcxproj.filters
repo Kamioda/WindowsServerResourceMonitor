@@ -72,6 +72,9 @@
     <ClCompile Include="ServiceControlManager.cpp">
       <Filter>BaseCode</Filter>
     </ClCompile>
+    <ClCompile Include="PDHQuery.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h">
@@ -141,6 +144,12 @@
       <Filter>BaseCode</Filter>
     </ClInclude>
     <ClInclude Include="ServiceControlManager.h">
+      <Filter>BaseCode</Filter>
+    </ClInclude>
+    <ClInclude Include="PDHQuery.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleManager.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
   </ItemGroup>

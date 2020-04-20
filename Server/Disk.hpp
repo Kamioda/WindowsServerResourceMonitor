@@ -5,19 +5,19 @@
 namespace impl {
 	class DiskUsage : public PDHCounter {
 	public:
-		DiskUsage(const std::string& TargetDrive = "C:");
+		DiskUsage(PDHQuery& query, const std::string& TargetDrive = "C:");
 		double Get() const;
 	};
 
 	class DiskRead : public PDHCounter {
 	public:
-		DiskRead(const std::string& TargetDrive = "C:");
+		DiskRead(PDHQuery& query, const std::string& TargetDrive = "C:");
 		double Get() const;
 	};
 
 	class DiskWrite : public PDHCounter {
 	public:
-		DiskWrite(const std::string& TargetDrive = "C:");
+		DiskWrite(PDHQuery& query, const std::string& TargetDrive = "C:");
 		double Get() const;
 	};
 }
@@ -29,7 +29,6 @@ private:
 	impl::DiskRead diskRead;
 	impl::DiskWrite diskWrite;
 public:
-	Disk(const std::string& TargetDrive = "C:");
-	void Update() const;
+	Disk(PDHQuery& query, const std::string& TargetDrive = "C:");
 	picojson::object Get() const;
 };
