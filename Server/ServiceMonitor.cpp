@@ -27,6 +27,7 @@ ServiceMonitor::ServiceMonitor(const std::string& MonitorService)
 	ServiceController::Update();
 	this->ServiceStatus = this->ShowStatus();
 	this->ServiceType = this->ShowServiceType();
+	this->ServiceDisplayName = this->GetTargetServiceDisplayName();
 }
 
 void ServiceMonitor::Run() { ServiceController::Run(); }
@@ -50,13 +51,33 @@ std::string ServiceMonitor::ShowServiceType() {
 void ServiceMonitor::Update() {
 	this->Update();
 	this->ServiceStatus = this->ShowStatus();
+	// サーバー動作中にAPIやsc.exeを使って変更されることも考慮して更新
 	this->ServiceType = this->ShowServiceType();
+	this->ServiceDisplayName = this->GetTargetServiceDisplayName();
 }
 
 picojson::object ServiceMonitor::Get() const {
 	JsonObject obj{};
 	obj.insert("name", ServiceController::ServiceName);
+	obj.insert("display", this->ServiceDisplayName);
 	obj.insert("type", this->ServiceType);
 	obj.insert("status", this->ServiceStatus);
 	return obj;
+}
+
+std::string ServiceMonitor::GetTargetServiceDisplayName() {
+	DWORD Size{};
+	GetServiceDisplayNameA(ServiceController::SCM, this->ServiceName.c_str(), nullptr, &Size);
+	size_t BufSize = Size;
+	if (Size > 0) {
+		char* Buffer = new char[BufSize + 1];
+		ZeroMemory(Buffer, BufSize + 1);
+		if (FALSE != GetServiceDisplayNameA(ServiceController::SCM, this->ServiceName.c_str(), Buffer, &Size)) {
+			std::string str{};
+			str.reserve(BufSize + 1);
+			str = Buffer;
+			return str;
+		}
+	}
+	return std::string();
 }

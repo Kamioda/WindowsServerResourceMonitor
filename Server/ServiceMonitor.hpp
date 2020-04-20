@@ -8,10 +8,12 @@ class ServiceMonitor : private ServiceController {
 private:
 	static std::unordered_map<DWORD, std::string> StatusList;
 	static std::unordered_map<DWORD, std::string> ServiceTypeList;
+	std::string ServiceDisplayName;
 	std::string ServiceType;
 	std::string ServiceStatus;
 	std::string ShowStatus();
 	std::string ShowServiceType();
+	std::string GetTargetServiceDisplayName();
 public:
 	ServiceMonitor(const std::string& MonitorService);
 	static void InitStatusList(const IniRead& ini);
