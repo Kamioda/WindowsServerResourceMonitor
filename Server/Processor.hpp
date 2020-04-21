@@ -6,6 +6,7 @@ class Processor : public PDHCounter {
 private:
 	typedef int (*GetProcessNumFunc)();
 	DWORD ProcessNum;
+	std::string CPUName;
 public:
 	Processor(PDHQuery& query);
 private:
