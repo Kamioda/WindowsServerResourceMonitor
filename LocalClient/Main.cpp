@@ -13,17 +13,17 @@ namespace Config {
 }
 
 inline void InitDxLib() {
-	if (-1 == DxLib::SetMultiThreadFlag(TRUE)) throw "Error in SetMultiThreadFlag function";
-	if (-1 == DxLib::SetMainWindowText(Config::WindowTitle)) throw "Error in SetMainWindowText function";
-	if (-1 == DxLib::SetOutApplicationLogValidFlag(FALSE)) throw "Error in SetMainWindowText function";
-	if (-1 == DxLib::SetDoubleStartValidFlag(TRUE)) throw "Error in DoubleStartValidFlag function";
-	if (-1 == DxLib::SetGraphMode(Config::WindowWidth, Config::WindowHeight, 32)) throw "Error in SetGraphMode function";
-	if (-1 == DxLib::ChangeWindowMode(true)) throw "Error in ChangeWindowMode function";
-	if (-1 == DxLib::SetBackgroundColor(255, 255, 255)) throw "Error in SetBackgroundColor function";
-	if (-1 == DxLib::SetAlwaysRunFlag(TRUE)) throw "Error in SetAlwaysRunFlag function";
-	if (-1 == DxLib::DxLib_Init()) throw "Failed to initialize.";
-	if (-1 == DxLib::SetTransColor(255, 255, 255)) throw "Error in SetTransColor function";
-	if (-1 == DxLib::SetDrawScreen(DX_SCREEN_BACK)) throw "Error in SetDrawScreen function";
+	if (-1 == DxLib::SetMultiThreadFlag(TRUE)) throw std::runtime_error("Error in SetMultiThreadFlag function");
+	if (-1 == DxLib::SetMainWindowText(Config::WindowTitle)) throw std::runtime_error("Error in SetMainWindowText function");
+	if (-1 == DxLib::SetOutApplicationLogValidFlag(FALSE)) throw std::runtime_error("Error in SetMainWindowText function");
+	if (-1 == DxLib::SetDoubleStartValidFlag(TRUE)) throw std::runtime_error("Error in DoubleStartValidFlag function");
+	if (-1 == DxLib::SetGraphMode(Config::WindowWidth, Config::WindowHeight, 32)) throw std::runtime_error("Error in SetGraphMode function");
+	if (-1 == DxLib::ChangeWindowMode(true)) throw std::runtime_error("Error in ChangeWindowMode function");
+	if (-1 == DxLib::SetBackgroundColor(255, 255, 255)) throw std::runtime_error("Error in SetBackgroundColor function");
+	if (-1 == DxLib::SetAlwaysRunFlag(TRUE)) throw std::runtime_error("Error in SetAlwaysRunFlag function");
+	if (-1 == DxLib::DxLib_Init()) throw std::runtime_error("Failed to initialize.");
+	if (-1 == DxLib::SetTransColor(255, 255, 255)) throw std::runtime_error("Error in SetTransColor function");
+	if (-1 == DxLib::SetDrawScreen(DX_SCREEN_BACK)) throw std::runtime_error("Error in SetDrawScreen function");
 }
 
 void GetResourceInformation() {
