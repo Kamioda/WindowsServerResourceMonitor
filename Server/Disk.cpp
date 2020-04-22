@@ -55,11 +55,11 @@ namespace impl {
 		return digit(static_cast<double>(this->Free) * 100.0 / static_cast<double>(this->Total));
 	}
 
-	DiskRead::DiskRead(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "Disk Reads/sec", TargetDrive) {}
+	DiskRead::DiskRead(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "Disk Read Bytes/sec", TargetDrive) {}
 
 	double DiskRead::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 
-	DiskWrite::DiskWrite(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "Disk Writes/sec", TargetDrive) {}
+	DiskWrite::DiskWrite(PDHQuery& query, const std::string& TargetDrive) : PDHCounter(query, "LogicalDisk", "Disk Write Bytes/sec", TargetDrive) {}
 
 	double DiskWrite::Get() const { return digit(PDHCounter::GetDoubleValue()); }
 }
