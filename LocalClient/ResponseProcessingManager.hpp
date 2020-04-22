@@ -113,6 +113,7 @@ private:
 		Processor(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
 			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), ProcessorName(), ProcessNum() {}
 		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::string.get().Draw(X, Y, "CPU");
 			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
