@@ -58,26 +58,26 @@ private:
 				DxLib::GetGraphSize(this->handle, &X, &Y);
 				this->Radius = X / 2;
 			}
-			void Draw(const int CircleCenterX, const int CircleCenterY, const double Percent) const noexcept {
+			void Draw(const int X, const int Y, const double Percent) const noexcept {
 				static const Color Black = Color("#000000");
-				DrawCircle(CircleCenterX + this->Radius, CircleCenterY + this->Radius, this->Radius - 3, Black.GetColorCode());
-				DrawCircleGauge(CircleCenterX + this->Radius, CircleCenterY + this->Radius, Percent /* (100.0 - this->NoUseArea) / 100.0*/, this->handle, this->DrawStartPos);
-				//this->DrawTriangle(CircleCenterX + this->Radius, CircleCenterY + this->Radius, static_cast<int>(360.0 * this->NoUseArea / 100.0), this->Radius, static_cast<int>(90 - (90 * this->NoUseArea / 100)), false);
-				DrawCircle(CircleCenterX + this->Radius, CircleCenterY + this->Radius, this->Radius - this->GaugeWidth, this->Background.GetColorCode());
+				// Draw関数の引数が左上座標なので半径を足すことで場所を調整
+
+				// 黒いエリアのサイズを調整するために-3を加えている
+				DrawCircle(X + this->Radius, Y + this->Radius, this->Radius - 3, Black.GetColorCode());
+				DrawCircleGauge(X + this->Radius, Y + this->Radius, Percent, this->handle, this->DrawStartPos);
+				DrawCircle(X + this->Radius, Y + this->Radius, this->Radius - this->GaugeWidth, this->Background.GetColorCode());
 			}
 		};
 		class ResponsePercentDataProcessor {
 		protected:
 			GaugeValueManager<int> Val;
 			GraphicInformation GraphInfo;
-			int X;
-			int Y;
 			std::reference_wrapper<StringManager> string;
 		public:
-			ResponsePercentDataProcessor(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff", const int GaugeWidth = 10, const double DrawStartPos = -25.0, const double NoUseArea = 50.0)
-				: string(string), Val({ 0, 100 }), GraphInfo(FilePath, BackgroundColor, GaugeWidth, DrawStartPos, NoUseArea), X(DrawPosX), Y(DrawPosY) {}
-			void Draw() const noexcept {
-				this->GraphInfo.Draw(this->X, this->Y, this->Val.GraphParameter.Get<double>());
+			ResponsePercentDataProcessor(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff", const int GaugeWidth = 10, const double DrawStartPos = -25.0, const double NoUseArea = 50.0)
+				: string(string), Val({ 0, 100 }), GraphInfo(FilePath, BackgroundColor, GaugeWidth, DrawStartPos, NoUseArea) {}
+			void Draw(const int X, const int Y) const noexcept {
+				this->GraphInfo.Draw(X, Y + this->string.get().StringSize, this->Val.GraphParameter.Get<double>());
 			}
 			void Update(const double New) {
 				this->Val.Update(static_cast<int>(New));
@@ -110,10 +110,10 @@ private:
 			return Base::ResponsePercentDataProcessor::string.get().GetLength(Buffer);
 		}
 	public:
-		Processor(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), ProcessorName(), ProcessNum() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		Processor(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), ProcessorName(), ProcessNum() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& data) {
@@ -131,10 +131,10 @@ private:
 		double TotalMemory;
 		double MemoryUsed;
 	public:
-		Memory(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY + string.StringSize, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), TotalMemory(), MemoryUsed() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		Memory(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), TotalMemory(), MemoryUsed() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& data) {
@@ -151,10 +151,10 @@ private:
 		double DiskUsedVal;
 		double DiskTotal;
 	public:
-		DiskUsage(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY + string.StringSize, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), DiskTotal(), DiskUsedVal() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		DiskUsage(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), DiskTotal(), DiskUsedVal() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& diskused, const picojson::object& disktotal) {
@@ -170,10 +170,10 @@ private:
 	private:
 		Base::TransferPercentManager Transfer;
 	public:
-		DiskRead(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY + string.StringSize, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		DiskRead(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& DiskInfo) {
@@ -187,10 +187,10 @@ private:
 	private:
 		Base::TransferPercentManager Transfer;
 	public:
-		DiskWrite(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY + string.StringSize, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		DiskWrite(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& DiskInfo) {
@@ -204,10 +204,10 @@ private:
 	private:
 		Base::TransferPercentManager Transfer;
 	public:
-		NetworkReceive(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY + string.StringSize, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		NetworkReceive(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& NetworkInfo) {
@@ -221,10 +221,10 @@ private:
 	private:
 		Base::TransferPercentManager Transfer;
 	public:
-		NetworkSend(StringManager& string, const int DrawPosX, const int DrawPosY, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
-			: Base::ResponsePercentDataProcessor(string, DrawPosX, DrawPosY + string.StringSize, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
-		void Draw() const noexcept {
-			Base::ResponsePercentDataProcessor::Draw();
+		NetworkSend(StringManager& string, const std::string& FilePath, const std::string& BackgroundColor = "#ffffff")
+			: Base::ResponsePercentDataProcessor(string, FilePath, BackgroundColor, 10, 2.0 / 3.0, 1.0 / 3.0), Transfer() {}
+		void Draw(const int X, const int Y) const noexcept {
+			Base::ResponsePercentDataProcessor::Draw(X, Y);
 
 		}
 		void Update(const picojson::object& NetworkInfo) {
@@ -243,9 +243,9 @@ private:
 	//NetworkSend netSend;
 public:
 	ResponseProcessingManager(StringManager& string) :
-		processor(string, 0, 0, ".\\Graph\\Processor.png") {}
+		processor(string, ".\\Graph\\Processor.png") {}
 	void Draw() const noexcept {
-		this->processor.Draw();
+		this->processor.Draw(0, 0);
 	}
 	void Update(const picojson::object& obj) {
 		this->processor.Update(obj.at("cpu").get<picojson::object>());
