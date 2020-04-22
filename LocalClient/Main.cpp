@@ -33,7 +33,6 @@ void GetResourceInformation() {
 			std::lock_guard<std::mutex> lock(mutex);
 			res = std::move(resVal);
 		}
-		std::lock_guard<std::mutex> lock(mutex);
 		if (ProcessMessage() == -1) break;
 	}
 }
