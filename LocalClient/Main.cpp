@@ -9,6 +9,7 @@ namespace Config {
 	constexpr const TCHAR* WindowTitle = _T("リソースマネージャー");
 	constexpr int WindowWidth = 1280;
 	constexpr int WindowHeight = 720;
+	constexpr int StringSize = 18;
 }
 
 inline void InitDxLib() {
@@ -40,7 +41,7 @@ void GetResourceInformation() {
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	try {
 		InitDxLib();
-		StringManager string = StringManager("Font", 9, Color("#000000"));
+		StringManager string = StringManager("Font", Config::StringSize, Color("#000000"));
 		ResponseProcessingManager resmgr(string);
 		std::thread th(GetResourceInformation);
 		th.detach();
