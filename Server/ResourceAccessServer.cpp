@@ -134,6 +134,7 @@ void ResourceAccessServer::UpdateResources() {
 	this->processor.Update();
 	this->query.Update();
 	this->memory.Update();
+	for (auto& i : this->disk) i.Update();
 	for (auto& i : this->services) i.Update();
 }
 
