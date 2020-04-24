@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ServiceController.h"
 #include "IniRead.hpp"
-#include <picojson.h>
+#include <picojson/picojson.h>
 #include <unordered_map>
 
 class ServiceMonitor : private ServiceController {

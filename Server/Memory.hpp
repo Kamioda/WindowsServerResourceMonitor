@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <Windows.h>
-#include <picojson.h>
+#include <picojson/picojson.h>
 
 class Memory {
 private:

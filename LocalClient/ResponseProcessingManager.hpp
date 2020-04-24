@@ -9,7 +9,7 @@
 #include "StringController.hpp"
 #include "StringManager.hpp"
 #include "Color.hpp"
-#include <picojson.h>
+#include <picojson/picojson.h>
 #include <cmath>
 #include <algorithm>
 #include <unordered_map>
