@@ -4,12 +4,13 @@
 #include <mutex>
 std::mutex mutex;
 picojson::object res;
+bool Updated = false;
 
 namespace Config {
 	constexpr const TCHAR* WindowTitle = _T("リソースマネージャー");
 	constexpr int WindowWidth = 1280;
 	constexpr int WindowHeight = 720;
-	constexpr int StringSize = 18;
+	constexpr int StringSize = 16;
 }
 
 inline void InitDxLib() {
@@ -26,15 +27,33 @@ inline void InitDxLib() {
 	if (-1 == DxLib::SetDrawScreen(DX_SCREEN_BACK)) throw std::runtime_error("Error in SetDrawScreen function");
 }
 
-void GetResourceInformation() {
-	RequestManager request("localhost", 32768);
-	picojson::object resVal{};
-	while (1) {
-		if (const int Result = request.GetAll(resVal, "/v1/"); Result == 0) {
-			std::lock_guard<std::mutex> lock(mutex);
-			res = std::move(resVal);
+void GetResourceInformation(std::exception_ptr& eptr) {
+	try {
+		StringManager string = StringManager("Font", Config::StringSize, Color("#000000"));
+		ResponseProcessingManager resmgr(string);
+		auto valid = [&resmgr](const picojson::object& obj) {
+			try {
+				resmgr.Update(obj, false);
+				return true;
+			}
+			catch (std::exception) {
+				return false;
+			}
+		};
+		RequestManager request("localhost", 32768, 1000, 100);
+		picojson::object resVal{};
+		while (1) {
+			if (const int Result = request.GetAll(resVal, "/v1/"); Result == 0) {
+				if (!valid(resVal)) continue;
+				std::lock_guard<std::mutex> lock(mutex);
+				res = std::move(resVal);
+				Updated = true;
+			}
+			if (ProcessMessage() == -1) break;
 		}
-		if (ProcessMessage() == -1) break;
+	}
+	catch (...) {
+		eptr = std::current_exception();
 	}
 }
 
@@ -43,19 +62,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		InitDxLib();
 		StringManager string = StringManager("Font", Config::StringSize, Color("#000000"));
 		ResponseProcessingManager resmgr(string);
-		std::thread th(GetResourceInformation);
+		std::exception_ptr eptr{};
+		std::thread th(GetResourceInformation, std::ref(eptr));
 		th.detach();
+		while (res.size() == 0 && ProcessMessage() != -1) {}
+		size_t arrSize = 0;
 		while (ProcessMessage() != -1) {
+			if (eptr) std::rethrow_exception(eptr);
 			ClearDrawScreen();
 			resmgr.Draw();
 			ScreenFlip();
 			resmgr.ApplyViewParameter();
-			if (res.size() != 0) resmgr.Update(res);
+			arrSize = res.size();
+			if (arrSize != 0 && Updated) {
+				std::lock_guard<std::mutex> lock(mutex);
+				Updated = false;
+				resmgr.Update(res);
+			}
 		}
 	}
 	catch (const std::exception& er) {
-		std::string s = er.what();
-		UNREFERENCED_PARAMETER(s);
+		MessageBoxA(NULL, er.what(), "エラー", MB_ICONERROR | MB_OK);
 	}
+	DxLib_End();
+	return 0;
 }
 

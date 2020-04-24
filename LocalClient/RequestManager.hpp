@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "../Server/httplib.h"
+#include "StringEncode.hpp"
 #include <picojson.h>
 #include <chrono>
 
@@ -16,10 +17,12 @@ protected:
 	}
 public:
 	RequestManager(const std::string& Host, const int port, const long long Interval = 1000, const int ErrorMax = 5)
-		: client(Host, port), RequestInterval(Interval), LastRequest(), ErrorCount(), MaxErrorCount(ErrorMax), LastStatus(200) {}
-	int GetAll(picojson::object& RetRes, const std::string& Path) {
+		: client(Host, port), RequestInterval(Interval), LastRequest(GetCurrentClock()), ErrorCount(), MaxErrorCount(ErrorMax), LastStatus(200) {}
+	int GetAll(picojson::object& obj, const std::string& Path) {
 		const std::chrono::microseconds Now = GetCurrentClock();
-		if (this->LastRequest.count() != 0 && (this->LastRequest - Now).count() < this->RequestInterval) return 1;
+		if (const long long time = (Now - this->LastRequest).count(); time < this->RequestInterval) {
+			return 1;
+		}
 		auto res = this->client.Get(Path.c_str());
 		if (res == nullptr) return 1;
 		this->LastStatus = res->status;
@@ -32,8 +35,9 @@ public:
 		}
 		this->ErrorCount = 0;
 		picojson::value val{};
-		if (const std::string err = picojson::parse(val, res->body); !err.empty()) throw std::runtime_error(err);
-		RetRes = val.get<picojson::object>();
+		if (const std::string err = picojson::parse(val, UTF8_To_ShiftJIS(res->body)); !err.empty()) throw std::runtime_error(err);
+		obj = val.get<picojson::object>();
+		this->LastRequest = GetCurrentClock();
 		return 0;
 	}
 	void Post(const std::string& Path, const std::string& Body = std::string(), const std::string& ContentType = std::string()) {
