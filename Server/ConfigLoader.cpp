@@ -19,7 +19,6 @@ int ConfigLoader::GetNum(const std::string& Section, const std::string& Key, con
 	catch (std::exception) {
 		return DefaultValue;
 	}
-	//return GetPrivateProfileIntA(Section.c_str(), Key.c_str(), DefaultValue, this->IniFilePath.c_str());
 }
 
 std::string ConfigLoader::GetString(const std::string& Section, const std::string& Key, const std::string& Default) const {
