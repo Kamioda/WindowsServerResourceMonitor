@@ -26,11 +26,17 @@
     <Filter Include="ServiceSession\Base">
       <UniqueIdentifier>{4b476aa3-35ca-404c-801d-6974e0d311ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServiceSession\StringEncoding">
+      <UniqueIdentifier>{4c971e61-a0ef-486e-8de7-485537669321}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ServiceSession\Others">
       <UniqueIdentifier>{9eb4b86e-775a-4cb7-8d16-452e59f4907b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ServiceSession\StringEncoding">
-      <UniqueIdentifier>{4c971e61-a0ef-486e-8de7-485537669321}</UniqueIdentifier>
+    <Filter Include="ServiceSession\Auth">
+      <UniqueIdentifier>{e2b874f1-9b3d-4caf-925f-faba40a1bd5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Config">
+      <UniqueIdentifier>{d47ace3b-f15d-4de1-b67e-349a4e2a9100}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +97,16 @@
     <ClCompile Include="StringEncode.cpp">
       <Filter>ServiceSession\StringEncoding</Filter>
     </ClCompile>
+    <ClCompile Include="Auth.cpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="SHA512.cpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClCompile>
     <ClCompile Include="MSXMLRead.cpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="MSXMLWrite.cpp">
       <Filter>ServiceSession\Config</Filter>
     </ClCompile>
     <ClCompile Include="ComString.cpp">
@@ -99,6 +114,9 @@
     </ClCompile>
     <ClCompile Include="ConfigLoader.cpp">
       <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ToUpper.cpp">
+      <Filter>ServiceSession\Auth</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +195,16 @@
     <ClInclude Include="StringEncode.hpp">
       <Filter>ServiceSession\StringEncoding</Filter>
     </ClInclude>
+    <ClInclude Include="Auth.hpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="SHA512.hpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClInclude>
     <ClInclude Include="MSXMLRead.hpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="MSXMLWrite.hpp">
       <Filter>ServiceSession\Config</Filter>
     </ClInclude>
     <ClInclude Include="SafeRelease.hpp">
@@ -192,6 +219,9 @@
     <ClInclude Include="ConfigLoader.hpp">
       <Filter>ServiceSession\ResourceManager</Filter>
     </ClInclude>
+    <ClInclude Include="ToUpper.hpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="server.ini">
@@ -200,6 +230,9 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="server.xml">
+      <Filter>リソース ファイル</Filter>
+    </Xml>
+    <Xml Include="auth.xml">
       <Filter>リソース ファイル</Filter>
     </Xml>
   </ItemGroup>

@@ -213,6 +213,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Auth.cpp" />
     <ClCompile Include="CommandLineManager.cpp" />
     <ClCompile Include="ComString.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -235,9 +236,12 @@
     <ClCompile Include="ServiceControlManager.cpp" />
     <ClCompile Include="ServiceMainProcess.cpp" />
     <ClCompile Include="ServiceMonitor.cpp" />
+    <ClCompile Include="SHA512.cpp" />
     <ClCompile Include="StringEncode.cpp" />
+    <ClCompile Include="ToUpper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Auth.hpp" />
     <ClInclude Include="CommandLineManager.h" />
     <ClInclude Include="ComString.hpp" />
     <ClInclude Include="Console.h" />
@@ -252,6 +256,7 @@
     <ClInclude Include="JsonObject.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="MSXMLRead.hpp" />
+    <ClInclude Include="MSXMLWrite.hpp" />
     <ClInclude Include="Network.hpp" />
     <ClInclude Include="PDHAssistFunctions.hpp" />
     <ClInclude Include="PDHCounter.hpp" />
@@ -266,14 +271,17 @@
     <ClInclude Include="ServiceMainProcess.h" />
     <ClInclude Include="ServiceMonitor.hpp" />
     <ClInclude Include="ServiceStatus.h" />
+    <ClInclude Include="SHA512.hpp" />
     <ClInclude Include="Split.hpp" />
     <ClInclude Include="StringEncode.hpp" />
+    <ClInclude Include="ToUpper.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="server.ini" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="server.xml" />
+    <Xml Include="auth.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
