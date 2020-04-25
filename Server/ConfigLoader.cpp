@@ -4,7 +4,7 @@
 constexpr size_t ArrayBufferSize = 1024;
 constexpr const wchar_t* CommonRoot = L"configuration/";
 
-ConfigLoader::ConfigLoader(const std::string& ConfigFilePath) : xml(CommandLineManagerW::AlignCmdLineStrType(ConfigFilePath)){}
+ConfigLoader::ConfigLoader(const std::string& ConfigFilePath) : xml(CommandLineManagerW::AlignCmdLineStrType(ConfigFilePath)) {}
 
 std::vector<Node>::const_iterator ConfigLoader::find(const std::wstring& root) const {
 	return std::find_if(this->xml.begin(), this->xml.end(), [&root](const Node& n) { return n.NodePath == root; });

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "httplib.h"
+#include "ComInitManager.hpp"
 #include "ServiceMainProcess.h"
 #include "ServiceMonitor.hpp"
 #include "Processor.hpp"
@@ -10,6 +11,7 @@
 
 class ResourceAccessServer : public ServiceProcess {
 private:
+	ComInitManager commgr;
 	ConfigLoader conf;
 	ServiceControlManager SCM;
 	PDHQuery query;

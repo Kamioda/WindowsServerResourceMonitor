@@ -1,4 +1,5 @@
-﻿#include "SafeRelease.hpp"
+﻿#include "GetErrorMessage.hpp"
+#include "SafeRelease.hpp"
 #include "MSXMLRead.hpp"
 #include "ComString.hpp"
 #include <Shlwapi.h>
@@ -9,19 +10,11 @@
 namespace Win32Error {
 	// code copy from in FunctionType/Code/ExceptionManager.cpp in repositry "WindowsServiceCppLibrary"(Author:AinoMegumi)
 	std::string GetErrorMessage(const unsigned long ErrorCode) {
-		char* lpMessageBuffer = nullptr;
-		const DWORD length = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, ErrorCode, LANG_USER_DEFAULT, (LPSTR)&lpMessageBuffer, 0, NULL);
-		if (length == 0) throw std::runtime_error("エラーメッセージ取得時にエラーが発生しました。\nエラーコード : " + std::to_string(GetLastError()));
-		DWORD i = length - 3;
-		for (; '\r' != lpMessageBuffer[i] && '\n' != lpMessageBuffer[i] && '\0' != lpMessageBuffer[i]; i++);//改行文字削除
-		lpMessageBuffer[i] = '\0';
-		std::string s = "エラーコード : " + std::to_string(ErrorCode) + "　" + lpMessageBuffer;
-		LocalFree(lpMessageBuffer);
+		const std::string s = GetErrorMessageA(ErrorCode);
 		return s;
 	}
 	std::string GetErrorMessage() {
-		const DWORD ErrorCode = GetLastError();
-		return GetErrorMessage(ErrorCode);
+		return GetErrorMessageA();
 	}
 }
 

@@ -19,7 +19,8 @@ ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::Comm
 inline std::string ToJsonText(const picojson::object& obj) { 
 	std::stringstream ss{};
 	ss << picojson::value(obj);
-	return ShiftJIS_To_UTF8(ss.str());
+	return ss.str();
+	//return ShiftJIS_To_UTF8(ss.str());
 }
 
 inline void reqproc(Res res, const std::function<void()>& process) {
@@ -151,7 +152,7 @@ template<typename T>
 inline auto find(const std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
 
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
-	: ServiceProcess(args),
+	: ServiceProcess(args), commgr(),
 	conf(BaseClass::ChangeFullPath(".\\server.xml")),
 	SCM(), query(), processor(this->query), memory(), disk(), network(), services(), server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {

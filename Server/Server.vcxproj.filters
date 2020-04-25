@@ -118,6 +118,9 @@
     <ClCompile Include="ToUpper.cpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClCompile>
+    <ClCompile Include="ComInitManager.cpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h">
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="ToUpper.hpp">
       <Filter>ServiceSession\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="ComInitManager.hpp">
+      <Filter>ServiceSession\Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

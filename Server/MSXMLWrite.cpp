@@ -11,12 +11,12 @@ namespace XmlWriteEngine {
 		if (
 			const HRESULT hr = CoCreateInstance(CLSID_DOMDocument, nullptr, CLSCTX_INPROC_SERVER, IID_IXMLDOMDocument, (void**)&this->lpXmlDoc);
 			this->lpXmlDoc == nullptr
-			) throw std::runtime_error(GetErrorMessage(hr));
+			) throw std::runtime_error(GetErrorMessageA(hr));
 		IXMLDOMProcessingInstruction* lpProcInst;
 		ComString Target(L"xml");
 		ComString Xml(L"version='1.0' encoding='UTF-8'");
-		if (const HRESULT hr = this->lpXmlDoc->createProcessingInstruction(Target.get(), Xml.get(), &lpProcInst); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
-		if (const HRESULT hr = this->lpXmlDoc->appendChild(lpProcInst, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
+		if (const HRESULT hr = this->lpXmlDoc->createProcessingInstruction(Target.get(), Xml.get(), &lpProcInst); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+		if (const HRESULT hr = this->lpXmlDoc->appendChild(lpProcInst, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 		SafeRelease(lpProcInst);
 	}
 
@@ -44,13 +44,13 @@ namespace XmlWriteEngine {
 
 	XmlDomElement::XmlDomElement(const XmlDomDocument& lpXmlDoc, const std::wstring& key) {
 		ComString str(key);
-		if (const HRESULT hr = lpXmlDoc->createElement(str.get(), &this->element); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
+		if (const HRESULT hr = lpXmlDoc->createElement(str.get(), &this->element); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 	}
 
 	XmlDomElement::XmlDomElement(const XmlDomDocument& lpXmlDoc, const std::wstring& key, const std::wstring& data) : XmlDomElement(lpXmlDoc, key){
 		ComString str(data);
 		IXMLDOMText* txt = nullptr;
-		if (const HRESULT hr = lpXmlDoc->createTextNode(str.get(), &txt); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
+		if (const HRESULT hr = lpXmlDoc->createTextNode(str.get(), &txt); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 		this->element->appendChild(txt, NULL);
 		SafeRelease(txt);
 	}
@@ -89,7 +89,7 @@ void MSXMLWrite::AddToRootElement(const XmlWriteEngine::XmlDomElement& elem) {
 }
 
 void MSXMLWrite::Output(const std::wstring& FilePath) {
-	if (const HRESULT hr = this->lpXmlDoc->appendChild(this->lpRoot, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
-	if (const HRESULT hr = this->lpXmlDoc->put_async(VARIANT_FALSE); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
-	if (const HRESULT hr = this->lpXmlDoc->save(_variant_t(FilePath.c_str())); FAILED(hr)) throw std::runtime_error(GetErrorMessage(hr));
+	if (const HRESULT hr = this->lpXmlDoc->appendChild(this->lpRoot, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+	if (const HRESULT hr = this->lpXmlDoc->put_async(VARIANT_FALSE); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+	if (const HRESULT hr = this->lpXmlDoc->save(_variant_t(FilePath.c_str())); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 }
