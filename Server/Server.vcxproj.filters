@@ -58,9 +58,6 @@
     <ClCompile Include="Disk.cpp">
       <Filter>ServiceSession\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="IniRead.cpp">
-      <Filter>ServiceSession\ResourceManager</Filter>
-    </ClCompile>
     <ClCompile Include="Memory.cpp">
       <Filter>ServiceSession\ResourceManager</Filter>
     </ClCompile>
@@ -94,6 +91,15 @@
     <ClCompile Include="StringEncode.cpp">
       <Filter>ServiceSession\StringEncoding</Filter>
     </ClCompile>
+    <ClCompile Include="MSXMLRead.cpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="ComString.cpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigLoader.cpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h">
@@ -121,9 +127,6 @@
       <Filter>BaseCode</Filter>
     </ClInclude>
     <ClInclude Include="Disk.hpp">
-      <Filter>ServiceSession\ResourceManager</Filter>
-    </ClInclude>
-    <ClInclude Include="IniRead.hpp">
       <Filter>ServiceSession\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="Memory.hpp">
@@ -174,10 +177,30 @@
     <ClInclude Include="StringEncode.hpp">
       <Filter>ServiceSession\StringEncoding</Filter>
     </ClInclude>
+    <ClInclude Include="MSXMLRead.hpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeRelease.hpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="ComString.hpp">
+      <Filter>ServiceSession\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="GetErrorMessage.hpp">
+      <Filter>ServiceSession\Others</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigLoader.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="server.ini">
       <Filter>リソース ファイル</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="server.xml">
+      <Filter>リソース ファイル</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

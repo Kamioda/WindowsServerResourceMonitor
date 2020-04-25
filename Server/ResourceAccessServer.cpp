@@ -34,7 +34,7 @@ inline void reqproc(Res res, const std::function<void()>& process) {
 };
 
 void ResourceAccessServer::GetDiskResourceInformations() {
-	std::vector<std::string> NameList = SplitString(this->ini.GetString("system", "drives", "C:"), ',');
+	std::vector<std::string> NameList = SplitString(this->conf.GetString("system", "drives", "C:"), ',');
 	for (auto& i : NameList) {
 		try {
 			this->disk.emplace_back(this->query, i);
@@ -46,7 +46,7 @@ void ResourceAccessServer::GetDiskResourceInformations() {
 }
 
 void ResourceAccessServer::GetNetworkResourceInformations() {
-	const std::vector<std::string> DriveList = SplitString(this->ini.GetString("system", "netdevice", "Realtek PCIe GBE Family Controller"), ',');
+	const std::vector<std::string> DriveList = SplitString(this->conf.GetString("system", "netdevice", "Realtek PCIe GBE Family Controller"), ',');
 	for (const auto& i : DriveList) {
 		try {
 			this->network.emplace_back(this->query, i);
@@ -58,10 +58,10 @@ void ResourceAccessServer::GetNetworkResourceInformations() {
 }
 
 void ResourceAccessServer::GetServiceInformations() {
-	const std::string LoadTargets = this->ini.GetString("services", "target", "");
+	const std::string LoadTargets = this->conf.GetString("services", "target", "");
 	if (LoadTargets.empty()) return;
-	ServiceMonitor::InitStatusList(this->ini);
-	ServiceMonitor::InitServiceTypeList(this->ini);
+	ServiceMonitor::InitStatusList(this->conf);
+	ServiceMonitor::InitServiceTypeList(this->conf);
 	const std::vector<std::string> NameList = SplitString(LoadTargets, ',');
 	for (const auto& i : NameList) {
 		try {
@@ -74,9 +74,9 @@ void ResourceAccessServer::GetServiceInformations() {
 }
 
 
-std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->ini.GetString(Section, Key, Default); };
+std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->conf.GetString(Section, Key, Default); };
 
-int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->ini.GetNum(Section, Key, Default); };
+int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->conf.GetNum(Section, Key, Default); };
 
 template<class ResourceClass>
 inline void InsertArray(const std::vector<ResourceClass>& list, JsonObject& obj, const std::string& key) {
@@ -152,7 +152,7 @@ inline auto find(const std::vector<T>& v, const std::string& val) { return std::
 
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args),
-	ini(BaseClass::ChangeFullPath(".\\server.ini")),
+	conf(BaseClass::ChangeFullPath(".\\server.xml")),
 	SCM(), query(), processor(this->query), memory(), disk(), network(), services(), server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;

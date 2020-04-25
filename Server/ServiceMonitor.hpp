@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "ServiceController.h"
-#include "IniRead.hpp"
+#include "ConfigLoader.hpp"
 #include <picojson/picojson.h>
 #include <unordered_map>
 
@@ -16,8 +16,8 @@ private:
 	std::string GetTargetServiceDisplayName();
 public:
 	ServiceMonitor(ServiceControlManager& SCManager, const std::string& MonitorService);
-	static void InitStatusList(const IniRead& ini);
-	static void InitServiceTypeList(const IniRead& ini);
+	static void InitStatusList(const ConfigLoader& conf);
+	static void InitServiceTypeList(const ConfigLoader& conf);
 	void Run();
 	void Stop();
 	void Pause();

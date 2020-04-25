@@ -6,11 +6,11 @@
 #include "Memory.hpp"
 #include "Disk.hpp"
 #include "Network.hpp"
-#include "IniRead.hpp"
+#include "ConfigLoader.hpp"
 
 class ResourceAccessServer : public ServiceProcess {
 private:
-	IniRead ini;
+	ConfigLoader conf;
 	ServiceControlManager SCM;
 	PDHQuery query;
 	Processor processor;

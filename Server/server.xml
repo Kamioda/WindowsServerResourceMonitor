@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <url>
+    <domain>localhost</domain>
+    <port>32768</port>
+    <all>/v1/</all>
+    <cpu>/v1/cpu</cpu>
+    <memory>/v1/mem</memory>
+    <allstorage>/v1/disk/</allstorage>
+    <storage>/v1/disk/[A-Z]</storage>
+    <allnetwork>/v1/network/</allnetwork>
+    <network>/v1/network/eth[0-9]{1,}</network>
+    <allservice>/v1/service/</allservice>
+    <service>/v1/service/[0-9a-zA-Z\-_.%]{1,}</service>
+    <svcctrl><!--未実装-->
+      <start>/v1/service/start/[0-9a-zA-Z\-_.%]{1,}</start>
+      <stop>/v1/service/stop/[0-9a-zA-Z\-_.%]{1,}</stop>
+      <pause>/v1/service/pause/[0-9a-zA-Z\-_.%]{1,}</pause>
+      <continue>/v1/service/continue/[0-9a-zA-Z\-_.%]{1,}</continue>
+    </svcctrl>
+    <stop>/v1/stop</stop>
+    <pause>/v1/pause</pause>
+    <continue>/v1/continue</continue>
+  </url>
+  <system>
+    <drives>C:,D:,E:</drives>
+    <netdevice>Realtek PCIe GBE Family Controller</netdevice>
+  </system>
+  <application>
+    <looptime>500</looptime>
+    <authfile>.\auth.xml</authfile>
+  </application>
+  <services>
+    <target>IISADMIN,W3SVC,MySQL,postgresql-x64-12,wuauserv</target>
+    <status>
+      <running>RUNNING</running>
+      <stopped>STOPPED</stopped>
+      <paused>PAUSED</paused>
+      <startpending>START_PENDING</startpending>
+      <pausepending>PAUSE_PENDING</pausepending>
+      <continuepending>CONTINUE_PENDING</continuepending>
+      <stoppending>STOP_PENDING</stoppending>
+      <unsupported>Unsupported status on resource monitor server</unsupported>
+    </status>
+    <type>
+      <win32>WIN32</win32>
+      <own>Win32 Own Process</own>
+      <share>Win32 Share Process</share>
+      <kernel>Kernel Driver</kernel>
+      <filesys>File System</filesys>
+      <adapt>Adapter</adapt>
+      <userown>User Own Process</userown>
+      <usershare>User Share Process</usershare>
+      <unsupported>Unsupported type on resource monitor server</unsupported>
+    </type>
+  </services>
+</configuration>
