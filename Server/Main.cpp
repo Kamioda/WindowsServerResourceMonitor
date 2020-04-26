@@ -1,4 +1,4 @@
-#include "ServiceInformation.h"
+﻿#include "ServiceInformation.h"
 #include "ServiceMainProcess.h"
 #include "ConsoleMainProcess.h"
 #include "../Common/GetErrorMessage.hpp"
@@ -48,9 +48,8 @@ void WINAPI ServiceMain(DWORD dwArgc, LPTSTR lpszArgv[]) {
 		SvcStatusHandle = RegisterServiceCtrlHandlerEx(lpszArgv[0], HandlerEx, NULL);
 #endif
 		memset(&SvcStatus, 0, sizeof(SvcStatus));
-		ServiceProcess* SvcProcess = GetServiceProcessInstance(Service_CommandLineManager::GetCommandLineArg(GetServiceCommandLineArgs(dwArgc, lpszArgv)));
+		auto SvcProcess = GetServiceProcessInstance(Service_CommandLineManager::GetCommandLineArg(GetServiceCommandLineArgs(dwArgc, lpszArgv)));
 		SvcProcess->Service_MainProcess();
-		delete SvcProcess;
 	}
 	catch (...) {}
 	if (SvcStatus.dwCurrentState != SERVICE_STOPPED) SvcStatus.dwCurrentState = SERVICE_STOPPED;

@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "../Common/CommandLineManager.hpp"
+#include <memory>
 
 /*
 	Service_CommandLineManager
@@ -29,4 +30,4 @@ public:
 	ServiceProcess(const Service_CommandLineManager::CommandLineType& args, const bool CurrentDirectoryIsModulePath = false);
 };
 
-ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args);
+std::unique_ptr<ServiceProcess> GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args);
