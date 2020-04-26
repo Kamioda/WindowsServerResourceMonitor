@@ -25,7 +25,11 @@ std::string ConfigLoader::GetString(const std::string& Section, const std::strin
 	try {
 		const std::wstring TargetRoot = CommonRoot + CommandLineManagerW::AlignCmdLineStrType(Section + "/" + Key);
 		if (this->find(TargetRoot) == this->xml.end()) this->xml.Load(TargetRoot);
-		return CommandLineManagerA::AlignCmdLineStrType(this->xml[TargetRoot][0]);
+		std::string str{};
+		str.resize(1024);
+		str = CommandLineManagerA::AlignCmdLineStrType(this->xml[TargetRoot][0]);
+		str.resize(std::strlen(str.c_str()));
+		return str;
 	}
 	catch (std::exception) {
 		return Default;
