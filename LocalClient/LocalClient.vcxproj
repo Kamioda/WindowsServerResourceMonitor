@@ -151,7 +151,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CommandLineManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="StringEncode.cpp" />
   </ItemGroup>
@@ -160,7 +159,6 @@
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="GaugeValue.hpp" />
     <ClInclude Include="GaugeValueManager.hpp" />
-    <ClInclude Include="CommandLineManager.h" />
     <ClInclude Include="DxLibHandle.hpp" />
     <ClInclude Include="Number.hpp" />
     <ClInclude Include="PossibleChangeStatus.hpp" />

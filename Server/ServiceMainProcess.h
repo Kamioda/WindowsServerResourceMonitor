@@ -1,5 +1,5 @@
-﻿#pragma once
-#include "CommandLineManager.h"
+#pragma once
+#include "../Common/CommandLineManager.hpp"
 
 /*
 	Service_CommandLineManager

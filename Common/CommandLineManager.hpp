@@ -1,35 +1,8 @@
-﻿#include "../Server/GetErrorMessage.h"
-#include <Windows.h>
-#include <string>
+#pragma once
+#include "StringCvt.hpp"
 #include <vector>
 #include <functional>
 #include <type_traits>
-
-namespace string {
-	namespace converter {
-		namespace stl {
-			std::string to_bytes(const std::wstring& str) {
-				const int iBufferSize = WideCharToMultiByte(CP_OEMCP, 0, str.c_str(), -1, (char*)NULL, 0, NULL, NULL);
-				if (0 == iBufferSize) throw std::runtime_error(GetErrorMessageA());
-				char* cpMultiByte = new char[iBufferSize];
-				WideCharToMultiByte(CP_OEMCP, 0, str.c_str(), -1, cpMultiByte, iBufferSize, NULL, NULL);
-				std::string oRet(cpMultiByte, cpMultiByte + iBufferSize - 1);
-				delete[] cpMultiByte;
-				return oRet;
-			}
-
-			std::wstring from_bytes(const std::string& str) {
-				const int iBufferSize = MultiByteToWideChar(CP_OEMCP, 0, str.c_str(), -1, (wchar_t*)NULL, 0);
-				if (0 == iBufferSize) throw std::runtime_error(GetErrorMessageA());
-				wchar_t* cpWideChar = new wchar_t[iBufferSize];
-				MultiByteToWideChar(CP_OEMCP, 0, str.c_str(), -1, cpWideChar, iBufferSize);
-				std::wstring oRet(cpWideChar, cpWideChar + iBufferSize - 1);
-				delete[] cpWideChar;
-				return oRet;
-			}
-		}
-	}
-}
 
 namespace CmdLineMgrStringConverter {
 	template<typename OutCharType, typename InCharType> constexpr bool InAndOutAreSame = std::is_same_v<OutCharType, InCharType>;
@@ -83,19 +56,25 @@ namespace CommandLine {
 		}
 	}
 	namespace CharArg {
-		std::vector<std::string> GetCommandLineArg(const char* lpCmdLine) { return impl::GetCommandLineArg<char, char>(lpCmdLine); }
-		std::vector<std::string> GetCommandLineArg(const wchar_t* lpCmdLine) { return impl::GetCommandLineArg<char, wchar_t>(lpCmdLine); }
-		std::vector<std::string> GetCommandLineArg(const std::vector<std::string>& args) { return args; }
-		std::vector<std::string> GetCommandLineArg(const std::vector<std::wstring>& args) { return CmdLineMgrStringConverter::Convert<char, wchar_t>(args); }
-		std::string AlignCmdLineStrType(const std::string& str) { return str; }
-		std::string AlignCmdLineStrType(const std::wstring& str) { return string::converter::stl::to_bytes(str); }
+		inline std::vector<std::string> GetCommandLineArg(const char* lpCmdLine) { return impl::GetCommandLineArg<char, char>(lpCmdLine); }
+		inline std::vector<std::string> GetCommandLineArg(const wchar_t* lpCmdLine) { return impl::GetCommandLineArg<char, wchar_t>(lpCmdLine); }
+		inline std::vector<std::string> GetCommandLineArg(const std::vector<std::string>& args) { return args; }
+		inline std::vector<std::string> GetCommandLineArg(const std::vector<std::wstring>& args) { return CmdLineMgrStringConverter::Convert<char, wchar_t>(args); }
+		inline std::string AlignCmdLineStrType(const std::string& str) { return str; }
+		inline std::string AlignCmdLineStrType(const std::wstring& str) { return string::converter::stl::to_bytes(str); }
+		using CommandLineStringType = std::string;
+		using CommandLineType = std::vector<std::string>;
 	}
 	namespace WCharArg {
-		std::vector<std::wstring> GetCommandLineArg(const char* lpCmdLine) { return impl::GetCommandLineArg<wchar_t, char>(lpCmdLine); }
-		std::vector<std::wstring> GetCommandLineArg(const wchar_t* lpCmdLine) { return impl::GetCommandLineArg<wchar_t, wchar_t>(lpCmdLine); }
-		std::vector<std::wstring> GetCommandLineArg(const std::vector<std::string>& args) { return CmdLineMgrStringConverter::Convert<wchar_t, char>(args); }
-		std::vector<std::wstring> GetCommandLineArg(const std::vector<std::wstring>& args) { return args; }
-		std::wstring AlignCmdLineStrType(const std::string& str) { return string::converter::stl::from_bytes(str); }
-		std::wstring AlignCmdLineStrType(const std::wstring& str) { return str; }
+		inline std::vector<std::wstring> GetCommandLineArg(const char* lpCmdLine) { return impl::GetCommandLineArg<wchar_t, char>(lpCmdLine); }
+		inline std::vector<std::wstring> GetCommandLineArg(const wchar_t* lpCmdLine) { return impl::GetCommandLineArg<wchar_t, wchar_t>(lpCmdLine); }
+		inline std::vector<std::wstring> GetCommandLineArg(const std::vector<std::string>& args) { return CmdLineMgrStringConverter::Convert<wchar_t, char>(args); }
+		inline std::vector<std::wstring> GetCommandLineArg(const std::vector<std::wstring>& args) { return args; }
+		inline std::wstring AlignCmdLineStrType(const std::string& str) { return string::converter::stl::from_bytes(str); }
+		inline std::wstring AlignCmdLineStrType(const std::wstring& str) { return str; }
+		using CommandLineStringType = std::wstring;
+		using CommandLineType = std::vector<std::wstring>;
 	}
 }
+namespace CommandLineManagerA = CommandLine::CharArg;
+namespace CommandLineManagerW = CommandLine::WCharArg;

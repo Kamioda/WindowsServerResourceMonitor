@@ -215,7 +215,6 @@
   <ItemGroup>
     <ClCompile Include="Auth.cpp" />
     <ClCompile Include="ComInitManager.cpp" />
-    <ClCompile Include="CommandLineManager.cpp" />
     <ClCompile Include="ComString.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="ConsoleMainProcess.cpp" />
@@ -243,12 +242,10 @@
   <ItemGroup>
     <ClInclude Include="Auth.hpp" />
     <ClInclude Include="ComInitManager.hpp" />
-    <ClInclude Include="CommandLineManager.h" />
     <ClInclude Include="ComString.hpp" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleMainProcess.h" />
     <ClInclude Include="Disk.hpp" />
-    <ClInclude Include="GetErrorMessage.h" />
     <ClInclude Include="GetErrorMessage.hpp" />
     <ClInclude Include="HandleManager.h" />
     <ClInclude Include="httplib.h" />

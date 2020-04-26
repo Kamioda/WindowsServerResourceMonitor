@@ -1,7 +1,7 @@
 ﻿#include "ServiceControl.h"
-#include "CommandLineManager.h"
+#include "../Common/GetErrorMessage.hpp"
+#include "../Common/CommandLineManager.hpp"
 #include "ServiceInformation.h"
-#include "GetErrorMessage.h"
 #include <ShlObj.h>
 #include <string>
 #include <stdexcept>

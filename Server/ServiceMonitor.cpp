@@ -1,4 +1,4 @@
-﻿#include "ServiceMonitor.hpp"
+#include "ServiceMonitor.hpp"
 #include "JsonObject.hpp"
 #include <array>
 
@@ -85,8 +85,8 @@ picojson::object ServiceMonitor::Get() const {
 //	return std::string();
 //}
 
-#include "CommandLineManager.h"
-#include "GetErrorMessage.h"
+#include "../Common/GetErrorMessage.hpp"
+#include "../Common/CommandLineManager.hpp"
 
 std::string ServiceMonitor::GetTargetServiceDisplayName() {
 	DWORD Size{};

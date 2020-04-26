@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CommandLineManager.h"
+#include "../Common/CommandLineManager.hpp"
 
 namespace CommandLineManager = CommandLineManagerA;
 #ifdef UNICODE

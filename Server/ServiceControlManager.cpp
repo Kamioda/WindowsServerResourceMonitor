@@ -1,5 +1,5 @@
 ﻿#include "ServiceControlManager.h"
-#include "GetErrorMessage.h"
+#include "../Common/GetErrorMessage.hpp"
 #include <stdexcept>
 
 ServiceControlManager::ServiceControlManager() 

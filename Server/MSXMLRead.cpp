@@ -1,4 +1,6 @@
-﻿#include "GetErrorMessage.hpp"
+﻿#include "../Common/GetErrorMessage.hpp"
+#include "../Common/StringCvt.hpp"
+#include "../Common/CommandLineManager.hpp"
 #include "SafeRelease.hpp"
 #include "MSXMLRead.hpp"
 #include "ComString.hpp"
@@ -6,39 +8,6 @@
 #include <type_traits>
 #include <stdexcept>
 #pragma comment(lib, "Shlwapi.lib")
-
-namespace Win32Error {
-	// code copy from in FunctionType/Code/ExceptionManager.cpp in repositry "WindowsServiceCppLibrary"(Author:AinoMegumi)
-	std::string GetErrorMessage(const unsigned long ErrorCode) {
-		const std::string s = GetErrorMessageA(ErrorCode);
-		return s;
-	}
-	std::string GetErrorMessage() {
-		return GetErrorMessageA();
-	}
-}
-
-namespace Win32LetterConvert {
-	// code copy from Storage.cpp in repositry "DefeatMonster.old"(Author:AinoMegumi)
-	std::string WStringToString(const std::wstring oWString) {
-		const int iBufferSize = WideCharToMultiByte(CP_OEMCP, 0, oWString.c_str(), -1, (char *)NULL, 0, NULL, NULL);
-		if (0 == iBufferSize) throw std::runtime_error(Win32Error::GetErrorMessage());
-		char* cpMultiByte = new char[iBufferSize];
-		WideCharToMultiByte(CP_OEMCP, 0, oWString.c_str(), -1, cpMultiByte, iBufferSize, NULL, NULL);
-		std::string oRet(cpMultiByte, cpMultiByte + iBufferSize - 1);
-		delete[] cpMultiByte;
-		return oRet;
-	}
-	std::wstring StringToWString(const std::string oString) {
-		const int iBufferSize = MultiByteToWideChar(CP_OEMCP, 0, oString.c_str(), -1, (wchar_t*)NULL, 0);
-		if (0 == iBufferSize) throw std::runtime_error(Win32Error::GetErrorMessage());
-		wchar_t* cpWideChar = new wchar_t[iBufferSize];
-		MultiByteToWideChar(CP_OEMCP, 0, oString.c_str(), -1, cpWideChar, iBufferSize);
-		std::wstring oRet(cpWideChar, cpWideChar + iBufferSize - 1);
-		delete[] cpWideChar;
-		return oRet;
-	}
-}
 
 namespace Replace {
 	// code copy from make_array.h in repositry xml_text_cooking_quiz(Author:yumetodo)
@@ -76,13 +45,13 @@ Node::~Node() {
 MSXMLRead::MSXMLRead(const std::basic_string<TCHAR> FileName, const std::basic_string<TCHAR> CommonPath) {
 	if (FALSE == PathFileExists(FileName.c_str())) throw std::runtime_error(
 #if defined(UNICODE)
-		Win32LetterConvert::WStringToString(FileName)
+		string::converter::stl::to_bytes(FileName)
 #else
 		FileName
 #endif
 		+ " : file is not found.");
 	const HRESULT ErrorCode = CoCreateInstance(CLSID_DOMDocument, nullptr, CLSCTX_INPROC_SERVER, IID_IXMLDOMDocument, (void**)&this->lpXmlDoc);
-	if (this->lpXmlDoc == nullptr) throw std::runtime_error("xml open failed.\nCause : " + Win32Error::GetErrorMessage(ErrorCode));
+	if (this->lpXmlDoc == nullptr) throw std::runtime_error("xml open failed.\nCause : " + GetErrorMessageA(ErrorCode));
 	VARIANT_BOOL Result;
 	this->lpXmlDoc->put_async(VARIANT_FALSE);
 	this->lpXmlDoc->load(_variant_t(FileName.c_str()), &Result);
@@ -148,9 +117,9 @@ Node MSXMLRead::operator [] (const std::basic_string<TCHAR> NodePath) const {
 	for (const auto& i : this->Data) if (i.NodePath == this->CommonPath + NodePath) return i;
 	throw std::runtime_error(
 #if defined(UNICODE)
-			Win32LetterConvert::WStringToString(this->CommonPath + NodePath)
+		string::converter::stl::to_bytes(this->CommonPath + NodePath)
 #else
-			this->CommonPath + NodePath
+		this->CommonPath + NodePath
 #endif
-			+ " : not found such node.");
+		+ " : not found such node.");
 }
