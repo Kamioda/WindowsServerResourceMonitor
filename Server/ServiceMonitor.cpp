@@ -68,18 +68,42 @@ picojson::object ServiceMonitor::Get() const {
 	return obj;
 }
 
+//std::string ServiceMonitor::GetTargetServiceDisplayName() {
+//	DWORD Size{};
+//	GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), nullptr, &Size);
+//	size_t BufSize = Size;
+//	if (Size > 0) {
+//		char* Buffer = new char[BufSize + 1];
+//		ZeroMemory(Buffer, BufSize + 1);
+//		if (FALSE != GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), Buffer, &Size)) {
+//			std::string str{};
+//			str.reserve(BufSize + 1);
+//			str = Buffer;
+//			return str;
+//		}
+//	}
+//	return std::string();
+//}
+
+#include "CommandLineManager.h"
+#include "GetErrorMessage.h"
+
 std::string ServiceMonitor::GetTargetServiceDisplayName() {
 	DWORD Size{};
-	GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), nullptr, &Size);
-	size_t BufSize = Size;
-	if (Size > 0) {
-		char* Buffer = new char[BufSize + 1];
-		ZeroMemory(Buffer, BufSize + 1);
-		if (FALSE != GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), Buffer, &Size)) {
-			std::string str{};
-			str.reserve(BufSize + 1);
-			str = Buffer;
-			return str;
+	const std::wstring lpServiceName = CommandLineManagerW::AlignCmdLineStrType(this->ServiceName).c_str();
+	GetServiceDisplayNameW(ServiceController::SCM.get(), lpServiceName.c_str(), nullptr, &Size);
+	if (Size++ > 0) {
+		std::wstring buf{};
+		buf.resize(Size);
+		if (FALSE != GetServiceDisplayNameW(ServiceController::SCM.get(), lpServiceName.c_str(), &buf[0], &Size)) {
+			int iBufferSize = WideCharToMultiByte(CP_UTF8, 0, buf.c_str(), -1, NULL, 0, NULL, NULL);
+			if (0 == iBufferSize) throw std::runtime_error(GetErrorMessageA());
+			iBufferSize++;
+			std::string strbuf{};
+			strbuf.resize(iBufferSize);
+			WideCharToMultiByte(CP_UTF8, 0, buf.c_str(), -1, &strbuf[0], iBufferSize, NULL, NULL);
+			strbuf.resize(std::strlen(strbuf.c_str()));
+			return strbuf;
 		}
 	}
 	return std::string();
