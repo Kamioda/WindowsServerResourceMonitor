@@ -21,5 +21,41 @@ namespace MSXML {
 			template<typename F = double, std::enable_if_t<std::is_floating_point_v<F>, std::nullptr_t> = nullptr>
 			inline F at(const long count) const { return static_cast<F>(std::stold(Base::at(count))); }
 		};
+
+		class string : public std::vector<std::string> {
+		private:
+			using Base = std::vector<std::string>;
+		public:
+			string(const wstring& w) {
+
+			}
+		};
+
+		template<typename T = int, std::enable_if_t<std::is_signed_v<T> && std::is_integral_v<T>, std::nullptr_t> = nullptr>
+		class number : public std::vector<T> {
+		private:
+			using Base = std::vector<T>;
+		public:
+			number() : Base() {}
+			number(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stoll(i))); }
+		};
+
+		template<typename T = unsigned int, std::enable_if_t<std::is_unsigned_v<T>&& std::is_integral_v<T>, std::nullptr_t> = nullptr>
+		class number : public std::vector<T> {
+		private:
+			using Base = std::vector<T>;
+		public:
+			number() : Base() {}
+			number(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stoull(i))); }
+		};
+
+		template<typename T = double, std::enable_if_t<std::is_floating_point_v<T>, std::nullptr_t> = nullptr>
+		class number : public std::vector<T> {
+		private:
+			using Base = std::vector<T>;
+		public:
+			number() : Base() {}
+			number(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stold(i))); }
+		};
 	}
 }

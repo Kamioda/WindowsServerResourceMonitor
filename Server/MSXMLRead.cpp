@@ -21,7 +21,7 @@ namespace MSXML {
 		if (const HRESULT hr = this->lpXmlDoc->load(_variant_t(FilePath.c_str()), &Result); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 	}
 
-	XmlDataManager::text Read::Load(const std::wstring& Path) {
+	XmlDataManager::wstring Read::LoadW(const std::wstring& Path) {
 		if (Base::find(Path) == Base::end()) Base::emplace(this->lpXmlDoc, Path);
 		return Base::operator[](Path);
 	}
