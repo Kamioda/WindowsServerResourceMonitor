@@ -3,9 +3,9 @@
 #include <sstream>
 #include <iomanip>
 #ifdef _DEBUG
-#pragma comment(lib, "libcrypto64MDd.lib")
+#pragma comment(lib, "libcrypto.lib")
 #else
-#pragma comment(lib, "libcrypto64MD.lib")
+#pragma comment(lib, "libcrypto.lib")
 #endif
 
 std::string ToSHA512String(const std::string& str) {
