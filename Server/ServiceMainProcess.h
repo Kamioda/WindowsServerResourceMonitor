@@ -21,6 +21,7 @@ protected:
 	Service_CommandLineManager::CommandLineStringType ChangeFullPath(const Service_CommandLineManager::CommandLineStringType& Path) const noexcept;
 public:
 	virtual void Service_MainProcess() = 0;
+	virtual ~ServiceProcess() = default;
 public:
 	// Arguments
 	// args                         : Argument of GetServiceProcessInstance function
