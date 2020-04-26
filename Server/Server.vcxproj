@@ -239,6 +239,9 @@
     <ClCompile Include="ServiceMonitor.cpp" />
     <ClCompile Include="SHA512.cpp" />
     <ClCompile Include="ToUpper.cpp" />
+    <ClCompile Include="XmlDomDocument.cpp" />
+    <ClCompile Include="XmlDomElement.cpp" />
+    <ClCompile Include="XmlDomNodeList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Auth.hpp" />
@@ -275,6 +278,10 @@
     <ClInclude Include="SHA512.hpp" />
     <ClInclude Include="Split.hpp" />
     <ClInclude Include="ToUpper.hpp" />
+    <ClInclude Include="XmlDomDocument.hpp" />
+    <ClInclude Include="XmlDomElement.hpp" />
+    <ClInclude Include="XmlDomNodeList.hpp" />
+    <ClInclude Include="XmlDataManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="server.ini" />

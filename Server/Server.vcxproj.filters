@@ -35,6 +35,24 @@
     <Filter Include="ServiceSession\Config">
       <UniqueIdentifier>{d47ace3b-f15d-4de1-b67e-349a4e2a9100}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServiceSession\Config\MSXML">
+      <UniqueIdentifier>{ccf22970-5c6e-4590-882d-8b0e14d46c24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Config\MSXML\XmlDomDocument">
+      <UniqueIdentifier>{599ab3ac-f6ae-4828-accd-e8e3232121eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Config\MSXML\XmlDomElement">
+      <UniqueIdentifier>{b2ff322e-8b8c-4ae9-ac51-116ca60ac607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Config\MSXML\XmlDomNodeList">
+      <UniqueIdentifier>{846b0331-a445-4c6d-b307-b88c49775f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Config\MSXML\XmlDataManager">
+      <UniqueIdentifier>{ca152853-32da-48c1-84b5-09bd393a2c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceSession\Config\MSXML\Reader">
+      <UniqueIdentifier>{192e5389-fb92-49e5-9dcf-d3e80064f54f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineManager.cpp">
@@ -97,12 +115,6 @@
     <ClCompile Include="SHA512.cpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClCompile>
-    <ClCompile Include="MSXMLRead.cpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClCompile>
-    <ClCompile Include="MSXMLWrite.cpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClCompile>
     <ClCompile Include="ComString.cpp">
       <Filter>ServiceSession\Config</Filter>
     </ClCompile>
@@ -114,6 +126,21 @@
     </ClCompile>
     <ClCompile Include="ComInitManager.cpp">
       <Filter>ServiceSession\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="MSXMLWrite.cpp">
+      <Filter>ServiceSession\Config\MSXML</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlDomDocument.cpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDomDocument</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlDomElement.cpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDomElement</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlDomNodeList.cpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDomNodeList</Filter>
+    </ClCompile>
+    <ClCompile Include="MSXMLRead.cpp">
+      <Filter>ServiceSession\Config\MSXML\Reader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,12 +222,6 @@
     <ClInclude Include="SHA512.hpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClInclude>
-    <ClInclude Include="MSXMLRead.hpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClInclude>
-    <ClInclude Include="MSXMLWrite.hpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClInclude>
     <ClInclude Include="SafeRelease.hpp">
       <Filter>ServiceSession\Config</Filter>
     </ClInclude>
@@ -218,6 +239,24 @@
     </ClInclude>
     <ClInclude Include="ComInitManager.hpp">
       <Filter>ServiceSession\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="MSXMLWrite.hpp">
+      <Filter>ServiceSession\Config\MSXML</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlDomDocument.hpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDomDocument</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlDomElement.hpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDomElement</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlDomNodeList.hpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDomNodeList</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlDataManager.hpp">
+      <Filter>ServiceSession\Config\MSXML\XmlDataManager</Filter>
+    </ClInclude>
+    <ClInclude Include="MSXMLRead.hpp">
+      <Filter>ServiceSession\Config\MSXML\Reader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

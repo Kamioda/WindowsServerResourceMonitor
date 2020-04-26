@@ -1,156 +1,28 @@
-﻿#include "GetErrorMessage.hpp"
-#include "SafeRelease.hpp"
-#include "MSXMLRead.hpp"
-#include "ComString.hpp"
-#include <Shlwapi.h>
-#include <type_traits>
-#include <stdexcept>
-#pragma comment(lib, "Shlwapi.lib")
+﻿#include "MSXMLRead.hpp"
+#include "HandleManager.h"
+#include "GetErrorMessage.hpp"
+#include <Windows.h>
+#include <comdef.h>
 
-namespace Win32Error {
-	// code copy from in FunctionType/Code/ExceptionManager.cpp in repositry "WindowsServiceCppLibrary"(Author:AinoMegumi)
-	std::string GetErrorMessage(const unsigned long ErrorCode) {
-		const std::string s = GetErrorMessageA(ErrorCode);
-		return s;
-	}
-	std::string GetErrorMessage() {
-		return GetErrorMessageA();
-	}
-}
-
-namespace Win32LetterConvert {
-	// code copy from Storage.cpp in repositry "DefeatMonster.old"(Author:AinoMegumi)
-	std::string WStringToString(const std::wstring oWString) {
-		const int iBufferSize = WideCharToMultiByte(CP_OEMCP, 0, oWString.c_str(), -1, (char *)NULL, 0, NULL, NULL);
-		if (0 == iBufferSize) throw std::runtime_error(Win32Error::GetErrorMessage());
-		char* cpMultiByte = new char[iBufferSize];
-		WideCharToMultiByte(CP_OEMCP, 0, oWString.c_str(), -1, cpMultiByte, iBufferSize, NULL, NULL);
-		std::string oRet(cpMultiByte, cpMultiByte + iBufferSize - 1);
-		delete[] cpMultiByte;
-		return oRet;
-	}
-	std::wstring StringToWString(const std::string oString) {
-		const int iBufferSize = MultiByteToWideChar(CP_OEMCP, 0, oString.c_str(), -1, (wchar_t*)NULL, 0);
-		if (0 == iBufferSize) throw std::runtime_error(Win32Error::GetErrorMessage());
-		wchar_t* cpWideChar = new wchar_t[iBufferSize];
-		MultiByteToWideChar(CP_OEMCP, 0, oString.c_str(), -1, cpWideChar, iBufferSize);
-		std::wstring oRet(cpWideChar, cpWideChar + iBufferSize - 1);
-		delete[] cpWideChar;
-		return oRet;
-	}
-}
-
-namespace Replace {
-	// code copy from make_array.h in repositry xml_text_cooking_quiz(Author:yumetodo)
-	std::basic_string<TCHAR> LF(std::basic_string<TCHAR>&& Str) {
-		if (_T("empty") == Str) return _T("");
-		const std::basic_string<TCHAR> ReplaceTarget = _T("\\n");
-		const std::basic_string<TCHAR> AfterReplace = _T("\n");
-		for (size_t pos = Str.find(ReplaceTarget); std::string::npos != pos; pos = Str.find(ReplaceTarget, pos + AfterReplace.length())) {
-			Str.replace(pos, ReplaceTarget.length(), AfterReplace);
+namespace MSXML {
+	class FileFindHandleManager : public windows::impl::HandleManager<HANDLE> {
+	public:
+		FileFindHandleManager(HANDLE&& h) : windows::impl::HandleManager<HANDLE>(std::move(h), [](HANDLE& h) { FindClose(h); }) {}
+	};
+	Read::Read(const std::wstring& FilePath) : lpXmlDoc() {
+		{
+			WIN32_FIND_DATAW FindData{};
+			if (FileFindHandleManager hFind = FindFirstFileW(FilePath.c_str(), &FindData); INVALID_HANDLE_VALUE == hFind) 
+				throw std::runtime_error(GetErrorMessageA());
+			if (FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) throw std::runtime_error("Reserved path is directory");
 		}
-		return Str;
+		VARIANT_BOOL Result{};
+		if (const HRESULT hr = this->lpXmlDoc->put_async(VARIANT_FALSE); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+		if (const HRESULT hr = this->lpXmlDoc->load(_variant_t(FilePath.c_str()), &Result); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 	}
-}
 
-std::basic_string<TCHAR> Node::operator [] (const long Count) const {
-	IXMLDOMNode* lpItem;
-	this->NodeList->get_item(Count, &lpItem);
-	BSTR Strings;
-	lpItem->get_text(&Strings);
-	std::basic_string<TCHAR> Str = Replace::LF(
-#if defined(UNICODE)
-		Strings
-#else
-		Win32LetterConvert::WStringToString(Strings)
-#endif
-	);
-	Str.resize(std::char_traits<TCHAR>::length(Str.c_str()));
-	return Str;
-}
-
-Node::~Node() {
-	SafeRelease(this->NodeList);
-}
-
-MSXMLRead::MSXMLRead(const std::basic_string<TCHAR> FileName, const std::basic_string<TCHAR> CommonPath) {
-	if (FALSE == PathFileExists(FileName.c_str())) throw std::runtime_error(
-#if defined(UNICODE)
-		Win32LetterConvert::WStringToString(FileName)
-#else
-		FileName
-#endif
-		+ " : file is not found.");
-	const HRESULT ErrorCode = CoCreateInstance(CLSID_DOMDocument, nullptr, CLSCTX_INPROC_SERVER, IID_IXMLDOMDocument, (void**)&this->lpXmlDoc);
-	if (this->lpXmlDoc == nullptr) throw std::runtime_error("xml open failed.\nCause : " + Win32Error::GetErrorMessage(ErrorCode));
-	VARIANT_BOOL Result;
-	this->lpXmlDoc->put_async(VARIANT_FALSE);
-	this->lpXmlDoc->load(_variant_t(FileName.c_str()), &Result);
-	if (0 == Result) {
-		this->lpXmlDoc->Release();
-		throw std::runtime_error("xml read failed");
+	XmlDataManager::text Read::Load(const std::wstring& Path) {
+		if (Base::find(Path) == Base::end()) Base::emplace(this->lpXmlDoc, Path);
+		return Base::operator[](Path);
 	}
-	this->CommonPath = CommonPath;
-}
-
-void MSXMLRead::Release() {
-	SafeRelease(this->lpXmlDoc);
-	this->Data.clear();
-}
-
-MSXMLRead::~MSXMLRead() {
-	this->Release();
-}
-
-IXMLDOMNodeList* MSXMLRead::XmlSetNodeList(const std::basic_string<TCHAR> NodePath, long &Length) {
-	ComString Path( 
-#if defined(UNICODE)
-		this->CommonPath + NodePath
-#else
-		Win32LetterConvert::StringToWString(this->CommonPath + NodePath)
-#endif
-	);
-	if (NodePath.empty() || 0 == SysStringLen(Path.get())) return NULL;
-	IXMLDOMNodeList* lpNodeList;
-	if (E_INVALIDARG == this->lpXmlDoc->selectNodes(Path.get(), &lpNodeList)) {
-		lpNodeList->Release();
-		return NULL;
-	}
-	lpNodeList->get_length(&Length);
-	return lpNodeList;
-}
-
-long MSXMLRead::CheckLength(const std::basic_string<TCHAR> NodePath) {
-	long Length = 0;
-	IXMLDOMNodeList* list = XmlSetNodeList(this->CommonPath + NodePath, Length);
-	if (NULL == list) {
-		list->Release();
-		throw std::runtime_error("xml read failed");
-	}
-	list->Release();
-	return Length;
-}
-
-void MSXMLRead::LoadFromFile(const std::basic_string<TCHAR> NodePath) {
-	Node node{};
-	node.NodePath = this->CommonPath + NodePath;
-	node.NodePath.resize(std::char_traits<TCHAR>::length(node.NodePath.c_str()));
-	node.NodeList = this->XmlSetNodeList(NodePath, node.Length);
-	this->Data.emplace_back(node);
-}
-
-void MSXMLRead::ChangeCommonPath(const std::basic_string<TCHAR> NewRoot) {
-	this->clear();
-	this->CommonPath = NewRoot;
-}
-
-Node MSXMLRead::operator [] (const std::basic_string<TCHAR> NodePath) const {
-	for (const auto& i : this->Data) if (i.NodePath == this->CommonPath + NodePath) return i;
-	throw std::runtime_error(
-#if defined(UNICODE)
-			Win32LetterConvert::WStringToString(this->CommonPath + NodePath)
-#else
-			this->CommonPath + NodePath
-#endif
-			+ " : not found such node.");
 }

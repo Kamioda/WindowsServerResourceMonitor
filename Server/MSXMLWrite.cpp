@@ -3,8 +3,6 @@
 #include "MSXMLWrite.hpp"
 #include "ComString.hpp"
 #include <comdef.h>
-#define _B(str) SysAllocString(str)
-#define _BFREE(str) SysFreeString(str)
 
 namespace XmlWriteEngine {
 	XmlDomDocument::XmlDomDocument() {
@@ -12,12 +10,6 @@ namespace XmlWriteEngine {
 			const HRESULT hr = CoCreateInstance(CLSID_DOMDocument, nullptr, CLSCTX_INPROC_SERVER, IID_IXMLDOMDocument, (void**)&this->lpXmlDoc);
 			this->lpXmlDoc == nullptr
 			) throw std::runtime_error(GetErrorMessageA(hr));
-		IXMLDOMProcessingInstruction* lpProcInst;
-		ComString Target(L"xml");
-		ComString Xml(L"version='1.0' encoding='UTF-8'");
-		if (const HRESULT hr = this->lpXmlDoc->createProcessingInstruction(Target.get(), Xml.get(), &lpProcInst); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
-		if (const HRESULT hr = this->lpXmlDoc->appendChild(lpProcInst, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
-		SafeRelease(lpProcInst);
 	}
 
 	XmlDomDocument::XmlDomDocument(std::nullptr_t) : lpXmlDoc(nullptr) {}
@@ -74,7 +66,15 @@ namespace XmlWriteEngine {
 	XmlDomElement::operator IXMLDOMElement* () const noexcept { return this->element; }
 }
 
-MSXMLWrite::MSXMLWrite(const std::wstring& Root) : lpXmlDoc(), lpRoot(this->lpXmlDoc, Root) {}
+MSXMLWrite::MSXMLWrite(const std::wstring& Root) {
+	IXMLDOMProcessingInstruction* lpProcInst;
+	ComString Target(L"xml");
+	ComString Xml(L"version='1.0' encoding='UTF-8'");
+	if (const HRESULT hr = this->lpXmlDoc->createProcessingInstruction(Target.get(), Xml.get(), &lpProcInst); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+	if (const HRESULT hr = this->lpXmlDoc->appendChild(lpProcInst, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+	SafeRelease(lpProcInst);
+	this->lpRoot = std::move(XmlWriteEngine::XmlDomElement(this->lpXmlDoc, Root));
+}
 
 XmlWriteEngine::XmlDomElement MSXMLWrite::GenerateElement(const std::wstring& key) {
 	return XmlWriteEngine::XmlDomElement(this->lpXmlDoc, key);
