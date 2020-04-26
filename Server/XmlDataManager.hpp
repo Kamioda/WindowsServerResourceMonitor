@@ -13,7 +13,7 @@ namespace MSXML {
 			wstring() : Base() {}
 			wstring(const XmlDomDocument& lpXmlDoc, const std::wstring& NodePath) {
 				XmlDomNodeList nodeList(lpXmlDoc, NodePath);
-				for (long i = 0; nodeList.size(); i++) Base::emplace_back(nodeList.Get(i));
+				for (long i = 0; i < nodeList.size(); i++) Base::emplace_back(nodeList.Get(i));
 			}
 			template<typename I = int, std::enable_if_t<std::is_integral_v<I>&& std::is_signed_v<I>, std::nullptr_t> = nullptr>
 			inline I at(const size_t count) const { return static_cast<I>(std::stoll(Base::at(count))); }
