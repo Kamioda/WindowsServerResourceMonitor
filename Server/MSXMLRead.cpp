@@ -24,7 +24,7 @@ namespace MSXML {
 	}
 
 	XmlDataManager::wstring Read::GetW(const std::wstring& Path) {
-		if (Base::find(Path) == Base::end()) Base::emplace(this->lpXmlDoc, Path);
+		if (Base::find(Path) == Base::end()) Base::emplace(Path, XmlDataManager::wstring(this->lpXmlDoc, Path));
 		return Base::operator[](Path);
 	}
 }

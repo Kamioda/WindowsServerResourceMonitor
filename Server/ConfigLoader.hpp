@@ -4,8 +4,7 @@
 
 class ConfigLoader {
 private:
-	mutable MSXMLRead xml;
-	std::vector<Node>::const_iterator find(const std::wstring& root) const;
+	mutable MSXML::Read xml;
 public:
 	ConfigLoader() = default;
 	ConfigLoader(const std::string& ConfigFilePath);

@@ -21,10 +21,10 @@ namespace MSXML {
 		SafeRelease(this->list);
 	}
 
-	XmlDomNodeList::XmlDomNodeList(XmlDomNodeList&& x)
+	XmlDomNodeList::XmlDomNodeList(XmlDomNodeList&& x) noexcept
 		: list(x.list), length(x.length) { x.list = nullptr; }
 
-	XmlDomNodeList& XmlDomNodeList::operator = (XmlDomNodeList&& x) {
+	XmlDomNodeList& XmlDomNodeList::operator = (XmlDomNodeList&& x) noexcept {
 		this->list = x.list;
 		this->length = x.length;
 		x.list = nullptr;

@@ -17,9 +17,8 @@ AuthManager::AuthManager(const std::string& AuthInfoFilePath, const std::string&
 AuthManager::AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root) 
 	: AuthInfoFilePath(AuthInfoFilePath), Root(Root), AuthInformation(), mt(InitEngine()), StartAuthDataSize() {
 	if (FALSE == PathFileExistsW(this->AuthInfoFilePath.c_str())) return;
-	MSXMLRead xml = MSXMLRead(AuthInfoFilePath);
-	xml.Load(Root);
-	for (long i = 0; i < xml.at(0).Length; i++) this->AuthInformation.emplace_back(CommandLineManagerA::AlignCmdLineStrType(xml.at(0)[i]));
+	MSXML::Read xml = MSXML::Read(AuthInfoFilePath);
+	for(const auto& i : xml.Get<std::string>(Root)) this->AuthInformation.emplace_back(i);
 	this->StartAuthDataSize = this->AuthInformation.size();
 }
 
@@ -27,7 +26,7 @@ AuthManager::~AuthManager() {
 	if (this->AuthInfoFilePath.empty() || this->AuthInformation.size() == this->StartAuthDataSize) return;
 	if (FALSE == PathFileExistsW(this->AuthInfoFilePath.c_str())) DeleteFileW(this->AuthInfoFilePath.c_str());
 	const auto rootinfo = SplitString(this->Root, L'/');
-	MSXMLWrite writer(rootinfo.at(0));
+	MSXML::Write writer(rootinfo.at(0));
 	for (const auto& i : this->AuthInformation) writer.AddToRootElement(writer.GenerateElement(rootinfo.at(1), CommandLineManagerW::AlignCmdLineStrType(i)));
 	writer.Output(this->AuthInfoFilePath);
 }
