@@ -1,7 +1,7 @@
 ﻿#include "XmlDomNodeList.hpp"
 #include "ComString.hpp"
 #include "SafeRelease.hpp"
-#include "GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 
 namespace MSXML {
 	XmlDomNodeList::XmlDomNodeList() : XmlDomNodeList(nullptr) {}

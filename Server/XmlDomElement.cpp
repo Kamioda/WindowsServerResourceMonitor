@@ -1,6 +1,6 @@
 ﻿#include "XmlDomElement.hpp"
 #include "ComString.hpp"
-#include "GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 #include "SafeRelease.hpp"
 
 namespace MSXML {
