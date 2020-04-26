@@ -8,11 +8,11 @@
 using Req = const httplib::Request&;
 using Res = httplib::Response&;
 
-ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
+std::unique_ptr<ServiceProcess> GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
 #if defined(_DEBUG) && !defined(CONSOLE)
 	Sleep(10000);
 #endif
-	return new ResourceAccessServer(args);
+	return std::make_unique<ResourceAccessServer>(args);
 }
 
 inline std::string ToJsonText(const picojson::object& obj) { 

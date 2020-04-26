@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "CommandLineManager.h"
+#include "../Common/CommandLineManager.h"
+#include <memory>
 
 /*
 	Service_CommandLineManager
@@ -21,6 +22,7 @@ protected:
 	Service_CommandLineManager::CommandLineStringType ChangeFullPath(const Service_CommandLineManager::CommandLineStringType& Path) const noexcept;
 public:
 	virtual void Service_MainProcess() = 0;
+	virtual ~ServiceProcess() = default;
 public:
 	// Arguments
 	// args                         : Argument of GetServiceProcessInstance function
@@ -28,4 +30,4 @@ public:
 	ServiceProcess(const Service_CommandLineManager::CommandLineType& args, const bool CurrentDirectoryIsModulePath = false);
 };
 
-ServiceProcess* GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args);
+std::unique_ptr<ServiceProcess> GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args);

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CommandLineManager.h"
+#include "../Common/CommandLineManager.h"
 #include <Windows.h>
 #include <string>
 #include <vector>

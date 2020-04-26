@@ -28,7 +28,7 @@ inline std::string GetServiceStatusString(const DWORD dwCurrentState) {
 	}
 }
 
-void Console_MainProcess(HINSTANCE hInstance, const Console_CommandLineManager::CommandLineType& CommandLines, int nCmdShow) {
+void Console_MainProcess(HINSTANCE, const Console_CommandLineManager::CommandLineType& CommandLines, int) {
 	const Console_CommandLineManager::CommandLineType ReservedArgs = { "install", "uninstall", "start", "stop", "pause", "continue", "show" };
 	Console console{};
 	try {

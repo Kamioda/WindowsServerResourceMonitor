@@ -6,15 +6,12 @@ ComString::ComString(const wchar_t* str) noexcept : str(SysAllocString(str)) {}
 
 ComString::ComString(const std::wstring& str) noexcept : ComString(str.c_str()) {}
 
-ComString::ComString(ComString&& c) noexcept {
-	this->str = new wchar_t[sizeof(c.str)];
-	wcscpy_s(this->str, sizeof(c.str), c.str);
+ComString::ComString(ComString&& c) noexcept : str(c.str) {
 	c.str = nullptr;
 }
 
 ComString& ComString::operator = (ComString&& c) noexcept {
-	this->str = new wchar_t[sizeof(c.str)];
-	wcscpy_s(this->str, sizeof(c.str), c.str);
+	this->str = c.str;
 	c.str = nullptr;
 	return *this;
 }

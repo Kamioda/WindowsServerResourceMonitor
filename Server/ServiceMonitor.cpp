@@ -85,16 +85,16 @@ picojson::object ServiceMonitor::Get() const {
 //	return std::string();
 //}
 
-#include "CommandLineManager.h"
-#include "GetErrorMessage.h"
+#include "../Common/GetErrorMessage.h"
+#include "../Common/CommandLineManager.h"
 
 std::string ServiceMonitor::GetTargetServiceDisplayName() {
 	DWORD Size{};
 	const std::wstring lpServiceName = CommandLineManagerW::AlignCmdLineStrType(this->ServiceName).c_str();
 	GetServiceDisplayNameW(ServiceController::SCM.get(), lpServiceName.c_str(), nullptr, &Size);
-	if (Size++ > 0) {
+	if (Size > 0) {
 		std::wstring buf{};
-		buf.resize(Size);
+		buf.resize(++Size);
 		if (FALSE != GetServiceDisplayNameW(ServiceController::SCM.get(), lpServiceName.c_str(), &buf[0], &Size)) {
 			int iBufferSize = WideCharToMultiByte(CP_UTF8, 0, buf.c_str(), -1, NULL, 0, NULL, NULL);
 			if (0 == iBufferSize) throw std::runtime_error(GetErrorMessageA());

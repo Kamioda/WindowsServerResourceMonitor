@@ -1,5 +1,5 @@
 ﻿#include "SafeRelease.hpp"
-#include "GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 #include "MSXMLWrite.hpp"
 #include "ComString.hpp"
 #include <comdef.h>
