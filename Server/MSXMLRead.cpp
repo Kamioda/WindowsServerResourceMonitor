@@ -1,8 +1,9 @@
 ﻿#include "MSXMLRead.hpp"
 #include "HandleManager.h"
-#include "GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 #include <Windows.h>
 #include <comdef.h>
+#include <stdexcept>
 
 namespace MSXML {
 	class FileFindHandleManager : public windows::impl::HandleManager<HANDLE> {
@@ -21,7 +22,7 @@ namespace MSXML {
 		if (const HRESULT hr = this->lpXmlDoc->load(_variant_t(FilePath.c_str()), &Result); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 	}
 
-	XmlDataManager::wstring Read::LoadW(const std::wstring& Path) {
+	XmlDataManager::wstring Read::GetW(const std::wstring& Path) {
 		if (Base::find(Path) == Base::end()) Base::emplace(this->lpXmlDoc, Path);
 		return Base::operator[](Path);
 	}
