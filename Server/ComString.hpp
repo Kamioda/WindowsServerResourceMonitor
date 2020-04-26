@@ -18,4 +18,6 @@ public:
 	BSTR get() const noexcept;
 	bool operator == (std::nullptr_t) const noexcept;
 	bool operator != (std::nullptr_t) const noexcept;
+	BSTR* operator & () noexcept;
+	unsigned int len() const noexcept;
 };

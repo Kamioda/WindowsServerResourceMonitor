@@ -30,3 +30,7 @@ bool ComString::operator == (std::nullptr_t) const noexcept { return this->str =
 bool ComString::operator != (std::nullptr_t) const noexcept { return this->str != nullptr; }
 
 BSTR ComString::get() const noexcept { return this->str; }
+
+BSTR* ComString::operator & () noexcept { return &this->str; }
+
+unsigned int ComString::len() const noexcept { return SysStringLen(this->str); }
