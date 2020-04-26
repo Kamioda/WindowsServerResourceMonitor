@@ -1,4 +1,4 @@
-#include "ConfigLoader.hpp"
+﻿#include "ConfigLoader.hpp"
 #include "../Common/CommandLineManager.hpp"
 #include <Windows.h>
 constexpr size_t ArrayBufferSize = 1024;
@@ -25,11 +25,7 @@ std::string ConfigLoader::GetString(const std::string& Section, const std::strin
 	try {
 		const std::wstring TargetRoot = CommonRoot + CommandLineManagerW::AlignCmdLineStrType(Section + "/" + Key);
 		if (this->find(TargetRoot) == this->xml.end()) this->xml.Load(TargetRoot);
-		std::string str{};
-		str.resize(1024);
-		str = CommandLineManagerA::AlignCmdLineStrType(this->xml[TargetRoot][0]);
-		str.resize(std::strlen(str.c_str()));
-		return str;
+		return CommandLineManagerA::AlignCmdLineStrType(this->xml[TargetRoot][0]);
 	}
 	catch (std::exception) {
 		return Default;
