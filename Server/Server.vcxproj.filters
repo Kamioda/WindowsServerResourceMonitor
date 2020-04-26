@@ -37,9 +37,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommandLineManager.cpp">
-      <Filter>BaseCode</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>BaseCode</Filter>
     </ClCompile>
@@ -117,12 +114,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommandLineManager.h">
-      <Filter>BaseCode</Filter>
-    </ClInclude>
-    <ClInclude Include="GetErrorMessage.h">
-      <Filter>BaseCode</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceStatus.h">
       <Filter>BaseCode</Filter>
     </ClInclude>
@@ -206,9 +197,6 @@
     </ClInclude>
     <ClInclude Include="ComString.hpp">
       <Filter>ServiceSession\Config</Filter>
-    </ClInclude>
-    <ClInclude Include="GetErrorMessage.hpp">
-      <Filter>ServiceSession\Others</Filter>
     </ClInclude>
     <ClInclude Include="ConfigLoader.hpp">
       <Filter>ServiceSession\ResourceManager</Filter>
