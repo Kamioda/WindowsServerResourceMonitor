@@ -121,12 +121,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(OPENSSL_PATH32)\include;$(ICU_DIR)\$(PlatformTarget)\include;$(PICOJSON_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENSSL_PATH32)\include;$(PICOJSON_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENSSL_PATH32)\lib;$(OPENSSL_PATH64)\lib\VC;$(ICU_DIR)\$(PlatformTarget)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENSSL_PATH32)\lib;$(OPENSSL_PATH64)\lib\VC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ConsoleDebug|Win32'">
@@ -136,12 +136,12 @@
       <PreprocessorDefinitions>CONSOLE;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(OPENSSL_PATH32)\include;$(ICU_DIR)\$(PlatformTarget)\include;$(PICOJSON_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENSSL_PATH32)\include;$(PICOJSON_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENSSL_PATH32)\lib;$(OPENSSL_PATH64)\lib\VC;$(ICU_DIR)\$(PlatformTarget)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENSSL_PATH32)\lib;$(OPENSSL_PATH64)\lib\VC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -183,14 +183,14 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(OPENSSL_PATH32)\include;$(ICU_DIR)\$(PlatformTarget)\include;$(PICOJSON_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OPENSSL_PATH32)\include;$(PICOJSON_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENSSL_PATH32)\lib;$(OPENSSL_PATH64)\lib\VC;$(ICU_DIR)\$(PlatformTarget)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPENSSL_PATH32)\lib;$(OPENSSL_PATH64)\lib\VC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -238,7 +238,6 @@
     <ClCompile Include="ServiceMainProcess.cpp" />
     <ClCompile Include="ServiceMonitor.cpp" />
     <ClCompile Include="SHA512.cpp" />
-    <ClCompile Include="StringEncode.cpp" />
     <ClCompile Include="ToUpper.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -275,7 +274,6 @@
     <ClInclude Include="ServiceStatus.h" />
     <ClInclude Include="SHA512.hpp" />
     <ClInclude Include="Split.hpp" />
-    <ClInclude Include="StringEncode.hpp" />
     <ClInclude Include="ToUpper.hpp" />
   </ItemGroup>
   <ItemGroup>

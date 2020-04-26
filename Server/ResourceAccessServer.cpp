@@ -1,5 +1,4 @@
 ﻿#include "ResourceAccessServer.hpp"
-#include "StringEncode.hpp"
 #include "ServiceStatus.h"
 #include "Split.hpp"
 #include "JsonObject.hpp"
@@ -20,7 +19,6 @@ inline std::string ToJsonText(const picojson::object& obj) {
 	std::stringstream ss{};
 	ss << picojson::value(obj);
 	return ss.str();
-	//return ShiftJIS_To_UTF8(ss.str());
 }
 
 inline void reqproc(Res res, const std::function<void()>& process) {
