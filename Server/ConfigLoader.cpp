@@ -1,5 +1,5 @@
 ﻿#include "ConfigLoader.hpp"
-#include "../Common/CommandLineManager.hpp"
+#include "../Common/CommandLineManager.h"
 #include <Windows.h>
 constexpr size_t ArrayBufferSize = 1024;
 constexpr const wchar_t* CommonRoot = L"configuration/";

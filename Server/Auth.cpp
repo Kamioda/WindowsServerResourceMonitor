@@ -1,6 +1,6 @@
 ﻿#include "Auth.hpp"
 #include "Split.hpp"
-#include "../Common/CommandLineManager.hpp"
+#include "../Common/CommandLineManager.h"
 #include "MSXMLRead.hpp"
 #include "MSXMLWrite.hpp"
 #include "SHA512.hpp"

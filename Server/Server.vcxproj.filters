@@ -198,9 +198,6 @@
     <ClInclude Include="ComString.hpp">
       <Filter>ServiceSession\Config</Filter>
     </ClInclude>
-    <ClInclude Include="GetErrorMessage.hpp">
-      <Filter>ServiceSession\Others</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigLoader.hpp">
       <Filter>ServiceSession\ResourceManager</Filter>
     </ClInclude>

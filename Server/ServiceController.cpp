@@ -1,5 +1,5 @@
 ﻿#include "ServiceController.h"
-#include "../Common/GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 #include <ShlObj.h>
 #include <stdexcept>
 

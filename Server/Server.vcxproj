@@ -246,7 +246,6 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleMainProcess.h" />
     <ClInclude Include="Disk.hpp" />
-    <ClInclude Include="GetErrorMessage.hpp" />
     <ClInclude Include="HandleManager.h" />
     <ClInclude Include="httplib.h" />
     <ClInclude Include="ConfigLoader.hpp" />

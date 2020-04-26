@@ -1,7 +1,7 @@
 ﻿#include "ServiceInformation.h"
 #include "ServiceMainProcess.h"
 #include "ConsoleMainProcess.h"
-#include "../Common/GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 #include <stdexcept>
 SERVICE_STATUS SvcStatus;
 SERVICE_STATUS_HANDLE SvcStatusHandle;
