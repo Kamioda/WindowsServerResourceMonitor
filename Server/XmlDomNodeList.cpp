@@ -40,7 +40,7 @@ namespace MSXML {
 	std::wstring XmlDomNodeList::Get(const long count) const {
 		IXMLDOMNode* lpItem = nullptr;
 		try {
-			if (const HRESULT hr = this->list->get_item(count, &lpItem); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
+			if (const HRESULT hr = this->list->get_item(count, &lpItem); lpItem == nullptr) throw std::runtime_error(GetErrorMessageA(hr));
 			ComString stringBuffer{};
 			if (const HRESULT hr = lpItem->get_text(&stringBuffer); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 			std::wstring str{};
