@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "XmlDomNodeList.hpp"
+#include "../Common/StringCvt.h"
 #include <type_traits>
 #include <vector>
 
@@ -26,36 +27,34 @@ namespace MSXML {
 		private:
 			using Base = std::vector<std::string>;
 		public:
-			string(const wstring& w) {
-
-			}
+			string(const wstring& w) { for (const auto& i : w) Base::emplace_back(::string::converter::stl::to_bytes(i)); }
 		};
 
 		template<typename T = int, std::enable_if_t<std::is_signed_v<T> && std::is_integral_v<T>, std::nullptr_t> = nullptr>
-		class number : public std::vector<T> {
+		class signed_integer : public std::vector<T> {
 		private:
 			using Base = std::vector<T>;
 		public:
-			number() : Base() {}
-			number(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stoll(i))); }
+			signed_integer() : Base() {}
+			signed_integer(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stoll(i))); }
 		};
 
 		template<typename T = unsigned int, std::enable_if_t<std::is_unsigned_v<T>&& std::is_integral_v<T>, std::nullptr_t> = nullptr>
-		class number : public std::vector<T> {
+		class unsigned_integer : public std::vector<T> {
 		private:
 			using Base = std::vector<T>;
 		public:
-			number() : Base() {}
-			number(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stoull(i))); }
+			unsigned_integer() : Base() {}
+			unsigned_integer(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stoull(i))); }
 		};
 
 		template<typename T = double, std::enable_if_t<std::is_floating_point_v<T>, std::nullptr_t> = nullptr>
-		class number : public std::vector<T> {
+		class floating_point : public std::vector<T> {
 		private:
 			using Base = std::vector<T>;
 		public:
-			number() : Base() {}
-			number(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stold(i))); }
+			floating_point() : Base() {}
+			floating_point(const wstring& w) { for (const auto& i : w) Base::emplace_back(static_cast<T>(std::stold(i))); }
 		};
 	}
 }

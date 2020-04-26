@@ -10,6 +10,7 @@ namespace MSXML {
 	public:
 		FileFindHandleManager(HANDLE&& h) : windows::impl::HandleManager<HANDLE>(std::move(h), [](HANDLE& h) { FindClose(h); }) {}
 	};
+
 	Read::Read(const std::wstring& FilePath) : lpXmlDoc() {
 		{
 			WIN32_FIND_DATAW FindData{};
