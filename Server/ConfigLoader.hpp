@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "MSXMLRead.hpp"
+#include "../Common/MSXMLRead.hpp"
 #include <string>
 
 class ConfigLoader {

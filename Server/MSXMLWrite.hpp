@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "XmlDomElement.hpp"
+#include "../Common/XmlDomElement.hpp"
 #include <type_traits>
 
 namespace MSXML {

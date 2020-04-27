@@ -1,7 +1,7 @@
 ﻿#include "Auth.hpp"
 #include "Split.hpp"
 #include "../Common/StringCvt.h"
-#include "MSXMLRead.hpp"
+#include "../Common/MSXMLRead.hpp"
 #include "MSXMLWrite.hpp"
 #include "SHA512.hpp"
 #include <Shlwapi.h>

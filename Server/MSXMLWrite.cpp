@@ -1,7 +1,7 @@
-﻿#include "SafeRelease.hpp"
+﻿#include "../Common/SafeRelease.hpp"
 #include "../Common/GetErrorMessage.h"
 #include "MSXMLWrite.hpp"
-#include "ComString.hpp"
+#include "../Common/ComString.hpp"
 #include <comdef.h>
 
 namespace MSXML {
