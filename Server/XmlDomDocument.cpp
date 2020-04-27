@@ -1,5 +1,5 @@
 ﻿#include "XmlDomDocument.hpp"
-#include "GetErrorMessage.hpp"
+#include "../Common/GetErrorMessage.h"
 #include "SafeRelease.hpp"
 
 namespace MSXML {
