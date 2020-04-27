@@ -47,6 +47,30 @@
     <Filter Include="SubModule\MSXML">
       <UniqueIdentifier>{3563fe5f-5f30-4a82-af79-f2b896fed605}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SubModule\MSXML\XmlDataManager">
+      <UniqueIdentifier>{0f3507b0-46c6-46e9-861d-6a73f621b1a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\MSXML\Read">
+      <UniqueIdentifier>{9f608d8f-e535-43df-ba74-c1704b04c959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\MSXML\XmlDomDocument">
+      <UniqueIdentifier>{6a381ed2-3473-40fc-8cab-e9fc3bee5d59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\MSXML\XmlDomElement">
+      <UniqueIdentifier>{ba90d963-65cd-4771-96dc-67225e8ec387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\MSXML\XmlDomNodeList">
+      <UniqueIdentifier>{e0686630-2559-472b-9d0e-64436ae39859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\MSXML\SafeRelease">
+      <UniqueIdentifier>{09af25ea-3c48-4432-9ca6-a1f19eebde13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\Base">
+      <UniqueIdentifier>{acf3e153-64a4-40c5-a8b7-27f66cd6895a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\ComString">
+      <UniqueIdentifier>{2dd2cd0d-5354-4ec6-9e5e-0c1c12ff6ecd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -118,20 +142,20 @@
     <ClCompile Include="MSXMLWrite.cpp">
       <Filter>ServiceSession\Config\MSXML\Writer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\ComString.cpp">
-      <Filter>SubModule</Filter>
+    <ClCompile Include="..\Common\MSXMLRead.cpp">
+      <Filter>SubModule\MSXML\Read</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\XmlDomDocument.cpp">
-      <Filter>SubModule</Filter>
+      <Filter>SubModule\MSXML\XmlDomDocument</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\XmlDomElement.cpp">
-      <Filter>SubModule</Filter>
+      <Filter>SubModule\MSXML\XmlDomElement</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\XmlDomNodeList.cpp">
-      <Filter>SubModule</Filter>
+      <Filter>SubModule\MSXML\XmlDomNodeList</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\MSXMLRead.cpp">
-      <Filter>SubModule\MSXML</Filter>
+    <ClCompile Include="..\Common\ComString.cpp">
+      <Filter>SubModule\ComString</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -219,35 +243,35 @@
     <ClInclude Include="MSXMLWrite.hpp">
       <Filter>ServiceSession\Config\MSXML\Writer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\CommandLineManager.h">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\GetErrorMessage.h">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\StringCvt.h">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ComString.hpp">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\SafeRelease.hpp">
-      <Filter>SubModule</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\XmlDataManager.hpp">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\XmlDomDocument.hpp">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\XmlDomElement.hpp">
-      <Filter>SubModule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\XmlDomNodeList.hpp">
-      <Filter>SubModule</Filter>
+      <Filter>SubModule\MSXML\XmlDataManager</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\MSXMLRead.hpp">
-      <Filter>SubModule\MSXML</Filter>
+      <Filter>SubModule\MSXML\Read</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomDocument.hpp">
+      <Filter>SubModule\MSXML\XmlDomDocument</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomElement.hpp">
+      <Filter>SubModule\MSXML\XmlDomElement</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomNodeList.hpp">
+      <Filter>SubModule\MSXML\XmlDomNodeList</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SafeRelease.hpp">
+      <Filter>SubModule\MSXML\SafeRelease</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CommandLineManager.h">
+      <Filter>SubModule\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\GetErrorMessage.h">
+      <Filter>SubModule\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\StringCvt.h">
+      <Filter>SubModule\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ComString.hpp">
+      <Filter>SubModule\ComString</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
