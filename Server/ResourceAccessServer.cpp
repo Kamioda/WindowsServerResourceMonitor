@@ -75,6 +75,8 @@ void ResourceAccessServer::GetServiceInformations() {
 
 std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) { return this->conf.GetString(Section, Key, Default); };
 
+std::wstring ResourceAccessServer::GetConfStr(const std::wstring& Section, const std::wstring& Key, const std::wstring& Default) { return this->conf.GetString(Section, Key, Default); };
+
 int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) { return this->conf.GetNum(Section, Key, Default); };
 
 template<class ResourceClass>
@@ -151,6 +153,13 @@ inline auto find(const std::vector<T>& v, const std::string& val) { return std::
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), commgr(),
 	conf(BaseClass::ChangeFullPath(".\\server.xml")),
+	auth(
+		string::converter::stl::from_bytes(BaseClass::ChangeFullPath(this->GetConfStr("application", "authfile/file", ".\\auth,xml"))),
+		this->GetConfStr(L"application", L"authfile/root", L"authinformation"),
+		this->GetConfStr(L"application", L"authfile/defaultuser", L"defaultuser"),
+		this->GetConfStr(L"application", L"authfile/allowuser", L"allowuser"),
+		this->GetConfInt("application", "authmaxtime", 0)
+	),
 	SCM(), query(), processor(this->query), memory(), disk(), network(), services(), server(),
 	looptime(static_cast<DWORD>(this->GetConfInt("application", "looptime", 1000))) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;

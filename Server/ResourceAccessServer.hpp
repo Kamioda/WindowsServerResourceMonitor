@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "httplib.h"
+#include "Auth.hpp"
 #include "ComInitManager.hpp"
 #include "ServiceMainProcess.h"
 #include "ServiceMonitor.hpp"
@@ -13,6 +14,7 @@ class ResourceAccessServer : public ServiceProcess {
 private:
 	ComInitManager commgr;
 	ConfigLoader conf;
+	AuthManager auth;
 	ServiceControlManager SCM;
 	PDHQuery query;
 	Processor processor;
@@ -24,6 +26,7 @@ private:
 	DWORD looptime;
 	using BaseClass = ServiceProcess;
 	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default);
+	std::wstring GetConfStr(const std::wstring& Section, const std::wstring& Key, const std::wstring& Default);
 	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default);
 	picojson::object AllResourceToObject() const;
 	picojson::object AllDiskResourceToObject() const;
