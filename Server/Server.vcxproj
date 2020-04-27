@@ -219,9 +219,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\ComString.cpp" />
+    <ClCompile Include="..\Common\MSXMLRead.cpp" />
+    <ClCompile Include="..\Common\XmlDomDocument.cpp" />
+    <ClCompile Include="..\Common\XmlDomElement.cpp" />
+    <ClCompile Include="..\Common\XmlDomNodeList.cpp" />
     <ClCompile Include="Auth.cpp" />
     <ClCompile Include="ComInitManager.cpp" />
-    <ClCompile Include="ComString.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="ConsoleMainProcess.cpp" />
     <ClCompile Include="Disk.cpp" />
@@ -243,12 +247,20 @@
     <ClCompile Include="ServiceMonitor.cpp" />
     <ClCompile Include="SHA512.cpp" />
     <ClCompile Include="ToUpper.cpp" />
-    <ClCompile Include="XmlDomElement.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\CommandLineManager.h" />
+    <ClInclude Include="..\Common\ComString.hpp" />
+    <ClInclude Include="..\Common\GetErrorMessage.h" />
+    <ClInclude Include="..\Common\MSXMLRead.hpp" />
+    <ClInclude Include="..\Common\SafeRelease.hpp" />
+    <ClInclude Include="..\Common\StringCvt.h" />
+    <ClInclude Include="..\Common\XmlDataManager.hpp" />
+    <ClInclude Include="..\Common\XmlDomDocument.hpp" />
+    <ClInclude Include="..\Common\XmlDomElement.hpp" />
+    <ClInclude Include="..\Common\XmlDomNodeList.hpp" />
     <ClInclude Include="Auth.hpp" />
     <ClInclude Include="ComInitManager.hpp" />
-    <ClInclude Include="ComString.hpp" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleMainProcess.h" />
     <ClInclude Include="Disk.hpp" />
@@ -265,7 +277,6 @@
     <ClInclude Include="PDHQuery.hpp" />
     <ClInclude Include="Processor.hpp" />
     <ClInclude Include="ResourceAccessServer.hpp" />
-    <ClInclude Include="SafeRelease.hpp" />
     <ClInclude Include="ServiceControl.h" />
     <ClInclude Include="ServiceController.h" />
     <ClInclude Include="ServiceControlManager.h" />
@@ -276,7 +287,6 @@
     <ClInclude Include="SHA512.hpp" />
     <ClInclude Include="Split.hpp" />
     <ClInclude Include="ToUpper.hpp" />
-    <ClInclude Include="XmlDomElement.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="server.ini" />

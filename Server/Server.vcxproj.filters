@@ -38,11 +38,14 @@
     <Filter Include="ServiceSession\Config\MSXML">
       <UniqueIdentifier>{ccf22970-5c6e-4590-882d-8b0e14d46c24}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ServiceSession\Config\MSXML\XmlDomElement">
-      <UniqueIdentifier>{b2ff322e-8b8c-4ae9-ac51-116ca60ac607}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ServiceSession\Config\MSXML\Writer">
       <UniqueIdentifier>{d968ea39-5c90-413c-b5fa-d05c70fda00a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule">
+      <UniqueIdentifier>{993f3682-6d7e-4135-a2e9-2125f08f0234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SubModule\MSXML">
+      <UniqueIdentifier>{3563fe5f-5f30-4a82-af79-f2b896fed605}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,23 +106,32 @@
     <ClCompile Include="SHA512.cpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClCompile>
-    <ClCompile Include="ComString.cpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClCompile>
     <ClCompile Include="ToUpper.cpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClCompile>
     <ClCompile Include="ComInitManager.cpp">
       <Filter>ServiceSession\Config</Filter>
     </ClCompile>
-    <ClCompile Include="XmlDomElement.cpp">
-      <Filter>ServiceSession\Config\MSXML\XmlDomElement</Filter>
-    </ClCompile>
     <ClCompile Include="ConfigLoader.cpp">
       <Filter>ServiceSession\Config</Filter>
     </ClCompile>
     <ClCompile Include="MSXMLWrite.cpp">
       <Filter>ServiceSession\Config\MSXML\Writer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ComString.cpp">
+      <Filter>SubModule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\XmlDomDocument.cpp">
+      <Filter>SubModule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\XmlDomElement.cpp">
+      <Filter>SubModule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\XmlDomNodeList.cpp">
+      <Filter>SubModule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\MSXMLRead.cpp">
+      <Filter>SubModule\MSXML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,26 +207,47 @@
     <ClInclude Include="SHA512.hpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClInclude>
-    <ClInclude Include="SafeRelease.hpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClInclude>
-    <ClInclude Include="ComString.hpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClInclude>
     <ClInclude Include="ToUpper.hpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClInclude>
     <ClInclude Include="ComInitManager.hpp">
       <Filter>ServiceSession\Config</Filter>
     </ClInclude>
-    <ClInclude Include="XmlDomElement.hpp">
-      <Filter>ServiceSession\Config\MSXML\XmlDomElement</Filter>
-    </ClInclude>
     <ClInclude Include="ConfigLoader.hpp">
       <Filter>ServiceSession\Config</Filter>
     </ClInclude>
     <ClInclude Include="MSXMLWrite.hpp">
       <Filter>ServiceSession\Config\MSXML\Writer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CommandLineManager.h">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\GetErrorMessage.h">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\StringCvt.h">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ComString.hpp">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SafeRelease.hpp">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDataManager.hpp">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomDocument.hpp">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomElement.hpp">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomNodeList.hpp">
+      <Filter>SubModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\MSXMLRead.hpp">
+      <Filter>SubModule\MSXML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
