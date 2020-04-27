@@ -12,35 +12,36 @@
 std::mt19937 InitEngine();
 std::chrono::milliseconds GetCurrent();
 
-AuthManager::AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root, const std::wstring DefaultUserInfoPath, const long long MaxExpirationTimeOfToken)
-	: AuthInfoFilePath(AuthInfoFilePath), Root(Root), AuthInformation(), mt(InitEngine()), StartAuthDataSize(), MaxTokenExpirationTime(MaxExpirationTimeOfToken) {
+AuthManager::AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root, const std::wstring& DefaultUserInfoPath, const std::wstring& AllowUserPath, const long long MaxExpirationTimeOfToken)
+	: xmlCreate({ AuthInfoFilePath, Root, AllowUserPath, DefaultUserInfoPath }),
+	AuthInformation(), mt(InitEngine()), StartAuthDataSize(), MaxTokenExpirationTime(MaxExpirationTimeOfToken) {
 	MSXML::Read xml = MSXML::Read(AuthInfoFilePath);
-	for(const auto& i : xml.Get<std::string>(Root)) this->AuthInformation.emplace_back(i);
-	if (const auto defuser = xml.Get<std::wstring>(DefaultUserInfoPath); !defuser.empty()) this->DefaultUser = defuser.front();
+	for (const auto& i : xml.Get<std::string>(Root + L"/" + AllowUserPath)) this->AuthInformation.emplace_back(i);
+	if (const auto defuser = xml.Get<std::string>(Root + L"/" + DefaultUserInfoPath); !defuser.empty()) this->DefaultUser = defuser.front();
 	this->StartAuthDataSize = this->AuthInformation.size();
 }
 
 AuthManager::~AuthManager() {
-	if (this->AuthInfoFilePath.empty() || this->AuthInformation.size() == this->StartAuthDataSize) return;
-	if (FALSE == PathFileExistsW(this->AuthInfoFilePath.c_str())) DeleteFileW(this->AuthInfoFilePath.c_str());
-	const auto rootinfo = SplitString(this->Root, L'/');
-	MSXML::Write writer(rootinfo.at(0));
-	for (const auto& i : this->AuthInformation) writer.AddToRootElement(writer.GenerateElement(rootinfo.at(1), string::converter::stl::from_bytes(i)));
-	writer.Output(this->AuthInfoFilePath);
+	if (this->xmlCreate.FilePath.empty() || this->AuthInformation.size() == this->StartAuthDataSize) return;
+	if (FALSE == PathFileExistsW(this->xmlCreate.FilePath.c_str())) DeleteFileW(this->xmlCreate.FilePath.c_str());
+	MSXML::Write writer(this->xmlCreate.Root);
+	writer.AddToRootElement(writer.GenerateElement(this->xmlCreate.DefaultUser, string::converter::stl::from_bytes(this->DefaultUser)));
+	for (const auto& i : this->AuthInformation) writer.AddToRootElement(writer.GenerateElement(this->xmlCreate.AllowUser, string::converter::stl::from_bytes(i)));
+	writer.Output(this->xmlCreate.FilePath);
 }
 
 AuthManager::AuthManager(AuthManager&& a) noexcept
-	: AuthInfoFilePath(a.AuthInfoFilePath), AuthInformation(std::move(a.AuthInformation)), AccessToken(std::move(a.AccessToken)),
-	mt(std::move(a.mt)), StartAuthDataSize(a.StartAuthDataSize), MaxTokenExpirationTime(a.MaxTokenExpirationTime) { a.AuthInfoFilePath.clear(); }
+	: xmlCreate(std::move(a.xmlCreate)), AuthInformation(std::move(a.AuthInformation)), AccessToken(std::move(a.AccessToken)),
+	mt(std::move(a.mt)), StartAuthDataSize(a.StartAuthDataSize), MaxTokenExpirationTime(a.MaxTokenExpirationTime) { a.xmlCreate.FilePath.clear(); }
 
 AuthManager& AuthManager::operator = (AuthManager&& a) noexcept {
-	this->AuthInfoFilePath = a.AuthInfoFilePath;
+	this->xmlCreate = std::move(a.xmlCreate);
 	this->AuthInformation = std::move(a.AuthInformation);
 	this->AccessToken = std::move(a.AccessToken);
 	this->mt = std::move(a.mt);
 	this->StartAuthDataSize = a.StartAuthDataSize;
 	this->MaxTokenExpirationTime = a.MaxTokenExpirationTime;
-	a.AuthInfoFilePath.clear();
+	a.xmlCreate.FilePath.clear();
 	return *this;
 }
 
@@ -110,7 +111,7 @@ void AuthManager::DeleteAccessToken(const std::string& TargetAccessToken) {
 }
 
 bool AuthManager::IsDefaultUser(const std::string& ID) const noexcept {
-	return this->DefaultUser.empty() ? false : (string::converter::stl::to_bytes(this->DefaultUser) == ID);
+	return this->DefaultUser.empty() ? false : (this->DefaultUser == ID);
 }
 
 void AuthManager::AddUser(const std::string& NewID, const std::string& NewPass, const std::string& AuthUserAccessToken) {
@@ -118,9 +119,8 @@ void AuthManager::AddUser(const std::string& NewID, const std::string& NewPass, 
 	if (this->UserExist(NewID)) throw AuthException(400, "This user exists");
 	const std::string str = this->GenerateAuthKey(NewID, NewPass);
 	// 初期ユーザー登録が完了後はデフォルトアカウントは削除
-	const std::string DefaultUserA = string::converter::stl::to_bytes(this->DefaultUser);
 	if (auto it = std::find_if(this->AuthInformation.begin(), this->AuthInformation.end(), 
-		[&DefaultUserA](const std::string& str) { return DefaultUserA == SplitString(str, ';').front(); }); it != this->AuthInformation.end()) this->AuthInformation.erase(it);
+		[this](const std::string& str) { return this->DefaultUser == SplitString(str, ';').front(); }); it != this->AuthInformation.end()) this->AuthInformation.erase(it);
 	this->AuthInformation.emplace_back(str);
 }
 

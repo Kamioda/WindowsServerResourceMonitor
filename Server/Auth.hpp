@@ -8,10 +8,15 @@
 
 class AuthManager {
 private:
+	struct XmlCreateInformation {
+		std::wstring FilePath;
+		std::wstring Root;
+		std::wstring AllowUser;
+		std::wstring DefaultUser;
+	};
 	using AccessTokenType = std::pair<std::string, std::chrono::milliseconds>;
-	std::wstring AuthInfoFilePath;
-	std::wstring Root;
-	std::wstring DefaultUser;
+	XmlCreateInformation xmlCreate;
+	std::string DefaultUser;
 	std::vector<std::string> AuthInformation;
 	std::vector<AccessTokenType> AccessToken;
 	mutable std::mt19937 mt;
@@ -23,7 +28,7 @@ private:
 	auto GetReservedAccessTokenPos(const std::string& Token) const noexcept;
 	bool UserExist(const std::string& ID) const;
 public:
-	AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root, const std::wstring DefaultUserInfoPath, const long long MaxExpirationTimeOfToken);
+	AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root, const std::wstring& DefaultUserInfoPath, const std::wstring& AllowUserPath, const long long MaxExpirationTimeOfToken);
 	~AuthManager();
 	AuthManager(const AuthManager&) = delete;
 	AuthManager(AuthManager&& a) noexcept;
