@@ -23,8 +23,8 @@ private:
 	httplib::Server server;
 	DWORD looptime;
 	using BaseClass = ServiceProcess;
-	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const;
-	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const;
+	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default);
+	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default);
 	picojson::object AllResourceToObject() const;
 	picojson::object AllDiskResourceToObject() const;
 	picojson::object AllNetworkResourceToObject() const;

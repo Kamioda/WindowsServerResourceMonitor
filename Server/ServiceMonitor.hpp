@@ -16,8 +16,8 @@ private:
 	std::string GetTargetServiceDisplayName();
 public:
 	ServiceMonitor(ServiceControlManager& SCManager, const std::string& MonitorService);
-	static void InitStatusList(const ConfigLoader& conf);
-	static void InitServiceTypeList(const ConfigLoader& conf);
+	static void InitStatusList(ConfigLoader& conf);
+	static void InitServiceTypeList(ConfigLoader& conf);
 	void Run();
 	void Stop();
 	void Pause();

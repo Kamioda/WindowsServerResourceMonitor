@@ -73,9 +73,9 @@ void ResourceAccessServer::GetServiceInformations() {
 }
 
 
-std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) const { return this->conf.GetString(Section, Key, Default); };
+std::string ResourceAccessServer::GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default) { return this->conf.GetString(Section, Key, Default); };
 
-int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) const { return this->conf.GetNum(Section, Key, Default); };
+int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) { return this->conf.GetNum(Section, Key, Default); };
 
 template<class ResourceClass>
 inline void InsertArray(const std::vector<ResourceClass>& list, JsonObject& obj, const std::string& key) {

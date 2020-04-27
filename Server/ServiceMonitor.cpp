@@ -6,7 +6,7 @@ std::unordered_map<DWORD, std::string> ServiceMonitor::StatusList;
 
 std::unordered_map<DWORD, std::string> ServiceMonitor::ServiceTypeList;
 
-void ServiceMonitor::InitStatusList(const ConfigLoader& conf) {
+void ServiceMonitor::InitStatusList(ConfigLoader& conf) {
 	constexpr int statusNum = 8;
 	const std::array<DWORD, statusNum> ServiceStatusList = { SERVICE_RUNNING, SERVICE_STOPPED, SERVICE_PAUSED, SERVICE_START_PENDING, SERVICE_PAUSE_PENDING, SERVICE_CONTINUE_PENDING, SERVICE_STOP_PENDING, 0 };
 	const std::array<std::string, statusNum> ServiceStatusLoadKeyList = { "status/running", "status/stopped", "status/paused", "status/startpending", "status/pausepending", "status/continuepending", "status/stoppending", "status/unsupported" };
@@ -14,7 +14,7 @@ void ServiceMonitor::InitStatusList(const ConfigLoader& conf) {
 	for (int i = 0; i < statusNum; i++) StatusList.emplace(std::make_pair(ServiceStatusList[i], conf.GetString("services", ServiceStatusLoadKeyList[i], ServiceStatusDefaultValue[i])));
 }
 
-void ServiceMonitor::InitServiceTypeList(const ConfigLoader& conf) {
+void ServiceMonitor::InitServiceTypeList(ConfigLoader& conf) {
 	constexpr int typeNum = 9;
 	const std::array<DWORD, typeNum> ServiceTypeNumberList = {
 		SERVICE_WIN32, SERVICE_WIN32_OWN_PROCESS, SERVICE_WIN32_SHARE_PROCESS, SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER,
