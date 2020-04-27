@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <authinformation>
+  <defaultuser>winserveradmin</defaultuser>
   <!--
     Default User ID and Password
     ID: winserveradmin

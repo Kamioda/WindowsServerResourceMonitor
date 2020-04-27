@@ -1,6 +1,7 @@
 ﻿#include "ConsoleMainProcess.h"
 #include "ServiceControl.h"
 #include "Console.h"
+#include "Auth.hpp"
 #include <Windows.h>
 #include <ShlObj.h>
 #include <iostream>

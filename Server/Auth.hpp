@@ -3,27 +3,39 @@
 #include <vector>
 #include <unordered_map>
 #include <random>
+#include <utility>
+#include <chrono>
 
 class AuthManager {
 private:
+	using AccessTokenType = std::pair<std::string, std::chrono::milliseconds>;
 	std::wstring AuthInfoFilePath;
 	std::wstring Root;
+	std::wstring DefaultUser;
 	std::vector<std::string> AuthInformation;
+	std::vector<AccessTokenType> AccessToken;
 	mutable std::mt19937 mt;
 	size_t StartAuthDataSize;
+	long long MaxTokenExpirationTime;
 	std::string GenerateAuthKey(const std::string& ID, const std::string& Pass) const;
 	std::string GenerateRandomString(const size_t length) const;
+	auto GetUserPos(const std::string& ID) const;
+	auto GetReservedAccessTokenPos(const std::string& Token) const noexcept;
 	bool UserExist(const std::string& ID) const;
 public:
-	AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root = L"authinformation/allowuser");
-	AuthManager(const std::string& AuthInfoFilePath, const std::string& Root = "authinformation/allowuser");
+	AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root, const std::wstring DefaultUserInfoPath, const long long MaxExpirationTimeOfToken);
 	~AuthManager();
 	AuthManager(const AuthManager&) = delete;
 	AuthManager(AuthManager&& a) noexcept;
 	AuthManager& operator = (const AuthManager&) = delete;
 	AuthManager& operator = (AuthManager&& a) noexcept;
 	bool Auth(const std::string& id, const std::string& pass) const noexcept;
-	void AddUser(const std::string& NewID, const std::string & NewPas, const std::string& AuthUserID, const std::string& AuthUserPass);
+	bool Auth(const std::string& TargetAccessToken) noexcept;
+	std::string CreateAccessToken(const std::string& InternalAccessKey);
+	void DeleteAccessToken(const std::string& ReceivedAccessToken);
+	void AddUser(const std::string& NewID, const std::string & NewPas, const std::string& AuthUserAccessToken);
+	bool IsDefaultUser(const std::string& ID) const noexcept;
+	void DeleteExpiredAccessToken();
 };
 
 class AuthException {
