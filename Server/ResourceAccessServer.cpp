@@ -138,8 +138,7 @@ void ResourceAccessServer::UpdateResources() {
 }
 
 inline void ReplaceString(std::string& String1, const std::string& Old , const std::string& New) {
-	std::string::size_type  Pos(String1.find(Old));
-
+	std::string::size_type Pos(String1.find(Old));
 	while (Pos != std::string::npos) {
 		String1.replace(Pos, Old.length(), New);
 		Pos = String1.find(Old, Pos + New.length());
