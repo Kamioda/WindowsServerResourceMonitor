@@ -28,8 +28,15 @@ AuthManager::~AuthManager() {
 	if (this->xmlCreate.FilePath.empty()) return;
 	if (FALSE == PathFileExistsW(this->xmlCreate.FilePath.c_str())) DeleteFileW(this->xmlCreate.FilePath.c_str());
 	MSXML::Write writer(this->xmlCreate.Root);
+	writer.AddToRootElement(writer.GenerateText(L"\n"));
+	writer.AddToRootElement(writer.GenerateText(L"\t"));
 	writer.AddToRootElement(writer.GenerateElement(this->xmlCreate.DefaultUser, string::converter::stl::from_bytes(this->DefaultUser)));
-	for (const auto& i : this->AuthInformation) writer.AddToRootElement(writer.GenerateElement(this->xmlCreate.AllowUser, string::converter::stl::from_bytes(i)));
+	writer.AddToRootElement(writer.GenerateText(L"\n"));
+	for (const auto& i : this->AuthInformation) {
+		writer.AddToRootElement(writer.GenerateText(L"\t"));
+		writer.AddToRootElement(writer.GenerateElement(this->xmlCreate.AllowUser, string::converter::stl::from_bytes(i)));
+		writer.AddToRootElement(writer.GenerateText(L"\n"));
+	}
 	writer.Output(this->xmlCreate.FilePath);
 }
 
