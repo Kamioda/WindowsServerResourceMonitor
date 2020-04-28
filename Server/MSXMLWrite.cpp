@@ -23,8 +23,16 @@ namespace MSXML {
 		return XmlDomElement(this->lpXmlDoc, key, data);
 	}
 
+	XmlDomText Write::GenerateText(const std::wstring& text) {
+		return XmlDomText(this->lpXmlDoc, text);
+	}
+
 	void Write::AddToRootElement(const XmlDomElement& elem) {
 		this->lpRoot->appendChild(elem, NULL);
+	}
+
+	void Write::AddToRootElement(const XmlDomText& text) {
+		this->lpRoot->appendChild(text, NULL);
 	}
 
 	void Write::Output(const std::wstring& FilePath) {
