@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <random>
-#include <utility>
+#include <tuple>
 #include <chrono>
 
 class AuthManager {
@@ -14,13 +14,12 @@ private:
 		std::wstring AllowUser;
 		std::wstring DefaultUser;
 	};
-	using AccessTokenType = std::pair<std::string, std::chrono::milliseconds>;
+	using AccessTokenType = std::tuple<std::string, std::string, std::chrono::milliseconds>;
 	XmlCreateInformation xmlCreate;
 	std::string DefaultUser;
 	std::vector<std::string> AuthInformation;
 	std::vector<AccessTokenType> AccessToken;
 	mutable std::mt19937 mt;
-	size_t StartAuthDataSize;
 	long long MaxTokenExpirationTime;
 	std::string GenerateAuthKey(const std::string& ID, const std::string& Pass) const;
 	std::string GenerateRandomString(const size_t length) const;
@@ -36,9 +35,10 @@ public:
 	AuthManager& operator = (AuthManager&& a) noexcept;
 	bool Auth(const std::string& id, const std::string& pass) const noexcept;
 	bool Auth(const std::string& TargetAccessToken) noexcept;
-	std::string CreateAccessToken(const std::string& InternalAccessKey);
+	std::string CreateAccessToken(const std::string& ID);
+	std::string GetID(const std::string& TargetAccessToken) const;
 	void DeleteAccessToken(const std::string& ReceivedAccessToken);
-	void AddUser(const std::string& NewID, const std::string & NewPas, const std::string& AuthUserAccessToken);
+	bool AddUser(const std::string& NewID, const std::string & NewPas, const std::string& AuthUserAccessToken);
 	bool IsDefaultUser(const std::string& ID) const noexcept;
 	void DeleteExpiredAccessToken();
 };

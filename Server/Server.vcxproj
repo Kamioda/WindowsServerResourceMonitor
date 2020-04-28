@@ -225,6 +225,7 @@
     <ClCompile Include="..\Common\XmlDomElement.cpp" />
     <ClCompile Include="..\Common\XmlDomNodeList.cpp" />
     <ClCompile Include="Auth.cpp" />
+    <ClCompile Include="Base64Converter.cpp" />
     <ClCompile Include="ComInitManager.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="ConsoleMainProcess.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="..\Common\XmlDomElement.hpp" />
     <ClInclude Include="..\Common\XmlDomNodeList.hpp" />
     <ClInclude Include="Auth.hpp" />
+    <ClInclude Include="Base64Converter.hpp" />
     <ClInclude Include="ComInitManager.hpp" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="ConsoleMainProcess.h" />

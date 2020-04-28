@@ -3,7 +3,6 @@
   <url>
     <domain>localhost</domain>
     <port>32768</port>
-    <auth>/v1/</auth>
     <all>/v1/</all>
     <cpu>/v1/cpu</cpu>
     <memory>/v1/mem</memory>

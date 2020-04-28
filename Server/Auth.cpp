@@ -1,5 +1,6 @@
 ﻿#include "Auth.hpp"
 #include "Split.hpp"
+#include "Base64Converter.hpp"
 #include "../Common/StringCvt.h"
 #include "../Common/MSXMLRead.hpp"
 #include "MSXMLWrite.hpp"
@@ -7,6 +8,9 @@
 #include <Shlwapi.h>
 #include <algorithm>
 #include <functional>
+#if defined(_DEBUG) && defined(CONSOLE)
+#include <iostream>
+#endif
 #pragma comment(lib, "shlwapi.lib")
 
 std::mt19937 InitEngine();
@@ -14,15 +18,14 @@ std::chrono::milliseconds GetCurrent();
 
 AuthManager::AuthManager(const std::wstring& AuthInfoFilePath, const std::wstring& Root, const std::wstring& DefaultUserInfoPath, const std::wstring& AllowUserPath, const long long MaxExpirationTimeOfToken)
 	: xmlCreate({ AuthInfoFilePath, Root, AllowUserPath, DefaultUserInfoPath }),
-	AuthInformation(), mt(InitEngine()), StartAuthDataSize(), MaxTokenExpirationTime(MaxExpirationTimeOfToken) {
+	AuthInformation(), mt(InitEngine()), MaxTokenExpirationTime(MaxExpirationTimeOfToken) {
 	MSXML::Read xml = MSXML::Read(AuthInfoFilePath);
 	for (const auto& i : xml.Get<std::string>(Root + L"/" + AllowUserPath)) this->AuthInformation.emplace_back(i);
 	if (const auto defuser = xml.Get<std::string>(Root + L"/" + DefaultUserInfoPath); !defuser.empty()) this->DefaultUser = defuser.front();
-	this->StartAuthDataSize = this->AuthInformation.size();
 }
 
 AuthManager::~AuthManager() {
-	if (this->xmlCreate.FilePath.empty() || this->AuthInformation.size() == this->StartAuthDataSize) return;
+	if (this->xmlCreate.FilePath.empty()) return;
 	if (FALSE == PathFileExistsW(this->xmlCreate.FilePath.c_str())) DeleteFileW(this->xmlCreate.FilePath.c_str());
 	MSXML::Write writer(this->xmlCreate.Root);
 	writer.AddToRootElement(writer.GenerateElement(this->xmlCreate.DefaultUser, string::converter::stl::from_bytes(this->DefaultUser)));
@@ -32,14 +35,13 @@ AuthManager::~AuthManager() {
 
 AuthManager::AuthManager(AuthManager&& a) noexcept
 	: xmlCreate(std::move(a.xmlCreate)), AuthInformation(std::move(a.AuthInformation)), AccessToken(std::move(a.AccessToken)),
-	mt(std::move(a.mt)), StartAuthDataSize(a.StartAuthDataSize), MaxTokenExpirationTime(a.MaxTokenExpirationTime) { a.xmlCreate.FilePath.clear(); }
+	mt(std::move(a.mt)), MaxTokenExpirationTime(a.MaxTokenExpirationTime) { a.xmlCreate.FilePath.clear(); }
 
 AuthManager& AuthManager::operator = (AuthManager&& a) noexcept {
 	this->xmlCreate = std::move(a.xmlCreate);
 	this->AuthInformation = std::move(a.AuthInformation);
 	this->AccessToken = std::move(a.AccessToken);
 	this->mt = std::move(a.mt);
-	this->StartAuthDataSize = a.StartAuthDataSize;
 	this->MaxTokenExpirationTime = a.MaxTokenExpirationTime;
 	a.xmlCreate.FilePath.clear();
 	return *this;
@@ -73,7 +75,6 @@ std::string AuthManager::GenerateAuthKey(const std::string& User, const std::str
 }
 
 bool AuthManager::Auth(const std::string& User, const std::string& Pass) const noexcept {
-	if (this->AuthInformation.empty()) return true;
 	const std::string authkey = this->GenerateAuthKey(User, Pass);
 	return std::find(this->AuthInformation.begin(), this->AuthInformation.end(), authkey) != this->AuthInformation.end();
 }
@@ -87,14 +88,14 @@ bool AuthManager::UserExist(const std::string& ID) const {
 }
 
 auto AuthManager::GetReservedAccessTokenPos(const std::string& Token) const noexcept {
-	return std::find_if(this->AccessToken.begin(), this->AccessToken.end(),	[&Token](const AccessTokenType& a) { return a.first == Token; });
+	return std::find_if(this->AccessToken.begin(), this->AccessToken.end(),	[&Token](const AccessTokenType& a) { return std::get<1>(a) == Token; });
 }
 
 bool AuthManager::Auth(const std::string& ReceivedAccessToken) noexcept {
 	// const_iteratorだと困るのでここでstd::find_if実行
-	auto it = std::find_if(this->AccessToken.begin(), this->AccessToken.end(), [&ReceivedAccessToken](const AccessTokenType& a) { return a.first == ReceivedAccessToken; });
+	auto it = std::find_if(this->AccessToken.begin(), this->AccessToken.end(), [&ReceivedAccessToken](const AccessTokenType& a) { return std::get<1>(a) == ReceivedAccessToken; });
 	const bool Flag = (it != this->AccessToken.end());
-	if (Flag) it->second = GetCurrent();
+	if (Flag) std::get<2>(*it) = GetCurrent();
 	return Flag;
 }
 
@@ -102,8 +103,14 @@ std::string AuthManager::CreateAccessToken(const std::string& ID) {
 	if (!this->UserExist(ID)) throw std::runtime_error("This ID user doesn't exist");
 	std::string str = this->GenerateRandomString(30) + *this->GetUserPos(ID) + this->GenerateRandomString(30);
 	for (size_t i = 0; i < 35; i++) str = ToSHA512String(str);
-	this->AccessToken.emplace_back(std::make_pair(str, GetCurrent()));
-	return str;
+	this->AccessToken.emplace_back(std::make_tuple(ID, str, GetCurrent()));
+	return base64::encode(str);
+}
+
+std::string AuthManager::GetID(const std::string& TargetAccessToken) const {
+	const auto it = std::find_if(this->AccessToken.begin(), this->AccessToken.end(), [&TargetAccessToken](const AccessTokenType& a) { return std::get<1>(a) == TargetAccessToken; });
+	if (it == this->AccessToken.end()) throw AuthException(401, "This access token doesn't exist");
+	return std::get<0>(*it);
 }
 
 void AuthManager::DeleteAccessToken(const std::string& TargetAccessToken) {
@@ -114,21 +121,35 @@ bool AuthManager::IsDefaultUser(const std::string& ID) const noexcept {
 	return this->DefaultUser.empty() ? false : (this->DefaultUser == ID);
 }
 
-void AuthManager::AddUser(const std::string& NewID, const std::string& NewPass, const std::string& AuthUserAccessToken) {
-	if (!this->Auth(AuthUserAccessToken)) throw AuthException(401, "incorrect user id or password");
+bool AuthManager::AddUser(const std::string& NewID, const std::string& NewPass, const std::string& AuthUserAccessToken) {
 	if (this->UserExist(NewID)) throw AuthException(400, "This user exists");
 	const std::string str = this->GenerateAuthKey(NewID, NewPass);
 	// 初期ユーザー登録が完了後はデフォルトアカウントは削除
 	if (auto it = std::find_if(this->AuthInformation.begin(), this->AuthInformation.end(), 
 		[this](const std::string& str) { return this->DefaultUser == SplitString(str, ';').front(); }); it != this->AuthInformation.end()) this->AuthInformation.erase(it);
 	this->AuthInformation.emplace_back(str);
+	// デフォルトユーザーのアクセストークンは新しくユーザーアカウントが作られたら自動的に削除
+	if (const bool Flag = this->IsDefaultUser(this->GetID(AuthUserAccessToken)); Flag) {
+		this->AccessToken.erase(std::find_if(this->AccessToken.begin(), this->AccessToken.end(), [&AuthUserAccessToken](const AccessTokenType& a) { return std::get<1>(a) == AuthUserAccessToken; }));
+		return Flag;
+	}
+	else return Flag;
+
 }
 
 void AuthManager::DeleteExpiredAccessToken() {
-	std::sort(this->AccessToken.begin(), this->AccessToken.end(), [](const AccessTokenType& a, const AccessTokenType& b) { return a.second > b.second; });
+#if defined(_DEBUG) && defined(CONSOLE)
+	system("cls");
+	if (this->MaxTokenExpirationTime != 0) std::cout << "access token max limit : " << this->MaxTokenExpirationTime << " msec" << std::endl;
+	else std::cout << "access token max limit : unlimited" << std::endl;
+	std::cout << "enable access token" << std::endl;
+	for (const auto& i : this->AccessToken) std::cout << std::get<1>(i) << std::endl;
+#endif
+	if (this->MaxTokenExpirationTime == 0) return;
+	std::sort(this->AccessToken.begin(), this->AccessToken.end(), [](const AccessTokenType& a, const AccessTokenType& b) { return std::get<2>(a) > std::get<2>(b); });
 	const std::chrono::milliseconds Now = GetCurrent();
 	this->AccessToken.erase(
-		std::find_if(this->AccessToken.begin(), this->AccessToken.end(), [&Now, this](const AccessTokenType& token) { return (Now - token.second).count() > this->MaxTokenExpirationTime; }),
+		std::find_if(this->AccessToken.begin(), this->AccessToken.end(), [&Now, this](const AccessTokenType& token) { return (Now - std::get<2>(token)).count() > this->MaxTokenExpirationTime; }),
 		this->AccessToken.end()
 	);
 }

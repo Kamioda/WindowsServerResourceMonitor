@@ -157,6 +157,9 @@
     <ClCompile Include="..\Common\ComString.cpp">
       <Filter>SubModule\ComString</Filter>
     </ClCompile>
+    <ClCompile Include="Base64Converter.cpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServiceStatus.h">
@@ -272,6 +275,9 @@
     </ClInclude>
     <ClInclude Include="..\Common\ComString.hpp">
       <Filter>SubModule\ComString</Filter>
+    </ClInclude>
+    <ClInclude Include="Base64Converter.hpp">
+      <Filter>ServiceSession\Auth</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
