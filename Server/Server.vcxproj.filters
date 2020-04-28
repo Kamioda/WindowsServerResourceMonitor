@@ -71,6 +71,9 @@
     <Filter Include="SubModule\ComString">
       <UniqueIdentifier>{2dd2cd0d-5354-4ec6-9e5e-0c1c12ff6ecd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SubModule\MSXML\XmlDomText">
+      <UniqueIdentifier>{2abd3d16-9e11-4e7e-a82c-4bd7c9c97e46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -159,6 +162,9 @@
     </ClCompile>
     <ClCompile Include="Base64Converter.cpp">
       <Filter>ServiceSession\Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\XmlDomText.cpp">
+      <Filter>SubModule\MSXML\XmlDomText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="Base64Converter.hpp">
       <Filter>ServiceSession\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\XmlDomText.hpp">
+      <Filter>SubModule\MSXML\XmlDomText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
