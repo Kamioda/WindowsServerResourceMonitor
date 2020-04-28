@@ -12,7 +12,7 @@ namespace MSXML {
 		if (const HRESULT hr = this->lpXmlDoc->createProcessingInstruction(Target.get(), Xml.get(), &lpProcInst); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 		if (const HRESULT hr = this->lpXmlDoc->appendChild(lpProcInst, NULL); FAILED(hr)) throw std::runtime_error(GetErrorMessageA(hr));
 		SafeRelease(lpProcInst);
-		this->lpRoot = std::move(XmlDomElement(this->lpXmlDoc, Root));
+		this->lpRoot = XmlDomElement(this->lpXmlDoc, Root);
 	}
 
 	XmlDomElement Write::GenerateElement(const std::wstring& key) {

@@ -35,7 +35,7 @@
     <looptime>500</looptime>
     <authfile>
       <file>.\auth.xml</file>
-      <root>authinformation/</root>
+      <root>authinformation</root>
       <defaultuser>defaultuser</defaultuser>
       <allowuser>allowuser</allowuser>
     </authfile>
