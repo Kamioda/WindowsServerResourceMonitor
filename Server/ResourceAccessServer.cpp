@@ -166,7 +166,7 @@ inline void reqproc(AuthManager& auth, Req req, Res res, const std::function<voi
 };
 
 template<typename T>
-inline auto find(const std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
+inline auto find(std::vector<T>& v, const std::string& val) { return std::find_if(v.begin(), v.end(), [&val](const T& t) { return t.GetKey() == val; }); }
 
 inline std::string Auth(AuthManager& auth, const std::string& RequestBody) {
 	picojson::value val{};
@@ -185,6 +185,13 @@ inline std::string CreateUser(AuthManager& auth, const std::string& RequestBody,
 	const std::string Pass = obj.at("pass").get<std::string>();
 	// 認証していたのがデフォルトユーザーの場合、新ユーザーのアクセストークンを発行して返す
 	return auth.AddUser(ID, Pass, CurrentUserAccessToken) ? auth.CreateAccessToken(ID) : CurrentUserAccessToken;
+}
+
+inline auto GetTargetService(const httplib::Match& match, std::vector<ServiceMonitor>& services) {
+	const std::string matchstr = match[0].str();
+	std::string service = matchstr.substr(matchstr.find_last_of('/') + 1);
+	ReplaceString(service, "%20", " ");
+	return find(services, service);
 }
 
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
@@ -236,11 +243,64 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 		[&](Req req, Res res) {
 			reqproc(this->auth, req, res,
 				[&] {
-					const std::string matchstr = (req.matches[0].str());
-					std::string service = matchstr.substr(matchstr.find_last_of('/') + 1);
-					ReplaceString(service, "%20", " ");
-					if (auto it = find(this->services, service); it == this->services.end()) res.status = 404;
+					if (auto it = GetTargetService(req.matches, this->services); it == this->services.end()) res.status = 404;
 					else res.set_content(ToJsonText(it->Get()), "application/json");
+				}
+			);
+		}
+	);
+	this->server.Get(this->GetConfStr("url", "svcctrl/start", "/v1/service/start/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+		[&](Req req, Res res) {
+			reqproc(this->auth, req, res,
+				[&] {
+					if (auto it = GetTargetService(req.matches, this->services); it == this->services.end()) res.status = 404;
+					else {
+						it->Run();
+						it->Update();
+						res.set_content(ToJsonText(it->Get()), "application/json");
+					}
+				}
+			);
+		}
+	);
+	this->server.Get(this->GetConfStr("url", "svcctrl/stop", "/v1/service/stop/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+		[&](Req req, Res res) {
+			reqproc(this->auth, req, res,
+				[&] {
+					if (auto it = GetTargetService(req.matches, this->services); it == this->services.end()) res.status = 404;
+					else {
+						it->Stop();
+						it->Update();
+						res.set_content(ToJsonText(it->Get()), "application/json");
+					}
+				}
+			);
+		}
+	);
+	this->server.Get(this->GetConfStr("url", "svcctrl/pause", "/v1/service/pause/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+		[&](Req req, Res res) {
+			reqproc(this->auth, req, res,
+				[&] {
+					if (auto it = GetTargetService(req.matches, this->services); it == this->services.end()) res.status = 404;
+					else {
+						it->Pause();
+						it->Update();
+						res.set_content(ToJsonText(it->Get()), "application/json");
+					}
+				}
+			);
+		}
+	);
+	this->server.Get(this->GetConfStr("url", "svcctrl/continue", "/v1/service/continue/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+		[&](Req req, Res res) {
+			reqproc(this->auth, req, res,
+				[&] {
+					if (auto it = GetTargetService(req.matches, this->services); it == this->services.end()) res.status = 404;
+					else {
+						it->Continue();
+						it->Update();
+						res.set_content(ToJsonText(it->Get()), "application/json");
+					}
 				}
 			);
 		}
