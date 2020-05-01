@@ -31,18 +31,6 @@ namespace impl {
 		DiskWrite(PDHQuery& query, const std::string& TargetDrive = "C:");
 		double Get() const;
 	};
-
-	class DiskReadAverage : public PDHCounter {
-	public:
-		DiskReadAverage(PDHQuery& query, const std::string& TargetDrive = "C:");
-		double Get() const;
-	};
-
-	class DiskWriteAverage : public PDHCounter {
-	public:
-		DiskWriteAverage(PDHQuery& query, const std::string& TargetDrive = "C:");
-		double Get() const;
-	};
 }
 
 class Disk {
