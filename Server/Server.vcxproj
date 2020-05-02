@@ -299,9 +299,6 @@
     <ClInclude Include="ToUpper.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="server.ini" />
-  </ItemGroup>
-  <ItemGroup>
     <Xml Include="server.xml" />
     <Xml Include="auth.xml" />
   </ItemGroup>
