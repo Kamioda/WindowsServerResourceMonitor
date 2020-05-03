@@ -9,7 +9,6 @@
 - [AinoMegumi/WindowsServiceCppTemplate](https://github.com/AinoMegumi/WindowsServiceCppTemplate) (MIT License)
 - [yhirose/cpp-httplib](https://github.com/yhirose/cpp-httplib) (MIT License)(サービス向けに改変)
 - [kazuho/picojson](https://github.com/kazuho/picojson) (BSD 2-Clause "Simplified" License)
-- [unicode-org/icu](https://github.com/unicode-org/icu) (ICU License)
 
 ## プロジェクトのライセンス
 
