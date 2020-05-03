@@ -249,7 +249,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(this->GetConfStr("url", "svcctrl/start", "/v1/service/start/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+	this->server.Get(this->GetConfStr("url", "svcctrl/start", "/v1/service/start/[0-9a-zA-Z\\-_.%]{1,}").c_str(),
 		[&](Req req, Res res) {
 			reqproc(this->auth, req, res,
 				[&] {
@@ -263,7 +263,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(this->GetConfStr("url", "svcctrl/stop", "/v1/service/stop/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+	this->server.Get(this->GetConfStr("url", "svcctrl/stop", "/v1/service/stop/[0-9a-zA-Z\\-_.%]{1,}").c_str(),
 		[&](Req req, Res res) {
 			reqproc(this->auth, req, res,
 				[&] {
@@ -277,7 +277,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(this->GetConfStr("url", "svcctrl/pause", "/v1/service/pause/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+	this->server.Get(this->GetConfStr("url", "svcctrl/pause", "/v1/service/pause/[0-9a-zA-Z\\-_.%]{1,}").c_str(),
 		[&](Req req, Res res) {
 			reqproc(this->auth, req, res,
 				[&] {
@@ -291,7 +291,7 @@ ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::Com
 			);
 		}
 	);
-	this->server.Get(this->GetConfStr("url", "svcctrl/continue", "/v1/service/continue/[0-9a-zA-Z\-_.%]{1,}").c_str(),
+	this->server.Get(this->GetConfStr("url", "svcctrl/continue", "/v1/service/continue/[0-9a-zA-Z\\-_.%]{1,}").c_str(),
 		[&](Req req, Res res) {
 			reqproc(this->auth, req, res,
 				[&] {
