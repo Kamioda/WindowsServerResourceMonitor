@@ -157,6 +157,9 @@
     <ClCompile Include="..\Common\XmlDomText.cpp">
       <Filter>SubModule\MSXML\XmlDomText</Filter>
     </ClCompile>
+    <ClCompile Include="Password.cpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServiceStatus.h">
@@ -216,9 +219,6 @@
     <ClInclude Include="Split.hpp">
       <Filter>ServiceSession\Others</Filter>
     </ClInclude>
-    <ClInclude Include="httplib.h">
-      <Filter>ServiceSession\Others</Filter>
-    </ClInclude>
     <ClInclude Include="Auth.hpp">
       <Filter>ServiceSession\Auth</Filter>
     </ClInclude>
@@ -273,13 +273,24 @@
     <ClInclude Include="..\Common\XmlDomText.hpp">
       <Filter>SubModule\MSXML\XmlDomText</Filter>
     </ClInclude>
+    <ClInclude Include="Password.hpp">
+      <Filter>ServiceSession\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.hpp">
+      <Filter>ServiceSession\ResourceManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="server.xml">
       <Filter>リソース ファイル</Filter>
     </Xml>
-    <Xml Include="auth.xml">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="auth.json">
       <Filter>リソース ファイル</Filter>
-    </Xml>
+    </None>
+    <None Include="resources.json">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

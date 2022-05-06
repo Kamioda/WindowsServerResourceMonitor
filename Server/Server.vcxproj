@@ -242,6 +242,7 @@
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="MSXMLWrite.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="Password.cpp" />
     <ClCompile Include="PDHCounter.cpp" />
     <ClCompile Include="PDHQuery.cpp" />
     <ClCompile Include="Processor.cpp" />
@@ -273,16 +274,17 @@
     <ClInclude Include="ConsoleMainProcess.h" />
     <ClInclude Include="Disk.hpp" />
     <ClInclude Include="HandleManager.h" />
-    <ClInclude Include="httplib.h" />
     <ClInclude Include="ConfigLoader.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="MSXMLWrite.hpp" />
     <ClInclude Include="Network.hpp" />
+    <ClInclude Include="Password.hpp" />
     <ClInclude Include="PDHAssistFunctions.hpp" />
     <ClInclude Include="PDHCounter.hpp" />
     <ClInclude Include="PDHQuery.hpp" />
     <ClInclude Include="Processor.hpp" />
     <ClInclude Include="ResourceAccessServer.hpp" />
+    <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="ServiceControl.h" />
     <ClInclude Include="ServiceController.h" />
     <ClInclude Include="ServiceControlManager.h" />
@@ -296,7 +298,10 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="server.xml" />
-    <Xml Include="auth.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="auth.json" />
+    <None Include="resources.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
