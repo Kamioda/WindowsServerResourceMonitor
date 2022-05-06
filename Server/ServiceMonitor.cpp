@@ -1,5 +1,4 @@
 ﻿#include "ServiceMonitor.hpp"
-#include "JsonObject.hpp"
 #include <array>
 
 std::unordered_map<DWORD, std::string> ServiceMonitor::StatusList;
@@ -59,31 +58,14 @@ void ServiceMonitor::Update() {
 	this->ServiceDisplayName = this->GetTargetServiceDisplayName();
 }
 
-picojson::object ServiceMonitor::Get() const {
-	JsonObject obj{};
-	obj.insert("name", ServiceController::ServiceName);
-	obj.insert("display", this->ServiceDisplayName);
-	obj.insert("type", this->ServiceType);
-	obj.insert("status", this->ServiceStatus);
-	return obj;
+nlohmann::json ServiceMonitor::Get() const {
+	nlohmann::json json{};
+	json["name"] = ServiceController::ServiceName;
+	json["display"] = this->ServiceDisplayName;
+	json["type"] = this->ServiceType;
+	json["status"] = this->ServiceStatus;
+	return json;
 }
-
-//std::string ServiceMonitor::GetTargetServiceDisplayName() {
-//	DWORD Size{};
-//	GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), nullptr, &Size);
-//	size_t BufSize = Size;
-//	if (Size > 0) {
-//		char* Buffer = new char[BufSize + 1];
-//		ZeroMemory(Buffer, BufSize + 1);
-//		if (FALSE != GetServiceDisplayNameA(ServiceController::SCM.get(), this->ServiceName.c_str(), Buffer, &Size)) {
-//			std::string str{};
-//			str.reserve(BufSize + 1);
-//			str = Buffer;
-//			return str;
-//		}
-//	}
-//	return std::string();
-//}
 
 #include "../Common/GetErrorMessage.h"
 #include "../Common/CommandLineManager.h"

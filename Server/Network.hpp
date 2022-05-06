@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "PDHCounter.hpp"
-#include <picojson/picojson.h>
+#include <nlohmann/json.hpp>
 
 namespace impl {
 	class NetworkReceive : public PDHCounter {
@@ -23,5 +23,5 @@ private:
 	impl::NetworkSend netSend;
 public:
 	Network(PDHQuery& query, const std::string& NetworkDeviceName = "Realtek PCIe GBE Family Controller");
-	picojson::object Get() const;
+	nlohmann::json Get() const;
 };

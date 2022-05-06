@@ -17,9 +17,6 @@
     <Filter Include="ServiceSession\ResourceManager">
       <UniqueIdentifier>{5d746e27-7f26-4eaf-974a-12b1d105810a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ServiceSession\Json">
-      <UniqueIdentifier>{27bbcf21-463f-4e23-8461-0739d83f68a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ServiceSession\Core">
       <UniqueIdentifier>{684f7ca9-3b3f-4cfc-bb76-2beb2e41c5db}</UniqueIdentifier>
     </Filter>
@@ -118,12 +115,6 @@
     <ClCompile Include="ConsoleMainProcess.cpp">
       <Filter>ConsoleSession</Filter>
     </ClCompile>
-    <ClCompile Include="JsonArray.cpp">
-      <Filter>ServiceSession\Json</Filter>
-    </ClCompile>
-    <ClCompile Include="JsonObject.cpp">
-      <Filter>ServiceSession\Json</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceAccessServer.cpp">
       <Filter>ServiceSession\Core</Filter>
     </ClCompile>
@@ -212,12 +203,6 @@
     </ClInclude>
     <ClInclude Include="ConsoleMainProcess.h">
       <Filter>ConsoleSession</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonArray.hpp">
-      <Filter>ServiceSession\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="JsonObject.hpp">
-      <Filter>ServiceSession\Json</Filter>
     </ClInclude>
     <ClInclude Include="ResourceAccessServer.hpp">
       <Filter>ServiceSession\Core</Filter>

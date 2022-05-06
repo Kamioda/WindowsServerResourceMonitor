@@ -1,6 +1,5 @@
 ﻿#include "Network.hpp"
 #include "PDHAssistFunctions.hpp"
-#include "JsonObject.hpp"
 
 namespace impl {
 	NetworkReceive::NetworkReceive(PDHQuery& query, const std::string& NetworkDeviceName) : PDHCounter(query, "Network Adapter", "Bytes Received/sec", NetworkDeviceName) {}
@@ -13,11 +12,11 @@ namespace impl {
 Network::Network(PDHQuery& query, const std::string& NetworkDeviceName)
 	: DeviceName(NetworkDeviceName), netReceive(query, NetworkDeviceName), netSend(query, NetworkDeviceName) {}
 
-picojson::object Network::Get() const {
-	JsonObject obj{};
-	obj.insert("device", this->DeviceName);
-	obj.insert("receive", this->netReceive.Get());
-	obj.insert("send", this->netSend.Get());
-	return obj;
+nlohmann::json Network::Get() const {
+	nlohmann::json json{};
+	json["device"] = this->DeviceName;
+	json["receive"] = this->netReceive.Get();
+	json["send"] = this->netSend.Get();
+	return json;
 }
 

@@ -2,8 +2,7 @@
 #include "Base64Converter.hpp"
 #include "ServiceStatus.h"
 #include "Split.hpp"
-#include "JsonObject.hpp"
-#include "JsonArray.hpp"
+#include <concepts>
 #include <algorithm>
 #include <chrono>
 using Req = const httplib::Request&;
@@ -62,39 +61,40 @@ std::wstring ResourceAccessServer::GetConfStr(const std::wstring& Section, const
 
 int ResourceAccessServer::GetConfInt(const std::string& Section, const std::string& Key, const int& Default) { return this->conf.GetNum(Section, Key, Default); };
 
-template<class ResourceClass>
-inline void InsertArray(const std::vector<ResourceClass>& list, JsonObject& obj, const std::string& key) {
-	JsonArray arr{};
-	for (const auto& i : list) arr.insert(i.Get());
-	obj.insert(key, arr);
+template<class T>
+concept ResourceClass = std::same_as<decltype(std::declval<T>().Get()), nlohmann::json>;
+
+template<ResourceClass Resource>
+inline nlohmann::json CreateJsonArray(const std::vector<Resource>& list) {
+	if (list.size() == 1) return list.front().Get();
+	nlohmann::json json = nlohmann::json::array();
+	for (const auto& i : list) json.emplace_back(i.Get());
+	return json;
 }
 
-picojson::object ResourceAccessServer::AllResourceToObject() const {
-	JsonObject obj{};
-	JsonArray diskinfo{};
-	JsonArray netinfo{};
-	JsonArray serviceinfo{};
-	obj.insert("cpu", this->processor.Get());
-	obj.insert("memory", this->memory.Get());
-	InsertArray(this->disk, obj, "disk");
-	InsertArray(this->network, obj, "network");
-	InsertArray(this->services, obj, "service");
-	return obj;
+template<ResourceClass Resource>
+inline nlohmann::json CreateSingleObject(const std::vector<Resource>& list, const std::string& KeyName) {
+	nlohmann::json json{};
+	json[KeyName] = CreateJsonArray(list);
+	return json;
 }
 
-picojson::object ResourceAccessServer::AllNetworkResourceToObject() const {
-	JsonObject obj{};
-	if (this->network.size() == 1) obj.insert("network", this->network.front().Get());
-	else {
-		JsonArray netinfo{};
-		for (const auto& i : this->network) netinfo.insert(i.Get());
-		obj.insert("network", netinfo);
-	}
-	return obj;
+nlohmann::json ResourceAccessServer::AllResourceToObject() const {
+	nlohmann::json json{};
+	json["cpu"] = this->processor.Get();
+	json["memory"] = this->memory.Get();
+	json["disk"] = CreateJsonArray(this->disk);
+	json["network"] = CreateJsonArray(this->network);
+	json["service"] = CreateJsonArray(this->services);
+	return json;
 }
 
-template<class ResourceClass>
-inline picojson::object AllResourceToObjectImpl(const std::vector<ResourceClass>& Resource, const std::string& Key) {
+nlohmann::json ResourceAccessServer::AllNetworkResourceToObject() const {
+	return CreateSingleObject(this->network, "network");
+}
+
+template<ResourceClass Resource>
+inline nlohmann::json AllResourceToObjectImpl(const std::vector<Resource>& Resource, const std::string& Key) {
 	JsonObject obj{};
 	if (Resource.size() == 1) obj.insert("disk", Resource.front().Get());
 	else {
@@ -105,17 +105,17 @@ inline picojson::object AllResourceToObjectImpl(const std::vector<ResourceClass>
 	return obj;
 }
 
-picojson::object ResourceAccessServer::AllDiskResourceToObject() const {
-	return AllResourceToObjectImpl(this->disk, "disk");
+nlohmann::json ResourceAccessServer::AllDiskResourceToObject() const {
+	return CreateSingleObject(this->disk, "disk");
 }
 
 
-picojson::object ResourceAccessServer::AllServiceToObject() const {
-	return AllResourceToObjectImpl(this->services, "service");
+nlohmann::json ResourceAccessServer::AllServiceToObject() const {
+	return CreateSingleObject(this->services, "service");
 }
 
 void ResourceAccessServer::UpdateResources() {
-	this->processor.Update();
+	this->processor.UpdateProcessNum();
 	this->query.Update();
 	this->memory.Update();
 	for (auto& i : this->disk) i.Update();
@@ -130,9 +130,9 @@ inline void ReplaceString(std::string& String1, const std::string& Old , const s
 	}
 }
 
-inline std::string ToJsonText(const picojson::object& obj) {
+inline std::string ToJsonText(const nlohmann::json& obj) {
 	std::stringstream ss{};
-	ss << picojson::value(obj);
+	ss << obj;
 	return ss.str();
 }
 

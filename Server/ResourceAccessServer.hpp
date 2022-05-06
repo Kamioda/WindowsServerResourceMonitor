@@ -28,10 +28,10 @@ private:
 	std::string GetConfStr(const std::string& Section, const std::string& Key, const std::string& Default);
 	std::wstring GetConfStr(const std::wstring& Section, const std::wstring& Key, const std::wstring& Default);
 	int GetConfInt(const std::string& Section, const std::string& Key, const int& Default);
-	picojson::object AllResourceToObject() const;
-	picojson::object AllDiskResourceToObject() const;
-	picojson::object AllNetworkResourceToObject() const;
-	picojson::object AllServiceToObject() const;
+	nlohmann::json AllResourceToObject() const;
+	nlohmann::json AllDiskResourceToObject() const;
+	nlohmann::json AllNetworkResourceToObject() const;
+	nlohmann::json AllServiceToObject() const;
 	void UpdateResources();
 	void GetDiskResourceInformations();
 	void GetNetworkResourceInformations();

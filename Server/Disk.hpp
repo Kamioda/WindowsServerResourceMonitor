@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "PDHCounter.hpp"
-#include <picojson/picojson.h>
+#include <nlohmann/json.hpp>
 #include <utility>
 
 namespace impl {
@@ -13,9 +13,9 @@ namespace impl {
 	public:
 		DiskSpaceInformation(const std::string& TargetDrive = "C:");
 		void Update();
-		picojson::object GetTotal() const noexcept;
-		picojson::object GetUsed() const noexcept;
-		picojson::object GetFree() const noexcept;
+		nlohmann::json GetTotal() const noexcept;
+		nlohmann::json GetUsed() const noexcept;
+		nlohmann::json GetFree() const noexcept;
 		double GetUsedPer() const noexcept;
 		double GetFreePer() const noexcept;
 	};
@@ -41,7 +41,7 @@ private:
 	impl::DiskWrite diskWrite;
 public:
 	Disk(PDHQuery& query, const std::string& TargetDrive = "C:");
-	picojson::object Get() const;
+	nlohmann::json Get() const;
 	std::string GetKey() const noexcept;
 	void Update();
 };
