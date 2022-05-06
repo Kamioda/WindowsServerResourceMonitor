@@ -1,11 +1,6 @@
 ﻿#pragma once
+#include <nlohmann/json.hpp>
 #include <string>
-#include <vector>
-#include <unordered_map>
-#include <random>
-#include <tuple>
-#include <chrono>
-#include <filesystem>
 
 class AuthManager {
 private:
@@ -15,7 +10,7 @@ private:
 	};
 	std::vector<AuthInformation> AuthInformations;
 public:
-	AuthManager(const std::filesystem::path& AuthInfoFilePath);
+	AuthManager(const nlohmann::json& AuthInfoJson);
 	AuthManager(const AuthManager&) = delete;
 	AuthManager& operator = (const AuthManager&) = delete;
 	bool Auth(const std::string& id, const std::string& pass) const noexcept;
