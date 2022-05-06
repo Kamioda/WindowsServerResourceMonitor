@@ -8,7 +8,8 @@ private:
 public:
 	ConfigLoader() = default;
 	ConfigLoader(const std::string& ConfigFilePath);
-	int GetNum(const std::string& Section, const std::string& Key, const int DefaultValue);
-	std::string GetString(const std::string& Section, const std::string& Key, const std::string& Default);
-	std::wstring GetString(const std::wstring& Section, const std::wstring& Key, const std::wstring& Default);
+	int GetNum(const std::string& route, const int& DefaultValue);
+	int GetNum(const std::wstring& route, const int& DefaultValue);
+	std::string GetString(const std::string& route, const std::string& Default);
+	std::wstring GetString(const std::wstring& route, const std::wstring& Default);
 };
