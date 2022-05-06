@@ -1,6 +1,5 @@
 ﻿#include "Memory.hpp"
 #include "PDHAssistFunctions.hpp"
-#include "JsonObject.hpp"
 
 Memory::Memory() : ms({ sizeof(MEMORYSTATUSEX) }) {}
 
@@ -34,25 +33,25 @@ double Memory::GetCommitUsage() const { return digit(ByteToMegaByte(this->GetCom
 
 double Memory::GetCommitUsagePer() const { return digit(ToPercent(this->GetCommitUsed(), this->GetCommitTotal())); }
 
-picojson::object Memory::GetPhysical() const {
-	JsonObject physical{};
-	physical.insert("total", this->GetPhysicalMaxMemSize());
-	physical.insert("available", this->GetPhysicalAvailable());
-	physical.insert("used", this->GetPhysicalUsage());
-	physical.insert("usedper", this->GetPhysicalUsagePer());
-	return physical;
+nlohmann::json Memory::GetPhysical() const {
+	nlohmann::json json{};
+	json["total"] = this->GetPhysicalMaxMemSize();
+	json["available"] = this->GetPhysicalAvailable();
+	json["used"] = this->GetPhysicalUsage();
+	json["usedper"] = this->GetPhysicalUsagePer();
+	return json;
 }
-picojson::object Memory::GetCommit() const {
-	JsonObject commit{};
-	commit.insert("total", this->GetCommitMaxMemSize());
-	commit.insert("available", this->GetCommitAvailable());
-	commit.insert("used", this->GetCommitUsage());
-	commit.insert("usedper", this->GetCommitUsagePer());
-	return commit;
+nlohmann::json Memory::GetCommit() const {
+	nlohmann::json json{};
+	json["total"] = this->GetCommitMaxMemSize();
+	json["available"] = this->GetCommitAvailable();
+	json["used"] = this->GetCommitUsage();
+	json["usedper"] = this->GetCommitUsagePer();
+	return json;
 }
-picojson::object Memory::Get() const {
-	JsonObject obj{};
-	obj.insert("physical", this->GetPhysical());
-	obj.insert("commit", this->GetCommit());
-	return obj;
+nlohmann::json Memory::Get() const {
+	nlohmann::json json{};
+	json["physical"] = this->GetPhysical();
+	json["commit"] = this->GetCommit();
+	return json;
 }

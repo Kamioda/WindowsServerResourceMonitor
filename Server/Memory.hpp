@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <Windows.h>
-#include <picojson/picojson.h>
+#include <nlohmann/json.hpp>
 
 class Memory {
 private:
@@ -23,8 +23,8 @@ private:
 	double GetCommitAvailable() const;
 	double GetCommitUsage() const;
 	double GetCommitUsagePer() const;
-	picojson::object GetPhysical() const;
-	picojson::object GetCommit() const;
+	nlohmann::json GetPhysical() const;
+	nlohmann::json GetCommit() const;
 public:
-	picojson::object Get() const;
+	nlohmann::json Get() const;
 };

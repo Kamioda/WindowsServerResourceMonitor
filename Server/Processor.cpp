@@ -31,10 +31,10 @@ void Processor::UpdateProcessNum() {
 	this->ProcessNum /= sizeof(DWORD);
 }
 
-picojson::object Processor::Get() const {
-	JsonObject obj{};
-	obj.insert("name", this->CPUName);
-	obj.insert("usage", this->GetUsage());
-	obj.insert("process", this->GetProcessNum());
-	return obj;
+nlohmann::json Processor::Get() const {
+	nlohmann::json json{};
+	json["name"] = this->CPUName;
+	json["usage"] = this->GetUsage();
+	json["process"] = this->GetProcessNum();
+	return json;
 }

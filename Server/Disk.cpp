@@ -14,37 +14,24 @@ namespace impl {
 		this->Free = Avail.QuadPart;
 	}
 	
-	std::pair<double, std::string> convertUnit(const unsigned long long ByteVal) {
-		if (const double d = ByteToTeraByte(ByteVal); d >= 1.0) return std::make_pair(d, "TB");
-		if (const double d = ByteToGigaByte(ByteVal); d >= 1.0) return std::make_pair(d, "GB");
-		if (const double d = ByteToMegaByte(ByteVal); d >= 1.0) return std::make_pair(d, "MB");
-		if (const double d = ByteToKiloByte(ByteVal); d >= 1.0) return std::make_pair(d, "KB");
-		return std::make_pair(static_cast<double>(ByteVal), "B");
-	}
-
-	inline void ConvertDiskInfoToJsonObject(JsonObject& obj, const std::pair<double, std::string>& val) {
-		obj.insert("capacity", val.first);
-		obj.insert("unit", val.second);
-	}
-
-	picojson::object DiskSpaceInformation::GetTotal() const noexcept {
-		JsonObject obj{};
-		ConvertDiskInfoToJsonObject(obj, convertUnit(this->Total));
-		return obj;
+	nlohmann::json DiskSpaceInformation::GetTotal() const noexcept {
+		nlohmann::json json{};
+		json["capacity"] = this->Total;
+		return json;
 	}
 	
-	picojson::object DiskSpaceInformation::GetUsed() const noexcept {
-		JsonObject obj{};
-		ConvertDiskInfoToJsonObject(obj, convertUnit(this->Used));
-		obj.insert("per", this->GetUsedPer());
-		return obj;
+	nlohmann::json DiskSpaceInformation::GetUsed() const noexcept {
+		nlohmann::json json{};
+		json["capacity"] = this->Used;
+		json["per"] = this->GetUsedPer();
+		return json;
 	}
 	
-	picojson::object DiskSpaceInformation::GetFree() const noexcept {
-		JsonObject obj{};
-		ConvertDiskInfoToJsonObject(obj, convertUnit(this->Free));
-		obj.insert("per", this->GetFreePer());
-		return obj;
+	nlohmann::json DiskSpaceInformation::GetFree() const noexcept {
+		nlohmann::json json{};
+		json["capacity"] = this->Free;
+		json["per"] = this->GetFreePer();
+		return json;
 	}
 
 	double DiskSpaceInformation::GetUsedPer() const noexcept {
@@ -67,15 +54,15 @@ namespace impl {
 Disk::Disk(PDHQuery& query, const std::string& TargetDrive)
 	: Drive(TargetDrive), diskSpace(TargetDrive), diskRead(query, TargetDrive), diskWrite(query, TargetDrive) {}
 
-picojson::object Disk::Get() const {
-	JsonObject obj{};
-	obj.insert("drive", this->Drive);
-	obj.insert("total", this->diskSpace.GetTotal());
-	obj.insert("used", this->diskSpace.GetUsed());
-	obj.insert("free", this->diskSpace.GetFree());
-	obj.insert("read", this->diskRead.Get());
-	obj.insert("write", this->diskWrite.Get());
-	return obj;
+nlohmann::json Disk::Get() const {
+	nlohmann::json json{};
+	json["drive"] = this->Drive;
+	json["total"] = this->diskSpace.GetTotal();
+	json["used"] = this->diskSpace.GetUsed();
+	json["free"] = this->diskSpace.GetFree();
+	json["read"] = this->diskRead.Get();
+	json["write"] = this->diskWrite.Get();
+	return json;
 }
 
 void Disk::Update() {

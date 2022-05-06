@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ServiceController.h"
 #include "ConfigLoader.hpp"
-#include <picojson/picojson.h>
+#include <nlohmann/json.hpp>
 #include <unordered_map>
 
 class ServiceMonitor : private ServiceController {
@@ -23,6 +23,6 @@ public:
 	void Pause();
 	void Continue();
 	void Update();
-	picojson::object Get() const;
+	nlohmann::json Get() const;
 	std::string GetKey() const noexcept;
 };

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "PDHCounter.hpp"
-#include <picojson/picojson.h>
+#include <nlohmann/json.hpp>
 
 class Processor : public PDHCounter {
 private:
@@ -14,5 +14,5 @@ private:
 	int GetProcessNum() const;
 public:
 	void UpdateProcessNum();
-	picojson::object Get() const;
+	nlohmann::json Get() const;
 };
