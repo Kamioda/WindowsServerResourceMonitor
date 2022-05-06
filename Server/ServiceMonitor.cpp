@@ -73,7 +73,8 @@ nlohmann::json ServiceMonitor::Get() const {
 std::string ServiceMonitor::GetTargetServiceDisplayName() {
 	DWORD Size{};
 	const std::wstring lpServiceName = CommandLineManagerW::AlignCmdLineStrType(this->ServiceName).c_str();
-	GetServiceDisplayNameW(ServiceController::SCM.get(), lpServiceName.c_str(), nullptr, &Size);
+	if (FALSE == GetServiceDisplayNameW(ServiceController::SCM.get(), lpServiceName.c_str(), nullptr, &Size))
+		throw std::runtime_error(GetErrorMessageA());
 	if (Size > 0) {
 		std::wstring buf{};
 		buf.resize(++Size);
