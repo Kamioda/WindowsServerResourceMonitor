@@ -24,7 +24,7 @@ double Processor::GetUsage() const { return digit(PDHCounter::GetDoubleValue());
 
 int Processor::GetProcessNum() const { return this->ProcessNum; }
 
-void Processor::Update() {
+void Processor::UpdateProcessNum() {
 	constexpr DWORD BufferSize = 1024;
 	DWORD Buffer[BufferSize];
 	EnumProcesses(Buffer, sizeof(Buffer), &this->ProcessNum);

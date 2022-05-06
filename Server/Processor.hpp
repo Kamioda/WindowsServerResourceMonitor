@@ -13,6 +13,6 @@ private:
 	double GetUsage() const;
 	int GetProcessNum() const;
 public:
-	void Update();
+	void UpdateProcessNum();
 	picojson::object Get() const;
 };
