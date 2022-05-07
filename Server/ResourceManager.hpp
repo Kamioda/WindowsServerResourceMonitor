@@ -66,11 +66,11 @@ public:
 	}
 	nlohmann::json GetAllResources() const {
 		nlohmann::json json{};
-		json["cpu"] = this->processor.Get();
-		json["memory"] = this->memory.Get();
-		json["disk"] = CreateJsonArray(this->disk);
-		json["network"] = CreateJsonArray(this->network);
-		json["services"] = CreateJsonArray(this->services);
+		json["cpu"] = this->GetCPU();
+		json["memory"] = this->GetMemory();
+		json["disk"] = this->GetDisk();
+		json["network"] = this->GetNetwork();
+		json["services"] = this->GetService();
 		return json;
 	}
 	nlohmann::json GetCPU() const { return this->processor.Get(); }
