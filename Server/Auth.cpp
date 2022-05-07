@@ -18,7 +18,7 @@ bool AuthManager::Auth(const std::string& User, const std::string& Pass) const n
 	) != this->AuthInformations.end();
 }
 
-bool AuthManager::Auth(const std::string& AuthorizationHeaderValue) noexcept {
+bool AuthManager::Auth(const std::string& AuthorizationHeaderValue) const noexcept {
 	const std::array<std::string, 2> Arr = SplitString<2>(AuthorizationHeaderValue, ' ');
 	if (Arr[0] != "Basic") throw std::runtime_error("Auth type is invalid");
 	const std::array<std::string, 2> IDPasswordPair = SplitString<2>(base64::decode(Arr[1]), ':');

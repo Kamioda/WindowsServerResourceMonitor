@@ -13,8 +13,10 @@ public:
 	AuthManager(const nlohmann::json& AuthInfoJson);
 	AuthManager(const AuthManager&) = delete;
 	AuthManager& operator = (const AuthManager&) = delete;
+private:
 	bool Auth(const std::string& id, const std::string& pass) const noexcept;
-	bool Auth(const std::string& TargetAccessToken) noexcept;
+public:
+	bool Auth(const std::string& TargetAccessToken) const noexcept;
 };
 
 class AuthException {
