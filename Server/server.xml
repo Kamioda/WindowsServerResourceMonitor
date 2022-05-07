@@ -21,11 +21,7 @@
 		<stop>/v1/stop</stop>
 		<pause>/v1/pause</pause>
 		<continue>/v1/continue</continue>
-		<authoricate>
-			<createuser>/v1/newuser</createuser>
-			<signin>/v1/auth</signin><!--post-->
-			<signout>/v1/auth</signout><!--delete-->
-		</authoricate>
+		<authoricate>/v1/auth</authoricate>
 	</url>
 	<authfile>.\auth.json</authfile>
 	<resourcefile>.\resources.json</resourcefile>
