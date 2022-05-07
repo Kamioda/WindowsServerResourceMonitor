@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ServiceController.h"
 #include "ConfigLoader.hpp"
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 #include <unordered_map>
 
 class ServiceMonitor : private ServiceController {

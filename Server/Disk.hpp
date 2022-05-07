@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "PDHCounter.hpp"
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 #include <utility>
 
 namespace impl {

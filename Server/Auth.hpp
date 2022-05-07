@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include <nlohmann/json.hpp>
 #include <string>
+#include "json.hpp"
 
 class AuthManager {
 private:

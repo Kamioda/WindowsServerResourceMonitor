@@ -279,6 +279,9 @@
     <ClInclude Include="ResourceManager.hpp">
       <Filter>ServiceSession\ResourceManager</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>ServiceSession\Others</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="server.xml">

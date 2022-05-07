@@ -275,6 +275,7 @@
     <ClInclude Include="Disk.hpp" />
     <ClInclude Include="HandleManager.h" />
     <ClInclude Include="ConfigLoader.hpp" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="MSXMLWrite.hpp" />
     <ClInclude Include="Network.hpp" />
