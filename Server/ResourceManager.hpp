@@ -42,7 +42,7 @@ namespace {
 	}
 }
 
-class ResourceMonitor {
+class ResourceManager {
 private:
 	ServiceControlManager SCM;
 	PDHQuery Query;
@@ -52,7 +52,7 @@ private:
 	std::vector<Network> network;
 	std::vector<ServiceMonitor> services;
 public:
-	ResourceMonitor(const nlohmann::json& resources)
+	ResourceManager(const nlohmann::json& resources)
 		: SCM(), Query(), processor(Query), memory(), disk(), network(), services() {
 		for (const auto& i : resources["disks"]) this->disk.emplace_back(this->Query, i.get<std::string>());
 		for (const auto& i : resources["netadapters"]) this->network.emplace_back(this->Query, i.get<std::string>());

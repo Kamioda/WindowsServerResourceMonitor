@@ -9,7 +9,7 @@ class ResourceAccessServer : public ServiceProcess {
 private:
 	ComInitManager commgr;
 	ConfigLoader conf;
-	ResourceMonitor resource;
+	ResourceManager resource;
 	AuthManager auth;
 	using BaseClass = ServiceProcess;
 public:
