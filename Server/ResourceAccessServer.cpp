@@ -5,12 +5,14 @@
 #include <concepts>
 #include <algorithm>
 #include <chrono>
+std::shared_ptr<ResourceAccessServer> Server;
 
-std::unique_ptr<ServiceProcess> GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
+std::shared_ptr<ServiceProcess> GetServiceProcessInstance(const Service_CommandLineManager::CommandLineType& args) {
 #if defined(_DEBUG) && !defined(CONSOLE)
 	Sleep(10000);
 #endif
-	return std::make_unique<ResourceAccessServer>(args);
+	return Server = std::make_shared<ResourceAccessServer>(args);
+}
 }
 
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
