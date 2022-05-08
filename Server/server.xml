@@ -25,6 +25,7 @@
 	</url>
 	<authfile>.\auth.json</authfile>
 	<resourcefile>.\resources.json</resourcefile>
+	<loop>500</loop>
 	<services>
 		<status>
 			<running>RUNNING</running>
