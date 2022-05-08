@@ -1,6 +1,5 @@
 ﻿#include "Processor.hpp"
 #include "PDHAssistFunctions.hpp"
-#include "JsonObject.hpp"
 #include <Psapi.h>
 #include <intrin.h>
 
