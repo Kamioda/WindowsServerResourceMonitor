@@ -16,7 +16,7 @@ public:
 private:
 	bool Auth(const std::string& id, const std::string& pass) const noexcept;
 public:
-	bool Auth(const std::string& TargetAccessToken) const noexcept;
+	bool Auth(const std::string& TargetAccessToken) const;
 };
 
 class AuthException {
