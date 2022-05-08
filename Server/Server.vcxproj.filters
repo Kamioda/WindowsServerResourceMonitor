@@ -130,9 +130,6 @@
     <ClCompile Include="ComInitManager.cpp">
       <Filter>ServiceSession\Config</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigLoader.cpp">
-      <Filter>ServiceSession\Config</Filter>
-    </ClCompile>
     <ClCompile Include="MSXMLWrite.cpp">
       <Filter>ServiceSession\Config\MSXML\Writer</Filter>
     </ClCompile>
