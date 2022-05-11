@@ -77,12 +77,17 @@ static uWS::App CreateWSServer(ConfigLoader& conf, const AuthManager& auth, us_l
 	);
 }
 
+inline nlohmann::json GetResourceConfig(ConfigLoader& conf) {
+	ServiceMonitor::InitStatusList(conf);
+	ServiceMonitor::InitServiceTypeList(conf);
+	return conf.GetJson("configuration/resourcefile", ".\\auth.json");
+}
+
 ResourceAccessServer::ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args)
 	: ServiceProcess(args), commgr(),
 	conf(BaseClass::ChangeFullPath(".\\server.xml")),
-	resource(conf.GetJson("configuration/resourcefile", ".\\auth.json")), 
-	auth(conf.GetJson("configuration/authfile", ".\\resources.json")), 
-	ListenSocket(), app(CreateWSServer(conf, auth, ListenSocket)) {
+	resource(GetResourceConfig(conf)), auth(conf.GetJson("configuration/authfile", ".\\resources.json")), 
+	ListenSocket(nullptr), app(CreateWSServer(conf, auth, ListenSocket)) {
 	SvcStatus.dwControlsAccepted = SERVICE_ACCEPT_SHUTDOWN | SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_PAUSE_CONTINUE;
 	SetServiceStatusInfo();
 }
