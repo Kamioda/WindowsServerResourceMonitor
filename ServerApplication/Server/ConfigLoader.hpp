@@ -12,7 +12,7 @@ private:
 	MSXML::Read xml;
 public:
 	ConfigLoader() = default;
-	ConfigLoader(const std::string& ConfigFilePath);
+	ConfigLoader(const std::string& ConfigFilePath) : xml(string::converter::stl::from_bytes(ConfigFilePath)) {}
 	template<std::integral T>
 	T GetNum(const std::string& route, const T& DefaultValue) {
 		try {
@@ -32,9 +32,21 @@ public:
 		}
 	}
 	std::string GetString(const std::string& route, const std::string& Default) {
-
+		try {
+			return this->xml.Get<std::string>(string::converter::stl::from_bytes(route)).front();
+		}
+		catch (std::exception) {
+			return Default;
+		}
 	}
-	std::wstring GetString(const std::wstring& route, const std::wstring& Default);
+	std::wstring GetString(const std::wstring& route, const std::wstring& Default) {
+		try {
+			return this->xml.Get<std::wstring>(route).front();
+		}
+		catch (std::exception) {
+			return Default;
+		}
+	}
 private:
 	static nlohmann::json GetJson(const std::filesystem::path& JsonFile) {
 		if (std::filesystem::status(JsonFile).type() != std::filesystem::file_type::regular)
