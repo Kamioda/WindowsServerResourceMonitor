@@ -38,7 +38,7 @@ inline std::unordered_map<std::string_view, std::string_view> GetQueries(uWS::Ht
 	return Ret;
 }
 
-static uWS::App CreateWSServer(ConfigLoader& conf, const AuthManager& auth, std::shared_ptr<us_listen_socket_t>& dstSocket) {
+static uWS::App CreateWSServer(ConfigLoader& conf, const AuthManager& auth, us_listen_socket_t* dstSocket) {
 	return uWS::App{}.get(
 		conf.GetString("configuration/url/authoricate", "/v1/auth"),
 		[&auth](uWS::HttpResponse<false>* res, uWS::HttpRequest* req) {
@@ -73,7 +73,7 @@ static uWS::App CreateWSServer(ConfigLoader& conf, const AuthManager& auth, std:
 		}
 	).listen(
 		conf.GetNum<int>("configuration/url/port", 9900), 
-		[&dstSocket](us_listen_socket_t* sock) { dstSocket = std::make_shared<us_listen_socket_t>(sock); }
+		[&dstSocket](us_listen_socket_t* sock) { dstSocket = sock; }
 	);
 }
 
@@ -91,7 +91,7 @@ uWS::App& ResourceAccessServer::GetApp() noexcept { return this->app; }
 
 ResourceManager& ResourceAccessServer::GetResources() noexcept { return this->resource; }
 
-const std::shared_ptr<us_listen_socket_t>& ResourceAccessServer::GetSocket() const noexcept { return this->ListenSocket; }
+us_listen_socket_t* ResourceAccessServer::GetSocket() const noexcept { return this->ListenSocket; }
 
 void ResourceAccessServer::Service_MainProcess() {
 	us_loop_t* loop = reinterpret_cast<us_loop_t*>(uWS::Loop::get());
@@ -100,7 +100,7 @@ void ResourceAccessServer::Service_MainProcess() {
 		delayTimer,
 		[](us_timer_t* timer) {
 			if (SvcStatus.dwCurrentState == SERVICE_STOP_PENDING) {
-				us_listen_socket_close(0, Server->GetSocket().get());
+				us_listen_socket_close(0, Server->GetSocket());
 				us_timer_close(timer);
 				return;
 			}

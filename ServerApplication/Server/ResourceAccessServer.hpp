@@ -23,12 +23,12 @@ private:
 	ResourceManager resource;
 	AuthManager auth;
 	using BaseClass = ServiceProcess;
-	std::shared_ptr<us_listen_socket_t> ListenSocket;
+	us_listen_socket_t* ListenSocket;
 	uWS::App app;
 public:
 	ResourceAccessServer(const Service_CommandLineManager::CommandLineType& args);
 	void Service_MainProcess() override;
 	uWS::App& GetApp() noexcept;
 	ResourceManager& GetResources() noexcept;
-	const std::shared_ptr<us_listen_socket_t>& GetSocket() const noexcept;
+	us_listen_socket_t* GetSocket() const noexcept;
 };
