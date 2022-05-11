@@ -1,5 +1,5 @@
 {
   "disks": [ "C:", "D:" ],
-  "network": [ "Realtek PCIe GBE Family Controller" ],
-  "services": [ "IISADMIN", "W3SVC", "MySQL", "postgresql-x64-12", "wuauserv" ]
+  "netadapters": [ "Realtek PCIe GBE Family Controller" ],
+  "services": [ "wuauserv" ]
 }
