@@ -47,14 +47,14 @@ std::array<std::basic_string<T>, ArrSize> SplitString(const T*& str, const T sep
 #include <utility>
 
 template<typename T>
-inline T exchange(T& data, T& newVal) {
+constexpr T exchange(T& data, T&& newVal) {
 	return std::exchange(data, newVal);
 }
 #else
 template<typename T>
-inline T exchange(T& data, T& newVal) {
+inline T exchange(T& data, T&& newVal) {
 	const T ret = data;
-	data = newVal;
+	data = std::move(newVal);
 	return ret;
 }
 #endif
@@ -67,7 +67,7 @@ std::vector<std::basic_string_view<T>> SplitString(const std::basic_string_view<
 		if (i == sep) Arr.push_back(std::string_view(str.begin() + exchange(start, last + 1), str.begin() + last));
 		last++;
 	}
-	if (last > start) Arr.push_back(std::string_view(str.begin() + exchange(start, last), str.begin() + last));
+	if (last > start) Arr.push_back(std::string_view(str.begin() + start, str.begin() + last));
 	return Arr;
 }
 
